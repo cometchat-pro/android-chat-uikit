@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Avatar">
+        <attr name="avatar_shape" format="string" />
+        <attr name="avatar" format="reference" />
+        <attr name="avatar_initials" format="string" />
+        <attr name="border_color" format="color" />
+        <attr name="border_width" format="dimension" />
+
+
+    </declare-styleable>
+
+
+    <declare-styleable name="StatusIndicator">
+        <attr name="user_status" format="string" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatUserList">
+        <attr name="userlist" format="reference" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="CometChatConversationList">
+        <attr name="conversationlist" format="reference" />
+
+    </declare-styleable>
+    <declare-styleable name="CometChatGroupList">
+        <attr name="grouplist" format="reference" />
+
+    </declare-styleable>
+
+    <declare-styleable name="BadgeCount">
+        <attr name="count" format="integer" />
+        <attr name="count_size" format="dimension" />
+        <attr name="count_color" format="color" />
+        <attr name="count_background_color" format="color" />
+
+    </declare-styleable>
+
+    <declare-styleable name="ComposeBox">
+        <attr name="color" format="color"/>
+    </declare-styleable>
+
+</resources>

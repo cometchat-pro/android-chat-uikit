@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chatList_toolbar"
+        android:layout_width="match_parent"
+        app:contentInsetStartWithNavigation="0dp"
+        android:stateListAnimator="@animator/toolbar_elevation"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.cometchat.pro.uikit.Avatar
+                android:id="@+id/iv_chat_avatar"
+                android:layout_width="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_account"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_toEndOf="@id/iv_chat_avatar"
+                android:layout_alignTop="@id/iv_chat_avatar"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                android:maxLines="1"
+                tools:text="@tools:sample/full_names"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvMemberList"
+                android:singleLine="true"
+                android:layout_toEndOf="@id/iv_chat_avatar"
+                android:layout_below="@id/tv_name"
+                android:layout_marginStart="16dp"
+                android:textSize="12sp"
+                tools:text="@tools:sample/full_names"
+                android:ellipsize="marquee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_message_list"
+        android:layout_width="match_parent"
+        android:layout_below="@id/chatList_toolbar"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_above="@+id/message_box"/>
+
+
+    <com.cometchat.pro.uikit.ComposeBox
+        android:id="@+id/message_box"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"/>
+
+
+
+</RelativeLayout>

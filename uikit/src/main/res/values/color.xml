@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorAccent">#3F51B5</color>
+    <color name="primaryTextColor">#000000</color>
+
+<!--    <color name="cc_primary">#0099ff</color>-->
+<!--    <color name="cc_primary_dark">#006ccb</color>-->
+<!--    <color name="cc_accent">#69c9ff</color>-->
+<!--    <color name="primaryTextColor">#FF000000</color>-->
+    <color name="textColorWhite">#FFFFFF</color>
+    <color name="bottom">#FAFAFA</color>
+    <color name="secondaryTextColor">#6b000000</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="message_bubble_grey">#e0e0e0</color>
+    <color name="message_text_grey">#757575</color>
+    <color name="menu_background_grey">#40bdbdbd</color>
+    <color name="online_green">#E64CAF50</color>
+    <color name="red">#eecc0000</color>
+    <color name="file_icon">#B1AEAE</color>
+    <color name="edt_white_bg">#FFF</color>
+    <color name="search_bg">#979797</color>
+    <color name="sent_bg">#D6D6D6</color>
+    <color name="timelapse_bg">#E0E0E0</color>
+    <color name="deletedTextColor">#858484</color>
+    <color name="shimmer">#ECECEC</color>
+</resources>
