@@ -351,10 +351,7 @@ public class CometChatMessageScreen extends Fragment implements View.OnClickList
                     editMessageLayout.setVisibility(View.GONE);
                 } else
 
-                    for (int i = 0; i < s.length; i++) {
-                        sendMessage(s[i]);
-                    }
-//                    sendMessage(message);
+                   sendMessage(message);
             }
 
             @Override
