@@ -42,6 +42,17 @@ dependencies {
   implementation 'com.cometchat:pro-android-chat-sdk:2.0.2'
 }
 ```
+As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
+
+```
+android {
+    ...
+    dataBinding {
+        enabled = true
+    }
+}
+```
+
 Finally, add the below lines android section of the **app level** gradle file
 
 ```groovy
