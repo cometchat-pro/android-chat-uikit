@@ -63,11 +63,11 @@ public class StringContract {
 
     public static class AppInfo {
 
-        public static final String APP_ID = "1180062de409d58";
+        public static final String APP_ID = "XXXXXXXXXXXXXXXXX";
 
-        public static final String API_KEY = "2df393bf14d362e026255e0b412c56681d7392d0";
+        public static final String API_KEY = "XXXXXXXXXXXXXXXXXXX";
 
-        public static final String REGION = "us";
+        public static final String REGION = "XXXXX";
     }
 
 }
