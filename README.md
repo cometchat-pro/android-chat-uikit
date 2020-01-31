@@ -118,19 +118,6 @@ After adding necessary dependancies inside you app to integrate UI Kit inside yo
 <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
 
 
-### Launch UI Unified
-
-*UI Unified is a way to launch a fully working chat application using the UI Kit .In UI Unified all the UI Screens and UI Components working together to give the full experience of a chat application with minimal coding effort.*
-
- Add the following code snippet in `onSuccess` of CometChat `login`.
-
- ```java
- startActivity(new Intent(YourActivity.this,CometChatUnified.class))
-
-```
-</br>
-<img align="center" width="100%" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/UI%20Unified%20(1).png">
-
 
 ### Note
 
@@ -156,6 +143,18 @@ Update your app theme to inherit from one of these themes, e.g.:
 
     </style>
 ```
+
+### Launch UI Unified
+
+*UI Unified is a way to launch a fully working chat application using the UI Kit .In UI Unified all the UI Screens and UI Components working together to give the full experience of a chat application with minimal coding effort.*
+
+ Add the following code snippet in `onSuccess` of CometChat `login`.
+
+ ```java
+ startActivity(new Intent(YourActivity.this,CometChatUnified.class))
+ ```
+</br>
+<img align="center" width="100%" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/UI%20Unified%20(1).png">
 
 
 
