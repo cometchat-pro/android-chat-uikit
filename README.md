@@ -23,6 +23,18 @@ UI kit is designed to avoid boilerplate code for building UI,it has three differ
 * Create a new app
 * Head over to the API Keys section and note the `API_Key` and `App_ID` (for Auth Only key)
 ---
+### Minimum Requirement
+
+  * Android API Level 21 
+  * Androidx Compatibility 
+  * Compile and Target SDK version 29
+  * Build Tool Version 29
+
+To use UI Kit you have to add Material Design Dependency as the UI Kit uses Material Design Components.
+```groovy
+implementation 'com.google.android.material:material:<version>'
+```
+
 ### Add the CometChat Dependency
 
 First, add the repository URL to the **project level** `build.gradle` file in the repositories block under the allprojects section.
