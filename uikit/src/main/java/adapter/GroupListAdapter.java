@@ -34,13 +34,16 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
 
     private List<Group> groupList = new ArrayList<>();
 
+    private FontUtils fontUtils;
+
     /**
-     * It is a contructor which is used to initialize wherever we needed.
+     * It is a constructor which is used to initialize wherever we needed.
      *
      * @param context is a object of Context.
      */
     public GroupListAdapter(Context context) {
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     /**
@@ -53,6 +56,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
 
         this.groupList = groupList;
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     @NonNull
@@ -79,8 +83,8 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
         groupViewHolder.groupListRowBinding.executePendingBindings();
         groupViewHolder.groupListRowBinding.avGroup.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
         groupViewHolder.groupListRowBinding.getRoot().setTag(R.string.group, group);
-        groupViewHolder.groupListRowBinding.txtUserMessage.setTypeface(FontUtils.robotoRegular);
-        groupViewHolder.groupListRowBinding.txtUserName.setTypeface(FontUtils.robotoMedium);
+        groupViewHolder.groupListRowBinding.txtUserMessage.setTypeface(fontUtils.getTypeFace(FontUtils.robotoRegular));
+        groupViewHolder.groupListRowBinding.txtUserName.setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
 
     }
 

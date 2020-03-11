@@ -34,8 +34,6 @@ public class StringContract {
 
         public static final String ID = "id";
 
-        public static final String TEXT_MESSAGE = "message" ;
-
         public static final String IS_ADD_MEMBER ="is_add_member" ;
 
         public static final String IS_BLOCKED_BY_ME = "is_blocked_by_me";
@@ -61,13 +59,5 @@ public class StringContract {
         public static final int DELETE_GROUP = 8;
     }
 
-    public static class AppInfo {
-
-        public static final String APP_ID = "XXXXXXXXXXXXXXXXX";
-
-        public static final String API_KEY = "XXXXXXXXXXXXXXXXXXX";
-
-        public static final String REGION = "XXXXX";
-    }
 
 }

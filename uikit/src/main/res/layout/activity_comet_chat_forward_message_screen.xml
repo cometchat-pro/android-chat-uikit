@@ -12,6 +12,8 @@
 
     </data>
 
+    <!-- This layout is used to provide conversations list to
+    forward messages-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,12 +21,16 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/forward_toolbar"
             android:layout_width="match_parent"
+            app:title="Forward Message"
             android:layout_height="wrap_content"/>
 
+        <!--Search_View - This layout is used to search conversations-->
         <RelativeLayout
             android:id="@+id/searchbar_view"
             android:layout_below="@id/forward_toolbar"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -53,6 +59,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
+        <!--End of Search_View -->
+
+        <!---Selected_Conversations - This is used to provide
+        selected conversations-->
         <HorizontalScrollView
             android:id="@+id/selected_view"
             android:layout_below="@+id/searchbar_view"
@@ -65,13 +75,19 @@
                app:singleLine="false"
                android:layout_height="match_parent"/>
         </HorizontalScrollView>
-        <androidx.recyclerview.widget.RecyclerView
+        <!--End of Selected_Conversations-->
+
+        <!--Conversation_List - It is used to display ConversationList-->
+        <com.cometchat.pro.uikit.CometChatConversationList
             android:id="@+id/rv_conversation_list"
             android:layout_below="@+id/selected_view"
             android:layout_width="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/user_list_row"
             android:layout_height="match_parent"/>
+        <!--End of Conversation_List-->
+
+
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:text="Send"

@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.cometchat.pro.uikit">
 
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 
-    <application android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true">
+    <application android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
+        android:requestLegacyExternalStorage="true"
+        tools:node="replace"
+        tools:targetApi="m">
 
-        <activity android:name="screen.CometChatCreateGroupScreenActivity"
+        <meta-data android:name="com.cometchat.pro.uikit"
+            android:value="${file_provider}"/>
+
+        <activity android:name="screen.creategroup.CometChatCreateGroupScreenActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="screen.CometChatMorePrivacyScreen" />
+        <activity android:name="screen.CometChatMorePrivacyScreenActivity" />
 
-        <activity android:name="screen.CometChatBlockUserListScreenActivity"
+        <activity android:name="screen.blockuserlist.CometChatBlockUserListScreenActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="screen.CometChatGroupDetailScreen"
+            android:name="screen.CometChatGroupDetailScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="screen.CometChatAddMemberScreenActivity"
+            android:name="screen.addmember.CometChatAddMemberScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="screen.CometChatAdminListScreenActivity"
+            android:name="screen.adminlist.CometChatAdminListScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-        android:name="screen.CometChatForwardMessageScreen"
+        android:name="screen.CometChatForwardMessageScreenActivity"
         android:screenOrientation="portrait" />
         <activity
-            android:name="screen.CometChatGroupMemberListScreenActivity"
+            android:name="screen.groupmemberlist.CometChatGroupMemberListScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="screen.CometChatUnified"
+            android:name="screen.unified.CometChatUnified"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="screen.CometChatUserDetailScreen"
+            android:name="screen.CometChatUserDetailScreenActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="screen.CometChatMessageListActivity"
-            android:parentActivityName="screen.CometChatUnified"
+            android:name="screen.messagelist.CometChatMessageListActivity"
+            android:parentActivityName="screen.unified.CometChatUnified"
             android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.cometchat.pro.uikit.provider"
+            android:authorities="${file_provider}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_path" />
         </provider>
+
     </application>
 
 </manifest>

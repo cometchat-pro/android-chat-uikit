@@ -36,6 +36,8 @@ public class BlockedListAdapter extends RecyclerView.Adapter<BlockedListAdapter.
 
     private List<User> userArrayList = new ArrayList<>();
 
+    private FontUtils fontUtils;
+
     private static final String TAG = "UserListAdapter";
 
     /**
@@ -47,6 +49,7 @@ public class BlockedListAdapter extends RecyclerView.Adapter<BlockedListAdapter.
     public BlockedListAdapter(Context context, List<User> userArrayList) {
         this.userArrayList = userArrayList;
         this.context= context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     @NonNull
@@ -83,7 +86,7 @@ public class BlockedListAdapter extends RecyclerView.Adapter<BlockedListAdapter.
         blockedViewHolder.userListRowBinding.getRoot().setTag(R.string.user, user);
         blockedViewHolder.userListRowBinding.txtUserScope.setVisibility(View.GONE);
         blockedViewHolder.userListRowBinding.unblockUser.setVisibility(View.VISIBLE);
-        blockedViewHolder.userListRowBinding.txtUserName.setTypeface(FontUtils.robotoMedium);
+        blockedViewHolder.userListRowBinding.txtUserName.setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
             blockedViewHolder.userListRowBinding.avUser.setInitials(user.getName());
@@ -142,16 +145,5 @@ public class BlockedListAdapter extends RecyclerView.Adapter<BlockedListAdapter.
 
         }
 
-    }
-
-    class InitialHolder extends RecyclerView.ViewHolder {
-
-        private TextView textView;
-
-        InitialHolder(@NonNull View itemView) {
-            super(itemView);
-
-            textView = itemView.findViewById(R.id.text_char);
-        }
     }
 }

@@ -22,34 +22,11 @@
         android:background="@color/textColorWhite"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<!--        <ImageView-->
-<!--            android:foreground="?attr/selectableItemBackground"-->
-<!--            android:src="@drawable/ic_exit_to_app_black_24dp"-->
-<!--            android:tint="@color/cc_primary"-->
-<!--            android:layout_marginTop="12dp"-->
-<!--            android:layout_marginRight="12dp"-->
-<!--            android:id="@+id/menu_button"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"/>-->
         <FrameLayout
             android:layout_above="@id/bottom_navigation"
             android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-
-
-        <!--    <UserListView-->
-        <!--        android:id="@+id/rv_user_list"-->
-        <!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:data_source="@{userList}"-->
-        <!--        android:itemClickListener="@{ItemClicklistener}"-->
-        <!--        android:layout_height="match_parent" />-->
-
-
-        <!-- Main content -->
-
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -64,19 +41,4 @@
             android:background="@color/bottom" />
 
     </RelativeLayout>
-
-    <!--    <RelativeLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent">-->
-
-    <!--        <fragment-->
-    <!--            android:id="@+id/userFragment"-->
-    <!--            android:tag="userListFargment"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            class="screen.UserListFragmentnt"/>-->
-
-    <!--    </RelativeLayout>-->
-
-
 </layout>

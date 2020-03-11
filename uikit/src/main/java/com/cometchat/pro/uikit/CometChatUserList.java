@@ -11,7 +11,6 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.User;
 
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
 import listeners.ClickListener;
 import listeners.OnItemClickListener;
 import listeners.RecyclerTouchListener;
-import listeners.UserItemClickListener;
 import viewmodel.UserListViewModel;
 
 /**
@@ -135,22 +133,28 @@ public class CometChatUserList extends RecyclerView {
     /**
      *   This method provides click event callback to the developer.
      *
-     * @param clickListener object of <code><UserItemClickListener<code/> class
+     * @param onItemClickListener object of <code>OnItemClickListener<User><code/> class
      */
-    public void setItemClickListener(OnItemClickListener<User> clickListener){
+    public void setItemClickListener(OnItemClickListener<User> onItemClickListener){
 
         this.addOnItemTouchListener(new RecyclerTouchListener(context, this, new ClickListener() {
 
             @Override
             public void onClick(View var1, int var2) {
                 User user=(User)var1.getTag(R.string.user);
-                clickListener.OnItemClick(user,var2);
+                if (onItemClickListener!=null)
+                      onItemClickListener.OnItemClick(user,var2);
+                else
+                    throw new NullPointerException("OnItemClickListener<User> is null" );
             }
 
             @Override
             public void onLongClick(View var1, int var2) {
                 User user=(User)var1.getTag(R.string.user);
-                clickListener.OnItemLongClick(user,var2);
+                if (onItemClickListener!=null)
+                     onItemClickListener.OnItemLongClick(user,var2);
+                else
+                  throw new NullPointerException("OnItemClickListener<User> is null" );
             }
         }));
     }

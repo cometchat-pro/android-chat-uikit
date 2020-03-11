@@ -41,6 +41,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
     private static final String TAG = "UserListAdapter";
 
+    private FontUtils fontUtils;
+
     /**
      * It is a contructor which is used to initialize wherever we needed.
      *
@@ -48,6 +50,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
      */
     public UserListAdapter(Context context) {
         this.context=context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     /**
@@ -59,6 +62,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
     public UserListAdapter(Context context, List<User> userArrayList) {
         this.userArrayList = userArrayList;
         this.context= context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     @NonNull
@@ -96,7 +100,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
         userViewHolder.userListRowBinding.avUser.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
         userViewHolder.userListRowBinding.getRoot().setTag(R.string.user, user);
 
-        userViewHolder.userListRowBinding.txtUserName.setTypeface(FontUtils.robotoMedium);
+        userViewHolder.userListRowBinding.txtUserName.setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
             userViewHolder.userListRowBinding.avUser.setInitials(user.getName());

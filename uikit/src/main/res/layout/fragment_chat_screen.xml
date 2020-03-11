@@ -2,91 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-    <androidx.appcompat.widget.Toolbar
+    <include layout="@layout/chat_screen_toolbar"
         android:id="@+id/chatList_toolbar"
-        android:layout_width="match_parent"
-        android:background="@color/textColorWhite"
-        android:stateListAnimator="@animator/toolbar_elevation"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:padding="8dp"
-                tools:visibility="visible"
-                android:tint="@color/colorPrimary"
-                android:visibility="gone"
-                android:id="@+id/iv_close_message_action"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_close_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        <com.cometchat.pro.uikit.Avatar
-            android:id="@+id/iv_chat_avatar"
-            android:layout_width="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible"
-            android:src="@drawable/ic_account"
-            android:layout_height="40dp"/>
-            <RelativeLayout
-                android:layout_toEndOf="@id/iv_close_message_action"
-                android:layout_toStartOf="@id/iv_chat_avatar"
-                android:layout_alignTop="@id/iv_chat_avatar"
-                android:layout_centerInParent="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv_name"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:layout_centerHorizontal="true"
-                tools:text="@tools:sample/full_names"
-                android:layout_width="wrap_content"
-                android:textColor="@color/primaryTextColor"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/tv_status"
-                android:layout_below="@id/tv_name"
-                android:layout_marginStart="16dp"
-                android:layout_centerHorizontal="true"
-                android:textSize="12sp"
-                tools:text="online"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-
-
-    </androidx.appcompat.widget.Toolbar>
-
-
+    <!--It -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_message_list"
         android:layout_width="match_parent"
+        android:layout_below="@+id/chatList_toolbar"
         android:background="@color/textColorWhite"
-        android:layout_below="@id/chatList_toolbar"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_above="@id/message_box"/>
+        android:layout_above="@id/rv_smartReply"/>
+    <com.cometchat.pro.uikit.SmartReplyList
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:elevation="10dp"
+        android:orientation="horizontal"
+        tools:listitem="@layout/reply_list_row"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:id="@+id/rv_smartReply"
+        android:layout_above="@id/message_box"
+        android:layout_height="wrap_content"/>
     <RelativeLayout
         android:padding="16dp"
         android:layout_marginLeft="8dp"
-        tools:visibility="visible"
         android:visibility="gone"
         android:background="@drawable/left_border"
         android:id="@+id/editMessageLayout"
@@ -120,11 +67,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
-    <com.cometchat.pro.uikit.ComposeBox
-        android:id="@+id/message_box"
+
+
+    <include
+        layout="@layout/view_message_box"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+
     <RelativeLayout
         android:id="@+id/message_actions"
         android:visibility="gone"
@@ -167,9 +118,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+
+
     <LinearLayout
         android:visibility="gone"
-        tools:visibility="visible"
         android:id="@+id/blocked_user_layout"
         android:padding="16dp"
         android:background="@color/bottom"

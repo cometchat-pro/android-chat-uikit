@@ -59,9 +59,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
 
     private List<Conversation> filterConversationList = new ArrayList<>();
 
-    private String searchtxt;
-
-    private boolean isSearch;
+    private FontUtils fontUtils;
 
     /**
      * It is constructor which takes conversationList as parameter and bind it with conversationList
@@ -74,6 +72,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         this.conversationList = conversationList;
         this.filterConversationList = conversationList;
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     /**
@@ -83,6 +82,8 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
      */
     public ConversationListAdapter(Context context) {
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
+
     }
 
     @NonNull
@@ -113,7 +114,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
 
         String avatar;
         String name;
-        String lastMessage = null;
+        String lastMessageText = null;
         BaseMessage baseMessage = conversation.getLastMessage();
         conversationViewHolder.conversationListRowBinding.setConversation(conversation);
         conversationViewHolder.conversationListRowBinding.executePendingBindings();
@@ -126,38 +127,18 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
             setStatusIcon(conversationViewHolder.conversationListRowBinding.messageTime,baseMessage);
             conversationViewHolder.conversationListRowBinding.messageTime.setVisibility(View.VISIBLE);
             conversationViewHolder.conversationListRowBinding.messageTime.setText(Utils.getLastMessageDate(baseMessage.getSentAt()));
+            lastMessageText=Utils.getLastMessage(baseMessage);
         } else {
-            lastMessage = "Tap to start conversation";
+            lastMessageText = context.getResources().getString(R.string.tap_to_start_conversation);
             conversationViewHolder.conversationListRowBinding.txtUserMessage.setMarqueeRepeatLimit(100);
             conversationViewHolder.conversationListRowBinding.txtUserMessage.setHorizontallyScrolling(true);
             conversationViewHolder.conversationListRowBinding.txtUserMessage.setSingleLine(true);
             conversationViewHolder.conversationListRowBinding.messageTime.setVisibility(View.GONE);
         }
-
-
-
-        if (type != null) {
-
-            if (CometChatConstants.MESSAGE_TYPE_TEXT.equals(type)) {
-                lastMessage = ((TextMessage) conversation.getLastMessage()).getText();
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            } else if (CometChatConstants.MESSAGE_TYPE_IMAGE.equals(type)) {
-                lastMessage = "has a image message";
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_defaulf_image_24dp, 0, 0, 0);
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablePadding(10);
-            } else if (CometChatConstants.MESSAGE_TYPE_FILE.equals(type)) {
-                lastMessage = "has a file message";
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_insert_drive_file_black_24dp, 0, 0, 0);
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablePadding(10);
-            } else if (CometChatConstants.CATEGORY_ACTION.equals(category)) {
-                lastMessage = ((Action) conversation.getLastMessage()).getMessage();
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            } else {
-                lastMessage = "";
-            }
-        }
-        conversationViewHolder.conversationListRowBinding.txtUserMessage.setTypeface(FontUtils.robotoRegular);
-        conversationViewHolder.conversationListRowBinding.txtUserName.setTypeface(FontUtils.robotoMedium);
+        conversationViewHolder.conversationListRowBinding.txtUserMessage.setText(lastMessageText);
+        conversationViewHolder.conversationListRowBinding.txtUserMessage.setTypeface(fontUtils.getTypeFace(FontUtils.robotoRegular));
+        conversationViewHolder.conversationListRowBinding.txtUserName.setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+        conversationViewHolder.conversationListRowBinding.messageTime.setTypeface(fontUtils.getTypeFace(FontUtils.robotoRegular));
 
         if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
             name = ((User) conversation.getConversationWith()).getName();
@@ -170,7 +151,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         conversationViewHolder.conversationListRowBinding.messageCount.setCount(conversation.getUnreadMessageCount());
         conversationViewHolder.conversationListRowBinding.txtUserName.setText(name);
         conversationViewHolder.conversationListRowBinding.avUser.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
-        conversationViewHolder.conversationListRowBinding.txtUserMessage.setText(lastMessage);
+
         if (avatar != null && !avatar.isEmpty()) {
             conversationViewHolder.conversationListRowBinding.avUser.setAvatar(avatar);
         } else {
@@ -178,23 +159,10 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         }
 
         conversationViewHolder.conversationListRowBinding.getRoot().setTag(R.string.conversation, conversation);
-        if (isSearch) {
-            if (conversationViewHolder.conversationListRowBinding.txtUserName.getText().toString().contains(searchtxt)) {
-                conversationViewHolder.conversationListRowBinding.txtUserName.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            }
-            if (conversationViewHolder.conversationListRowBinding.txtUserMessage.getText().toString().contains(searchtxt)) {
-                conversationViewHolder.conversationListRowBinding.txtUserMessage.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            }
-        } else {
-            conversationViewHolder.conversationListRowBinding.txtUserName.setTextColor(context.getResources().getColor(R.color.primaryTextColor));
-            conversationViewHolder.conversationListRowBinding.txtUserMessage.setTextColor(context.getResources().getColor(R.color.secondaryTextColor));
-        }
-
 
     }
 
     private void setStatusIcon(TextView txtTime, BaseMessage baseMessage) {
-
         if (baseMessage.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)&&
                 baseMessage.getSender().getUid().equals(CometChat.getLoggedInUser().getUid())) {
 

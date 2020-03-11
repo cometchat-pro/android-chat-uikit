@@ -12,17 +12,23 @@
         android:animateLayoutChanges="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
         <com.cometchat.pro.uikit.Avatar
             android:layout_width="24dp"
             android:id="@+id/iv_user"
             tools:src="@tools:sample/avatars"
-            android:layout_alignBottom="@id/cv_message_container"
             android:layout_marginBottom="4dp"
             android:layout_marginStart="4dp"
             android:layout_height="24dp"/>
-
+        <TextView
+            android:id="@+id/tv_user"
+            tools:text="Iron Man"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/iv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <RelativeLayout
+            android:layout_below="@+id/tv_user"
             android:id="@+id/cv_message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +36,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/cc_message_bubble_left"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="1dp">
 
             <TextView
@@ -77,7 +83,6 @@
             tools:visibility="visible"
             android:visibility="gone"
             />
-
     </RelativeLayout>
 
 </LinearLayout>

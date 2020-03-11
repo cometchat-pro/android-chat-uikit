@@ -111,7 +111,7 @@ public class CometChatUserListScreen extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_list_screen, container, false);
         title = view.findViewById(R.id.tv_title);
-        title.setTypeface(FontUtils.robotoMedium);
+        title.setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
         rvUserList = view.findViewById(R.id.rv_user_list);
         etSearch = view.findViewById(R.id.search_bar);
         clearSearch = view.findViewById(R.id.clear_search);
@@ -298,7 +298,8 @@ public class CometChatUserListScreen extends Fragment {
             public void onUserOnline(User user) {
                 //if user is online update user.
                 if (userListAdapter != null) {
-                    userListAdapter.updateUser(user);
+                    if (user.getUid().equals(CometChat.getLoggedInUser().getUid()))
+                        userListAdapter.updateUser(user);
                 }
             }
 
@@ -306,7 +307,8 @@ public class CometChatUserListScreen extends Fragment {
             public void onUserOffline(User user) {
                 //if user is offline update user.
                 if (userListAdapter != null) {
-                    userListAdapter.updateUser(user);
+                     if (user.getUid().equals(CometChat.getLoggedInUser().getUid()))
+                            userListAdapter.updateUser(user);
                 }
             }
         });

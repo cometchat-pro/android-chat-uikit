@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center"
+    android:layout_margin="5dp"
     android:animateLayoutChanges="true">
     <TextView
         android:id="@+id/go_txt_message"

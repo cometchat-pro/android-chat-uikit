@@ -34,6 +34,7 @@ import adapter.GroupListAdapter;
 import listeners.ClickListener;
 import listeners.OnItemClickListener;
 import listeners.RecyclerTouchListener;
+import screen.creategroup.CometChatCreateGroupScreenActivity;
 import utils.FontUtils;
 
 /*
@@ -75,7 +76,7 @@ public class CometChatGroupListScreen extends Fragment  {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_group_list_screen, container, false);
         TextView title = view.findViewById(R.id.tv_title);
-        title.setTypeface(FontUtils.robotoMedium);
+        title.setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
         rvGroupList=view.findViewById(R.id.rv_group_list);
         etSearch = view.findViewById(R.id.search_bar);
         clearSearch = view.findViewById(R.id.clear_search);
@@ -83,7 +84,7 @@ public class CometChatGroupListScreen extends Fragment  {
         ivCreateGroup = view.findViewById(R.id.create_group);
 
         ivCreateGroup.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(),CometChatCreateGroupScreenActivity.class);
+            Intent intent = new Intent(getContext(), CometChatCreateGroupScreenActivity.class);
             startActivity(intent);
         });
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -179,7 +180,7 @@ public class CometChatGroupListScreen extends Fragment  {
      */
     private void fetchGroup(){
         if (groupsRequest==null){
-            groupsRequest=new GroupsRequest.GroupsRequestBuilder().joinedOnly(true).setLimit(30).build();
+            groupsRequest=new GroupsRequest.GroupsRequestBuilder().setLimit(30).build();
         }
         groupsRequest.fetchNext(new CometChat.CallbackListener<List<Group>>() {
             @Override
@@ -202,7 +203,7 @@ public class CometChatGroupListScreen extends Fragment  {
      */
     private void searchGroup(String s)
     {
-        GroupsRequest groupsRequest = new GroupsRequest.GroupsRequestBuilder().setSearchKeyWord(s).joinedOnly(true).setLimit(100).build();
+        GroupsRequest groupsRequest = new GroupsRequest.GroupsRequestBuilder().setSearchKeyWord(s).setLimit(100).build();
         groupsRequest.fetchNext(new CometChat.CallbackListener<List<Group>>() {
             @Override
             public void onSuccess(List<Group> groups) {

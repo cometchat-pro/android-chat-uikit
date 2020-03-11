@@ -2,7 +2,6 @@ package utils;
 
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,38 +21,35 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.BindingAdapter;
 
 import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.helpers.Logger;
+import com.cometchat.pro.models.Action;
+import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.GroupMember;
+import com.cometchat.pro.models.MediaMessage;
+import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 import com.google.android.material.appbar.MaterialToolbar;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
 
 public class Utils {
-
-
-    private static final String Para="Shakespeare was not revered in his lifetime, but he received a large amount of praise.[226][227] In 1598, the cleric and author Francis Meres singled him out from a group of English writers as \"the most excellent\" in both comedy and tragedy.[228][229] The authors of the Parnassus plays at St John's College, Cambridge, numbered him with Chaucer, Gower, and Spenser.[230] In the First Folio, Ben Jonson called Shakespeare the \"Soul of the age, the applause, delight, the wonder of our stage\", although he had remarked elsewhere that \"Shakespeare wanted art\".[225]\n" +
-            "\n" +
-            "Between the Restoration of the monarchy in 1660 and the end of the 17th century, classical ideas were in vogue. As a result, critics of the time mostly rated Shakespeare below John Fletcher and Ben Jonson.[231] Thomas Rymer, for example, condemned Shakespeare for mixing the comic with the tragic. Nevertheless, poet and critic John Dryden rated Shakespeare highly, saying of Jonson, \"I admire him, but I love Shakespeare\".[232] For several decades, Rymer's view held sway; but during the 18th century, critics began to respond to Shakespeare on his own terms and acclaim what they termed his natural genius. A series of scholarly editions of his work, notably those of Samuel Johnson in 1765 and Edmond Malone in 1790, added to his growing reputation.[233][234] By 1800, he was firmly enshrined as the national poet.[235] In the 18th and 19th centuries, his reputation also spread abroad. Among those who championed him were the writers Voltaire, Goethe, Stendhal, and Victor Hugo.[236][j]\n" +
-            "\n" +
-            "\n" +
-            "A recently garlanded statue of William Shakespeare in Lincoln Park, Chicago, typical of many created in the 19th and early 20th century\n" +
-            "During the Romantic era, Shakespeare was praised by the poet and literary philosopher Samuel Taylor Coleridge, and the critic August Wilhelm Schlegel translated his plays in the spirit of German Romanticism.[238] In the 19th century, critical admiration for Shakespeare's genius often bordered on adulation.[239] \"This King Shakespeare,\" the essayist Thomas Carlyle wrote in 1840, \"does not he shine, in crowned sovereignty, over us all, as the noblest, gentlest, yet strongest of rallying signs; indestructible\".[240] The Victorians produced his plays as lavish spectacles on a grand scale.[241] The playwright and critic George Bernard Shaw mocked the cult of Shakespeare worship as \"bardolatry\", claiming that the new naturalism of Ibsen's plays had made Shakespeare obsolete.[242]\n" +
-            "\n" +
-            "The modernist revolution in the arts during the early 20th century, far from discarding Shakespeare, eagerly enlisted his work in the service of the avant-garde. The Expressionists in Germany and the Futurists in Moscow mounted productions of his plays. Marxist playwright and director Bertolt Brecht devised an epic theatre under the influence of Shakespeare. The poet and critic T.S. Eliot argued against Shaw that Shakespeare's \"primitiveness\" in fact made him truly modern.[243] Eliot, along with G. Wilson Knight and the school of New Criticism, led a movement towards a closer reading of Shakespeare's imagery. In the 1950s, a wave of new critical approaches replaced modernism and paved the way for \"post-modern\" studies of Shakespeare.[244] By the 1980s, Shakespeare studies were open to movements such as structuralism, feminism, New Historicism, African-American studies, and queer studies.[245][246] Comparing Shakespeare's accomplishments to those of leading figures in philosophy and theology, Harold Bloom wrote: \"Shakespeare was larger than Plato and than St. Augustine. He";
 
     private static final String TAG = "Utils";
 
@@ -63,6 +58,7 @@ public class Utils {
         float pixel = dp * density;
         return pixel;
     }
+
 
     public static String getDateId(long var0) {
         Calendar var2 = Calendar.getInstance(Locale.ENGLISH);
@@ -74,9 +70,6 @@ public class Utils {
         Calendar var2 = Calendar.getInstance(Locale.ENGLISH);
         var2.setTimeInMillis(var0);
         return DateFormat.format("dd/MM/yyyy", var2).toString();
-    }
-    public  static String[] getRandomWords(){
-        return Para.split("\\s+");
     }
 
     public static List<User> userSort(List<User> userList) {
@@ -104,6 +97,66 @@ public class Utils {
         } else {
             return fileSize + " B";
         }
+    }
+
+    public static String getLastMessage(BaseMessage lastMessage) {
+
+        String message = null;
+
+        switch (lastMessage.getCategory()) {
+
+            case CometChatConstants.CATEGORY_MESSAGE:
+
+                if (lastMessage instanceof TextMessage) {
+
+                    if (isLoggedInUser(lastMessage.getSender()))
+                        message = "You: " + ((TextMessage) lastMessage).getText();
+                    else
+                        message = lastMessage.getSender().getName() + ": " + ((TextMessage) lastMessage).getText();
+
+                } else if (lastMessage instanceof MediaMessage) {
+
+                    if (isLoggedInUser(lastMessage.getSender()))
+                        message = "You sent a " + lastMessage.getType();
+                    else
+                        message = "You received a " + lastMessage.getType();
+                }
+
+                break;
+
+            case CometChatConstants.CATEGORY_CUSTOM:
+
+
+                if (isLoggedInUser(lastMessage.getSender()))
+                    message = "You sent a " + lastMessage.getType();
+                else
+                    message = "You received a " + lastMessage.getType();
+
+                break;
+            case CometChatConstants.CATEGORY_ACTION:
+
+                if (isLoggedInUser(lastMessage.getSender())) {
+                    if (((Action) lastMessage).getActionOn()!=null)
+                        message = "You " + ((Action) lastMessage).getAction() + " " + ((User) ((Action) lastMessage).getActionOn()).getName();
+                    else
+                        message = ((Action) lastMessage).getMessage();
+                } else {
+                    message = ((Action) lastMessage).getMessage();
+                }
+
+                break;
+
+            case CometChatConstants.CATEGORY_CALL:
+                message = "Call Message";
+                break;
+            default:
+                message = "Tap to start conversation";
+        }
+        return message;
+    }
+
+    public static boolean isLoggedInUser(User user) {
+        return user.getUid().equals(CometChat.getLoggedInUser().getUid());
     }
 
     public static GroupMember UserToGroupMember(User user, boolean isScopeUpdate, String newScope) {
@@ -412,4 +465,63 @@ public class Utils {
     }
 
 
+
+    public static List<String> checkSmartReply(BaseMessage lastMessage) {
+        if (lastMessage!=null && !lastMessage.getSender().getUid().equals(CometChat.getLoggedInUser().getUid())) {
+            if (lastMessage.getMetadata()!=null) {
+                return getSmartReplyList(lastMessage);
+            }
+        }
+        return null;
+    }
+
+    private static List<String> getSmartReplyList(BaseMessage baseMessage){
+
+        HashMap<String, JSONObject> extensionList = Utils.extensionCheck(baseMessage);
+        if (extensionList != null && extensionList.containsKey("smartReply")) {
+            JSONObject replyObject = extensionList.get("smartReply");
+            List<String> replyList = new ArrayList<>();
+            try {
+                replyList.add(replyObject.getString("reply_positive"));
+                replyList.add(replyObject.getString("reply_neutral"));
+                replyList.add(replyObject.getString("reply_negative"));
+            } catch (Exception e) {
+                Log.e(TAG, "onSuccess: " + e.getMessage());
+            }
+            return replyList;
+        }
+        return null;
+    }
+
+
+    public static HashMap<String,JSONObject> extensionCheck(BaseMessage baseMessage)
+    {
+        JSONObject metadata = baseMessage.getMetadata();
+        HashMap<String,JSONObject> extensionMap = new HashMap<>();
+        try {
+            if (metadata != null) {
+                JSONObject injectedObject = metadata.getJSONObject("@injected");
+                if (injectedObject != null && injectedObject.has("extensions")) {
+                    JSONObject extensionsObject = injectedObject.getJSONObject("extensions");
+                    if (extensionsObject != null && extensionsObject.has("link-preview")) {
+                        JSONObject linkPreviewObject = extensionsObject.getJSONObject("link-preview");
+                        JSONArray linkPreview = linkPreviewObject.getJSONArray("links");
+                        if (linkPreview.length() > 0) {
+                            extensionMap.put("linkPreview",linkPreview.getJSONObject(0));
+                        }
+
+                    }
+                    if (extensionsObject !=null && extensionsObject.has("smart-reply")) {
+                        extensionMap.put("smartReply",extensionsObject.getJSONObject("smart-reply"));
+                    }
+                }
+                return extensionMap;
+            }
+            else
+                return null;
+        }  catch (Exception e) {
+            Log.e(TAG, "isLinkPreview: "+e.getMessage() );
+        }
+        return null;
+    }
 }

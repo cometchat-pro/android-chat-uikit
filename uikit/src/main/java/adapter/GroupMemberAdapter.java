@@ -44,13 +44,16 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     private List<GroupMember> groupMemberList = new ArrayList<>();
 
+    private FontUtils fontUtils;
+
     /**
-     * It is a contructor which is used to initialize wherever we needed.
+     * It is a constructor which is used to initialize wherever we needed.
      *
      * @param context is a object of Context.
      */
     public GroupMemberAdapter(Context context) {
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
     }
 
     /**
@@ -63,6 +66,8 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         this.groupMemberList = groupMemberList;
         this.groupOwnerId = groupOwnerId;
         this.context = context;
+        fontUtils=FontUtils.getInstance(context);
+
     }
 
     @NonNull
@@ -107,7 +112,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
             groupMemberViewHolder.userListRowBinding.txtUserScope.setText("");
         }
 
-        groupMemberViewHolder.userListRowBinding.txtUserName.setTypeface(FontUtils.robotoMedium);
+        groupMemberViewHolder.userListRowBinding.txtUserName.setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
         if (groupMember.getAvatar() == null || groupMember.getAvatar().isEmpty())
             groupMemberViewHolder.userListRowBinding.avUser.setInitials(groupMember.getName());
         else

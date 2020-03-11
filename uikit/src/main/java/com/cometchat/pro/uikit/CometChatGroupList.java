@@ -11,13 +11,11 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.Group;
 
 import java.util.List;
 
 import listeners.ClickListener;
-import listeners.GroupItemClickListener;
 import listeners.OnItemClickListener;
 import listeners.RecyclerTouchListener;
 import viewmodel.GroupListViewModel;
@@ -121,19 +119,25 @@ public class CometChatGroupList extends RecyclerView {
 
     }
 
-    public void setItemClickListener(OnItemClickListener<Group> clickListener){
+    public void setItemClickListener(OnItemClickListener<Group> onItemClickListener){
 
         this.addOnItemTouchListener(new RecyclerTouchListener(context, this, new ClickListener() {
             @Override
             public void onClick(View var1, int var2) {
                 Group group=(Group)var1.getTag(R.string.group);
-                clickListener.OnItemClick(group,var2);
+                if (onItemClickListener!=null)
+                    onItemClickListener.OnItemClick(group,var2);
+                else
+                    throw new NullPointerException("OnItemClickListener<Group> is null" );
             }
 
             @Override
             public void onLongClick(View var1, int var2) {
                 Group group=(Group)var1.getTag(R.string.group);
-                clickListener.OnItemLongClick(group,var2);
+                if (onItemClickListener!=null)
+                onItemClickListener.OnItemLongClick(group,var2);
+                else
+                    throw new NullPointerException("OnItemClickListener<Group> is null" );
             }
         }));
 

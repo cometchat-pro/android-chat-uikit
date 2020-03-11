@@ -5,37 +5,43 @@ import android.graphics.Typeface;
 
 import java.lang.ref.WeakReference;
 
+import javax.inject.Singleton;
+
 public class FontUtils {
 
-    public static Typeface robotoMedium;
+    private static FontUtils _instance;
 
-    public static Typeface robotoBlack;
+    public static final String robotoMedium = "Roboto-Medium.ttf";
 
-    public static Typeface robotoRegular;
+    public static final String robotoBlack = "Roboto-Regular.ttf";
 
-    public static Typeface robotoBold;
+    public static final String robotoRegular = "Roboto-Regular.ttf";
 
-    public static Typeface robotoLight;
+    public static final String robotoBold = "Roboto-Bold.ttf";
 
-    public static Typeface robotoThin;
+    public static final String robotoLight = "Roboto-Light.ttf";
 
-    private static Context context;
+    public static final String robotoThin = "Roboto-Thin.ttf";
 
-    public FontUtils(Context c) {
+    private Context context;
 
-        context=c;
-
-        initFonts();
-    }
-
-    private void initFonts() {
-        if (context!=null) {
-            robotoMedium = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
-            robotoRegular = Typeface.createFromAsset(context.getAssets(), "Roboto-Regular.ttf");
-            robotoBlack = Typeface.createFromAsset(context.getAssets(), "Roboto-Black.ttf");
-            robotoBold = Typeface.createFromAsset(context.getAssets(), "Roboto-Bold.ttf");
-            robotoLight = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
-            robotoThin = Typeface.createFromAsset(context.getAssets(), "Roboto-Thin.ttf");
+    public static FontUtils getInstance(Context context) {
+        if (_instance == null) {
+            _instance = new FontUtils(context);
         }
+        return _instance;
     }
+
+
+    private FontUtils(Context context) {
+        this.context = context;
+    }
+
+    public Typeface getTypeFace(String fontName) {
+        Typeface typeface = null;
+        if (context != null)
+            typeface = Typeface.createFromAsset(context.getAssets(), fontName);
+        return typeface;
+    }
+
 }

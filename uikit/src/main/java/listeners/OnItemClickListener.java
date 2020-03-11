@@ -16,13 +16,9 @@ import com.cometchat.pro.models.User;
 
 public abstract class OnItemClickListener<T> {
 
-    public OnItemClickListener() {
-    }
-
     public abstract void OnItemClick(T var, int position);
 
-    public void OnItemLongClick(T var,int position)
-    {
+    public void OnItemLongClick(T var,int position) {
 
     }
 }

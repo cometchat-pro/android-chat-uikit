@@ -10,13 +10,11 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.Conversation;
 
 import java.util.List;
 
 import listeners.ClickListener;
-import listeners.ConversationItemClickListener;
 import listeners.OnItemClickListener;
 import listeners.RecyclerTouchListener;
 import viewmodel.ConversationViewModel;
@@ -102,22 +100,29 @@ public class CometChatConversationList extends RecyclerView {
     /**
      *  This method helps to get Click events of CometChatConversationList
      *
-     * @param clickListener object of the OnItemClickListener
+     * @param onItemClickListener object of the OnItemClickListener
      *
      */
-    public void setItemClickListener(OnItemClickListener<Conversation> clickListener){
+    public void setItemClickListener(OnItemClickListener<Conversation> onItemClickListener){
 
         this.addOnItemTouchListener(new RecyclerTouchListener(context, this, new ClickListener() {
             @Override
             public void onClick(View var1, int var2) {
                 Conversation conversation=(Conversation)var1.getTag(R.string.conversation);
-                clickListener.OnItemClick(conversation,var2);
+                if (onItemClickListener!=null)
+                    onItemClickListener.OnItemClick(conversation,var2);
+                else
+                    throw new NullPointerException("OnItemClickListener<Conversation> is null" );
             }
 
             @Override
             public void onLongClick(View var1, int var2) {
                 Conversation conversation=(Conversation)var1.getTag(R.string.conversation);
-                clickListener.OnItemLongClick(conversation,var2);
+                 if (onItemClickListener!=null)
+                     onItemClickListener.OnItemLongClick(conversation,var2);
+                 else
+                     throw new NullPointerException("OnItemClickListener<Conversation> is null" );
+
             }
         }));
 

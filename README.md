@@ -51,7 +51,16 @@ Then, add CometChat to the **app level** `build.gradle` file in the dependencies
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:2.0.2'
+  implementation 'com.cometchat:pro-android-chat-sdk:2.0.4-beta1'
+}
+```
+
+```groovy
+android {
+	defaultConfig {
+		manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"] 
+		//add your application package.
+	}
 }
 ```
 As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
@@ -125,7 +134,7 @@ CometChat.login(UID, API_KEY , new CometChat.CallbackListener<User>() {
 ## Add UI Kit to your project
 After adding necessary dependancies inside you app to integrate UI Kit inside your app.Kindly follow the below steps:
 1. Simply clone the UI Kit Library from android-chat-uikit repository.
-3. Import `uikit` Module from Module Settings.
+3. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/docs/android-ui-kit-setup) )
 4. If the Library is added sucessfully, it will look like mentioned in the below image.
 <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
 

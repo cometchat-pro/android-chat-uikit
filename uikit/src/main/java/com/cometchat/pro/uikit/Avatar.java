@@ -49,7 +49,7 @@ import utils.Utils;
 public class Avatar extends AppCompatImageView {
 
     private static final String TAG = Avatar.class.getSimpleName();
-    //    private static final String TAG = "Avatar";
+
     private final Class avatar = Avatar.class;
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
@@ -278,6 +278,7 @@ public class Avatar extends AppCompatImageView {
      * @see User
      */
     public void setAvatar(@NonNull User user) {
+
          if (user!=null) {
              if (user.getAvatar() != null) {
                  avatarUrl = user.getAvatar();
@@ -286,11 +287,15 @@ public class Avatar extends AppCompatImageView {
                      setValues();
                  }
              } else {
-                 if (user.getName().length()>2) {
-                     text = user.getName().substring(0, 2);
-                 }else {
-                     text=user.getName();
-                 }
+                  if (user.getName()!=null&&!user.getName().isEmpty()) {
+                      if (user.getName().length() > 2) {
+                          text = user.getName().substring(0, 2);
+                      } else {
+                          text = user.getName();
+                      }
+                  }else {
+                      text="??";
+                  }
                  init();
                  setImageDrawable(drawable);
                  setDrawable();
@@ -483,9 +488,9 @@ public class Avatar extends AppCompatImageView {
             canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, borderPaint);
             clipPath.addRoundRect(rectF, cornerRadius, cornerRadius, Path.Direction.CCW);
         } else {
-            canvas.drawCircle(rectF.centerX(), rectF.centerY(), (rectF.height() / 2), borderPaint);
+            canvas.drawCircle(rectF.centerX(), rectF.centerY(), (rectF.height() / 2)-borderWidth, borderPaint);
 
-            clipPath.addCircle(rectF.centerX(), rectF.centerY(), (rectF.height() / 2), Path.Direction.CCW);
+            clipPath.addCircle(rectF.centerX(), rectF.centerY(), (rectF.height() / 2)-borderWidth, Path.Direction.CCW);
         }
 
         canvas.clipPath(clipPath);
@@ -502,6 +507,7 @@ public class Avatar extends AppCompatImageView {
      * @param color
      */
     public void setBorderColor(@ColorInt int color) {
+        this.borderColor = color;
         this.borderPaint.setColor(color);
     }
 
@@ -510,7 +516,10 @@ public class Avatar extends AppCompatImageView {
      * @param borderWidth
      */
     public void setBorderWidth(int borderWidth) {
+
+        this.borderWidth = borderWidth;
         this.borderPaint.setStrokeWidth(borderWidth);
+        invalidate();
     }
 
     private class OutlineProvider extends ViewOutlineProvider {

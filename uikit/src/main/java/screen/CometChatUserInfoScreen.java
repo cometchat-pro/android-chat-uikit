@@ -7,10 +7,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
-import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.uikit.R;
@@ -34,17 +34,17 @@ public class CometChatUserInfoScreen extends Fragment {
 
         FragmentMoreInfoScreenBinding moreInfoScreenBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_more_info_screen, container, false);
         moreInfoScreenBinding.setUser(CometChat.getLoggedInUser());
-        if (getActivity() != null)
-            new FontUtils(getActivity());
 
-        moreInfoScreenBinding.tvTitle.setTypeface(FontUtils.robotoMedium);
+
+        moreInfoScreenBinding.tvTitle.setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
         Log.e("onCreateView: ", CometChat.getLoggedInUser().toString());
         moreInfoScreenBinding.privacyAndSecurity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), CometChatMorePrivacyScreen.class));
+                startActivity(new Intent(getContext(), CometChatMorePrivacyScreenActivity.class));
             }
         });
+
         return moreInfoScreenBinding.getRoot();
     }
 

@@ -8,12 +8,14 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
@@ -25,9 +27,11 @@ import androidx.loader.content.CursorLoader;
 
 import com.cometchat.pro.uikit.BuildConfig;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,29 +113,45 @@ public class MediaUtils {
 
     public static Intent openCamera(Context context) {
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = timeStamp + ".jpg";
-            File storageDir = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES);
-            pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
-            File file = new File(pictureImagePath);
-            Uri outputFileUri;
-            outputFileUri= FileProvider.getUriForFile(context, BuildConfig.LIBRARY_PACKAGE_NAME + ".provider",file);
-             if (Build.VERSION.SDK_INT>=29){
-                 ContentResolver resolver = context.getContentResolver();
-                 ContentValues contentValues = new ContentValues();
-                 contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timeStamp);
-                 contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-                 contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".jpg";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
+        File file = new File(pictureImagePath);
+        Uri outputFileUri;
 
-                 outputFileUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-                 uri=outputFileUri;
+        ApplicationInfo app = null;
+        String provider = null;
+        try {
+            app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            provider=bundle.getString(BuildConfig.LIBRARY_PACKAGE_NAME);
+            Log.d("openCamera", "openCamera:  " + provider);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
-             }
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            return intent;
+         outputFileUri = FileProvider.getUriForFile(context, provider + ".provider", file);
+
+        if (Build.VERSION.SDK_INT >= 29) {
+            ContentResolver resolver = context.getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timeStamp);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM");
+
+            outputFileUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            uri = outputFileUri;
+
+        }  else if (Build.VERSION.SDK_INT<=23){
+            outputFileUri=Uri.fromFile(file);
+            uri=outputFileUri;
+        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        return intent;
     }
 
     public static Intent openGallery(Activity a) {
@@ -229,11 +249,14 @@ public class MediaUtils {
         return f;
     }
 
-    public static String getRealPath(Context context, Uri fileUri) {
-        Log.d("", "getRealPath: "+fileUri.getPath());
+    public static File getRealPath(Context context, Uri fileUri) {
+        Log.d("", "getRealPath: " + fileUri.getPath());
         String realPath;
+        if (isGoogleDrive(fileUri)) {
+            return saveDriveFile(context, fileUri);
+        }
         // SDK < API11
-        if (Build.VERSION.SDK_INT < 11) {
+        else if (Build.VERSION.SDK_INT < 11) {
             realPath = getRealPathFromURI_BelowAPI11(context, fileUri);
         }
         // SDK >= 11 && SDK < 19
@@ -244,9 +267,46 @@ public class MediaUtils {
         else {
             realPath = getRealPathFromURI_API19(context, fileUri);
         }
-        return realPath;
+        return new File(realPath);
     }
 
+    public static File saveDriveFile(Context context, Uri uri) {
+
+        try {
+
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            int originalSize = inputStream.available();
+
+            BufferedInputStream bis = null;
+            BufferedOutputStream bos = null;
+            String fileName = getFileName(context, uri);
+            File file = makeEmptyFileWithTitle(fileName);
+            bis = new BufferedInputStream(inputStream);
+            bos = new BufferedOutputStream(new FileOutputStream(
+                    file, false));
+
+            byte[] buf = new byte[originalSize];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+
+            bos.flush();
+            bos.close();
+            bis.close();
+
+            return file;
+
+        } catch (IOException e) {
+            return null;
+        }
+
+    }
+
+    public static File makeEmptyFileWithTitle(String title) {
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return new File(root, title);
+    }
 
     @SuppressLint("NewApi")
     private static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
@@ -307,12 +367,17 @@ public class MediaUtils {
 
             }
             // DownloadsProvider
-            else  if (isDownloadsDocument(uri)) {
+            else if (isDownloadsDocument(uri)) {
 
-                final String id = DocumentsContract.getDocumentId(uri);
+                 String id = DocumentsContract.getDocumentId(uri);
 
-                if (id != null && id.startsWith("raw:")) {
-                    return id.substring(4);
+                if (id != null){
+                        if(id.startsWith("raw:")) {
+                            return id.substring(4);
+                        }
+                        if (id.startsWith("msf:")){
+                            id=id.substring(4);
+                        }
                 }
 
                 String[] contentUriPrefixesToTry = new String[]{
@@ -327,7 +392,8 @@ public class MediaUtils {
                         if (path != null) {
                             return path;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
 
                 // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
@@ -416,8 +482,7 @@ public class MediaUtils {
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
 
         Cursor cursor = null;
         final String column = "_data";
@@ -447,6 +512,15 @@ public class MediaUtils {
     public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Drive
+     */
+    public static boolean isGoogleDrive(Uri uri) {
+        return uri.getAuthority().contains("com.google.android.apps.docs.storage");
+    }
+
 
     /**
      * @param uri The Uri to check.

@@ -1,31 +1,18 @@
 <resources>
     <string name="app_name">LiftOff</string>
-    <string name="circle">Circle</string>
     <string name="rectangle">Rectangle</string>
     <string name="online">Online</string>
-    <string name="offline">Offline</string>
     <string name="user">user</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="group">group</string>
     <string name="search">Search</string>
     <string name="user_avatar">User Avatar</string>
     <string name="conversation">conversation</string>
-    <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="message">message</string>
     <string name="you_won_t_be_able_send_or_receive_messages">You won\'t be able send or receive messages</string>
     <string name="unblock">Unblock</string>
@@ -34,11 +21,48 @@
     <string name="owner">Owner</string>
     <string name="admin">Admin</string>
     <string name="create_group">Create Group</string>
-    <string name="kindly_enter_group_name_to_proceed">Kindly enter group name to proceed</string>
+    <string name="kindly_enter_group_name_to_proceed">Kindly, enter group name to proceed</string>
     <string name="enter_group_name">Enter Group Name</string>
     <array name="privacySettings">
         <item>Everybody</item>
         <item>Only Friends</item>
     </array>
+
+    <string name="loremIpsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+        Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer
+        took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
+        but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s
+        with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+        \software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="replyTxt">reply</string>
+    <string name="pin">pin</string>
+    <string name="message_deleted">This message was deleted</string>
+    <string name="tap_to_start_conversation">Tap to start conversation</string>
+    <string name="view_on_youtube">View on Youtube</string>
+    <string name="visit">Visit</string>
+    <string name="remove">Remove</string>
+    <string name="remove_from_admin">Remove  %1$s from a Admin</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="you_cannot_perform_action">You cannot perform action on yourself</string>
+    <string name="only_group_owner_removes_admin">Only group owner can remove admin.</string>
+    <string name="removed_from_admin">%1$s is removed from admin privilege</string>
+    <string name="update_group_member_error">Unable to update Group Member</string>
+    <string name="admin_list_retrieve_error">Admin list retrieval failed</string>
+    <string name="unblock_user_question">Would you like to unblock %1$s</string>
+    <string name="user_unblocked">%1$s is unblocked</string>
+    <string name="unblock_user_error">Unblock User Failed</string>
+    <string name="block_user_list_error">Blocked user retrieval failed</string>
+    <string name="create_group_error">Unable to create a group</string>
+    <string name="make_admin">Make Admin</string>
+    <string name="make_admin_question">Do you like to make %1$s as a Admin</string>
+    <string name="user_is_admin">%1$s is now Admin</string>
+    <string name="update_scope_error">Operation failed on %1$s</string>
+    <string name="group_member_list_error">Error : Not able to load group member list</string>
+    <string name="edit_message">Edit Message</string>
+    <string name="text_copied_clipboard">Text Copied to clipboard</string>
+    <string name="grant_camera_permission">Please grant camera permission from app setting</string>
+    <string name="grant_storage_permission">Please grant storage permission from app setting</string>
+    <string name="file_not_exist">File doesn\'t exists</string>
 
 </resources>
