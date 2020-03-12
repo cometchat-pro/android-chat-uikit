@@ -156,17 +156,7 @@ public class CometChatAddMemberScreen extends Fragment {
 
                 if (!recyclerView.canScrollVertically(1)) {
                     fetchUsers();
-                    CometChat.addMembersToGroup(guid, groupMembers, null, new CometChat.CallbackListener<HashMap<String, String>>() {
-                        @Override
-                        public void onSuccess(HashMap<String, String> stringStringHashMap) {
-                            Log.e(TAG, "onSuccess: "+stringStringHashMap.size());
-                        }
-
-                        @Override
-                        public void onError(CometChatException e) {
-
-                        }
-                    });
+               
                 }
 
             }
