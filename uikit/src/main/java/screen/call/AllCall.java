@@ -44,7 +44,7 @@ import static constant.StringContract.Tab.Group;
  *
  * Created At : 25th March 2020
  *
- * Modified On : 29th March 2020
+ * Modified On : 02nd April 2020
  */
 public class AllCall extends Fragment {
 
@@ -68,12 +68,11 @@ public class AllCall extends Fragment {
             public void OnItemClick(Call var, int position) {
                 if (var.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
                     User user;
-                    if (var.getSender().getUid().equals(CometChat.getLoggedInUser().getUid())) {
+                    if (((User)var.getCallInitiator()).getUid().equals(CometChat.getLoggedInUser().getUid())) {
                         user =  ((User)var.getCallReceiver());
                     }
-                    else
-                    {
-                        user = var.getSender();
+                    else {
+                        user = (User)var.getCallInitiator();
                     }
                     Intent intent = new Intent(getContext(), CometChatUserDetailScreenActivity.class);
                     intent.putExtra(StringContract.IntentStrings.UID, user.getUid());
@@ -104,12 +103,12 @@ public class AllCall extends Fragment {
                     @Override
                     public void onSuccess(Call call) {
                         Log.e( "onSuccess: ",call.toString());
-                        if (var.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+                        if (call.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
                             User user;
-                            if (var.getSender().getUid().equals(CometChat.getLoggedInUser().getUid())) {
-                                user = ((User) var.getCallReceiver());
+                            if (((User)call.getCallInitiator()).getUid().equals(CometChat.getLoggedInUser().getUid())) {
+                                user = ((User) call.getCallReceiver());
                             } else {
-                                user = var.getSender();
+                                user = (User)call.getCallInitiator();
                             }
                             Utils.startCallIntent(getContext(), user, CometChatConstants.CALL_TYPE_AUDIO, true, call.getSessionId());
                         } else
