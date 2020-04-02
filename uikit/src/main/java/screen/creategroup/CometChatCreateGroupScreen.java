@@ -86,7 +86,6 @@ public class CometChatCreateGroupScreen extends Fragment {
 
     private void createGroup() {
         if (etGroupName.getText()!=null&&!etGroupName.getText().toString().isEmpty()) {
-            int randomNum = new Random().nextInt((1000-10)+1)+10;
             Group group = new Group("group"+generateRandomString(95), etGroupName.getText().toString(), CometChatConstants.GROUP_TYPE_PUBLIC,"");
             CometChat.createGroup(group, new CometChat.CallbackListener<Group>() {
                 @Override
@@ -111,7 +110,7 @@ public class CometChatCreateGroupScreen extends Fragment {
             });
         }
         else {
-            etGroupName.setError("Fill this Field");
+            etGroupName.setError(getResources().getString(R.string.fill_this_field));
         }
     }
 

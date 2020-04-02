@@ -23,7 +23,7 @@ import utils.FontUtils;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 24th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 
@@ -99,8 +99,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
                 this.groupList.add(groupList.get(i));
             }
         }
-            notifyDataSetChanged();
-
+        notifyDataSetChanged();
     }
 
     /**
@@ -170,6 +169,11 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.Grou
         if (group != null) {
             updateGroup(group);
         }
+    }
+
+    public void clear() {
+        groupList.clear();
+        notifyDataSetChanged();
     }
 
     class GroupViewHolder extends RecyclerView.ViewHolder {

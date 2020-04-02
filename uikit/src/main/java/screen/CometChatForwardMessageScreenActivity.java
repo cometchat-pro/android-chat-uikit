@@ -126,10 +126,9 @@ public class CometChatForwardMessageScreenActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.forward_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-          if (Utils.changeToolbarFont(toolbar)!=null){
-              Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
-          }
+        if (Utils.changeToolbarFont(toolbar)!=null){
+            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+        }
         selectedUsers = findViewById(R.id.selected_user);
 
         forwardBtn = findViewById(R.id.btn_forward);

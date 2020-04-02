@@ -1,35 +1,52 @@
 package utils;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.databinding.BindingAdapter;
 
 import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.Call;
 import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.helpers.Logger;
 import com.cometchat.pro.models.Action;
 import com.cometchat.pro.models.BaseMessage;
+import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.GroupMember;
 import com.cometchat.pro.models.MediaMessage;
 import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
+import com.cometchat.pro.uikit.R;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,19 +56,27 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import timber.log.Timber;
+import constant.StringContract;
+import screen.CometChatCallActivity;
 
 public class Utils {
 
     private static final String TAG = "Utils";
+
+    public static AudioManager getAudioManager(Context context) {
+        return (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+    }
 
     public static float dpToPixel(float dp, Resources resources) {
         float density = resources.getDisplayMetrics().density;
@@ -60,6 +85,22 @@ public class Utils {
     }
 
 
+    public static void initiatecall(Context context,String recieverID,String receiverType,String callType)
+    {
+        Call call = new Call(recieverID,receiverType,callType);
+        CometChat.initiateCall(call, new CometChat.CallbackListener<Call>() {
+            @Override
+            public void onSuccess(Call call) {
+                Utils.startCallIntent(context,((User)call.getCallReceiver()),call.getType(),true,call.getSessionId());
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.e(TAG, "onError: "+e.getMessage());
+                Snackbar.make(((Activity)context).getWindow().getDecorView().getRootView(),context.getResources().getString(R.string.call_initiate_error)+":"+e.getMessage(),Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
     public static String getDateId(long var0) {
         Calendar var2 = Calendar.getInstance(Locale.ENGLISH);
         var2.setTimeInMillis(var0);
@@ -98,6 +139,7 @@ public class Utils {
             return fileSize + " B";
         }
     }
+
 
     public static String getLastMessage(BaseMessage lastMessage) {
 
@@ -159,6 +201,17 @@ public class Utils {
         return user.getUid().equals(CometChat.getLoggedInUser().getUid());
     }
 
+    /**
+     * This method is used to convert user to group member. This method is used when we tries to add
+     * user in a group or update group member scope.
+     * @param user is object of User
+     * @param isScopeUpdate is boolean which help us to check if scope is updated or not.
+     * @param newScope is a String which contains newScope. If it is empty then user is added as participant.
+     * @return GroupMember
+     *
+     * @see User
+     * @see GroupMember
+     */
     public static GroupMember UserToGroupMember(User user, boolean isScopeUpdate, String newScope) {
         GroupMember groupMember;
         if (isScopeUpdate)
@@ -275,7 +328,7 @@ public class Utils {
                 return cursor.getString(column_index);
             }
         } catch (Exception e) {
-            Timber.e(e);
+            Log.e(TAG,e.getMessage());
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -523,5 +576,158 @@ public class Utils {
             Log.e(TAG, "isLinkPreview: "+e.getMessage() );
         }
         return null;
+    }
+
+
+
+    public static void startCallIntent(Context context, User user, String type,
+                                       boolean isOutgoing, @NonNull String sessionId) {
+        Intent videoCallIntent = new Intent(context, CometChatCallActivity.class);
+        videoCallIntent.putExtra(StringContract.IntentStrings.NAME, user.getName());
+        videoCallIntent.putExtra(StringContract.IntentStrings.UID,user.getUid());
+        videoCallIntent.putExtra(StringContract.IntentStrings.SESSION_ID,sessionId);
+        videoCallIntent.putExtra(StringContract.IntentStrings.AVATAR, user.getAvatar());
+        videoCallIntent.setAction(type);
+        videoCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (isOutgoing) {
+            videoCallIntent.setType("outgoing");
+        }
+        else {
+            videoCallIntent.setType("incoming");
+        }
+        context.startActivity(videoCallIntent);
+    }
+    public static void startGroupCallIntent(Context context, Group group, String type,
+                                            boolean isOutgoing, @NonNull String sessionId) {
+        Intent videoCallIntent = new Intent(context, CometChatCallActivity.class);
+        videoCallIntent.putExtra(StringContract.IntentStrings.NAME, group.getName());
+        videoCallIntent.putExtra(StringContract.IntentStrings.UID,group.getGuid());
+        videoCallIntent.putExtra(StringContract.IntentStrings.SESSION_ID,sessionId);
+        videoCallIntent.putExtra(StringContract.IntentStrings.AVATAR, group.getIcon());
+        videoCallIntent.setAction(type);
+        videoCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (isOutgoing) {
+            videoCallIntent.setType("outgoing");
+        }
+        else {
+            videoCallIntent.setType("incoming");
+        }
+        context.startActivity(videoCallIntent);
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = valueInDp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+
+    public static Bitmap getBitmapFromURL(String strURL) {
+        try {
+            URL url = new URL(strURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static void showCallNotifcation(Context context, Call call) {
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int REQUEST_CODE = 12;
+                    int m = (int) ((new Date().getTime()));
+                    String GROUP_ID = "group_id";
+                    String receiverName="",callType,receiverAvatar="",receiverUid="";
+
+                    if (call.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER) && call.getSender().getUid().equals(CometChat.getLoggedInUser().getUid()))
+                    {
+                        receiverUid = ((User)call.getCallReceiver()).getUid();
+                        receiverName = ((User)call.getCallReceiver()).getName();
+                        receiverAvatar = ((User)call.getCallReceiver()).getAvatar();
+                    } else if(call.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+                        receiverUid = call.getSender().getUid();
+                        receiverName = call.getSender().getName();
+                        receiverAvatar = call.getSender().getAvatar();
+                    } else {
+                        receiverUid = ((Group)call.getReceiver()).getGuid();
+                        receiverName = ((Group)call.getReceiver()).getName();
+                        receiverAvatar = ((Group)call.getReceiver()).getIcon();
+                    }
+                    if (call.getType().equals(CometChatConstants.CALL_TYPE_AUDIO)) {
+                        callType = context.getResources().getString(R.string.incoming_audio_call);
+                    } else {
+                        callType = context.getResources().getString(R.string.incoming_video_call);
+                    }
+
+                    Intent callIntent;
+                    callIntent = new Intent(context, CometChatCallActivity.class);
+                    callIntent.putExtra(StringContract.IntentStrings.NAME, receiverName);
+                    callIntent.putExtra(StringContract.IntentStrings.UID, receiverUid);
+                    callIntent.putExtra(StringContract.IntentStrings.SESSION_ID, call.getSessionId());
+                    callIntent.putExtra(StringContract.IntentStrings.AVATAR, receiverAvatar);
+                    callIntent.setAction(call.getType());
+                    callIntent.setType("incoming");
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"2")
+                            .setSmallIcon(R.drawable.cc)
+                            .setContentTitle(receiverName)
+                            .setContentText(callType)
+                            .setPriority(Notification.PRIORITY_HIGH)
+                            .setChannelId("2")
+                            .setColor(context.getResources().getColor(R.color.colorPrimary))
+                            .setLargeIcon(getBitmapFromURL(receiverAvatar))
+                            .setGroup(GROUP_ID)
+                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+                    builder.setGroup(GROUP_ID+"Call");
+                    builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+                    builder.addAction(0, "Answers", PendingIntent.getBroadcast(context, REQUEST_CODE, callIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    builder.addAction(0, "Decline", PendingIntent.getBroadcast(context, 1, callIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    notificationManager.notify(05,builder.build());
+
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void startCall(Activity activity, Call call, RelativeLayout mainView) {
+        CometChat.startCall(activity, call.getSessionId(), mainView, new CometChat.OngoingCallListener() {
+            @Override
+            public void onUserJoined(User user) {
+                Log.e("onUserJoined: ",user.getUid() );
+            }
+
+            @Override
+            public void onUserLeft(User user) {
+                if (call.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER))
+                {
+                    activity.finish();
+                }
+                Snackbar.make(activity.getWindow().getDecorView().getRootView(),"User Left: "+user.getName(),Snackbar.LENGTH_LONG).show();
+                Log.e( "onUserLeft: ",user.getUid() );
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.e( "onError: ",e.getMessage() );
+            }
+
+            @Override
+            public void onCallEnded(Call call) {
+                activity.finish();
+            }
+        });
     }
 }

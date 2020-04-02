@@ -183,10 +183,4 @@ public class ComposeBox extends RelativeLayout implements View.OnClickListener {
        }
 
     }
-
-
-
-    private void showToast(){
-        Toast.makeText(context,"Replace with your own action",Toast.LENGTH_SHORT).show();
-    }
 }

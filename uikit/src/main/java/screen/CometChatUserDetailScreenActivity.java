@@ -6,32 +6,48 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.Call;
 import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.core.MessagesRequest;
 import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.models.Action;
+import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.GroupMember;
 import com.cometchat.pro.models.User;
 import com.cometchat.pro.uikit.Avatar;
 import com.cometchat.pro.uikit.R;
+import com.cometchat.pro.uikit.SharedMedia.SharedFilesFragment;
+import com.cometchat.pro.uikit.SharedMedia.SharedImagesFragment;
+import com.cometchat.pro.uikit.SharedMedia.SharedVideosFragment;
+import com.cometchat.pro.uikit.SharedMediaView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import adapter.CallHistoryAdapter;
 import constant.StringContract;
 import screen.messagelist.CometChatMessageListActivity;
 import utils.FontUtils;
+import utils.Utils;
 
 public class CometChatUserDetailScreenActivity extends AppCompatActivity {
     private Avatar userAvatar;
@@ -64,7 +80,25 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
 
     private FontUtils fontUtils;
 
+    private ImageView callBtn;
+
+    private ImageView vidoeCallBtn;
+
+    private LinearLayout historyView;
+
+    private RecyclerView historyRv;
+
+    private CallHistoryAdapter callHistoryAdapter;
+
+    private MessagesRequest messageRequest;
+
+    private SharedMediaView sharedMediaView;
+
     private boolean inProgress;
+
+    private boolean fromCallList;
+
+    private List<BaseMessage> callList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,9 +111,13 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
 
     private void initComponent() {
 
+        historyView = findViewById(R.id.history_view);
+        historyRv = findViewById(R.id.history_rv);
         userAvatar = findViewById(R.id.iv_user);
         userName = findViewById(R.id.tv_name);
         userStatus = findViewById(R.id.tv_status);
+        callBtn = findViewById(R.id.callBtn_iv);
+        vidoeCallBtn = findViewById(R.id.video_callBtn_iv);
         addBtn = findViewById(R.id.btn_add);
         tvSendMessage=findViewById(R.id.tv_send_message);
         toolbar=findViewById(R.id.user_detail_toolbar);
@@ -98,6 +136,12 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
 
         handleIntent();
 
+
+        sharedMediaView = findViewById(R.id.shared_media_view);
+        sharedMediaView.setRecieverId(uid);
+        sharedMediaView.setRecieverType(CometChatConstants.RECEIVER_TYPE_USER);
+        sharedMediaView.reload();
+
         addBtn.setOnClickListener(view -> {
 
             if (guid != null) {
@@ -111,7 +155,7 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
         });
 
         tvSendMessage.setOnClickListener(view -> {
-              if (isAddMember){
+              if (isAddMember || fromCallList){
                   Intent intent=new Intent(CometChatUserDetailScreenActivity.this, CometChatMessageListActivity.class);
                   intent.putExtra(StringContract.IntentStrings.TYPE,CometChatConstants.RECEIVER_TYPE_USER);
                   intent.putExtra(StringContract.IntentStrings.UID,uid);
@@ -129,6 +173,20 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
             else
                 blockUser();
         });
+
+        callBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.initiatecall(CometChatUserDetailScreenActivity.this,uid,CometChatConstants.RECEIVER_TYPE_USER,CometChatConstants.CALL_TYPE_AUDIO);
+            }
+        });
+
+        vidoeCallBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.initiatecall(CometChatUserDetailScreenActivity.this,uid,CometChatConstants.RECEIVER_TYPE_USER,CometChatConstants.CALL_TYPE_VIDEO);
+            }
+        });
     }
 
 
@@ -136,6 +194,10 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra(StringContract.IntentStrings.IS_ADD_MEMBER)) {
             isAddMember = getIntent().getBooleanExtra(StringContract.IntentStrings.IS_ADD_MEMBER, false);
+        }
+
+        if (getIntent().hasExtra(StringContract.IntentStrings.FROM_CALL_LIST)) {
+            fromCallList = getIntent().getBooleanExtra(StringContract.IntentStrings.FROM_CALL_LIST,false);
         }
 
         if (getIntent().hasExtra(StringContract.IntentStrings.IS_BLOCKED_BY_ME)){
@@ -180,18 +242,57 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
         }
 
         if (isAddMember) {
-            addBtn.setText("Add " + name + " to " + groupName);
+            addBtn.setText(String.format(getResources().getString(R.string.add_user_to_group),name,groupName));
+            historyView.setVisibility(View.GONE);
         } else {
+            fetchCallHistory();
             addBtn.setVisibility(View.GONE);
         }
+    }
+
+    private void fetchCallHistory() {
+        if (messageRequest==null)
+        {
+            messageRequest = new MessagesRequest.MessagesRequestBuilder().setUID(uid).setCategory(CometChatConstants.CATEGORY_CALL).setLimit(30).build();
+        }
+        messageRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
+            @Override
+            public void onSuccess(List<BaseMessage> messageList) {
+                if (messageList.size()!=0) {
+                    callList.addAll(messageList);
+                    setCallHistoryAdapter(messageList);
+                }
+                if (callList.size()!=0)
+                    historyView.setVisibility(View.VISIBLE);
+                else
+                    historyView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+
+            }
+        });
+    }
+
+    private void setCallHistoryAdapter(List<BaseMessage> messageList) {
+        if (callHistoryAdapter==null)
+        {
+            callHistoryAdapter = new CallHistoryAdapter(CometChatUserDetailScreenActivity.this,messageList);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,true);
+            historyRv.setLayoutManager(linearLayoutManager);
+            historyRv.setAdapter(callHistoryAdapter);
+        }
+        else
+            callHistoryAdapter.updateList(messageList);
     }
 
     private void setBlockUnblock() {
         if (isBlocked) {
             tvBlockUser.setTextColor(getResources().getColor(R.color.online_green));
-            tvBlockUser.setText("Unblock User");
+            tvBlockUser.setText(getResources().getString(R.string.unblock_user));
         } else{
-            tvBlockUser.setText("Block User");
+            tvBlockUser.setText(getResources().getString(R.string.block_user));
             tvBlockUser.setTextColor(getResources().getColor(R.color.red));
         }
     }
@@ -217,8 +318,9 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
             @Override
             public void onSuccess(HashMap<String, String> stringStringHashMap) {
                 Log.e(TAG, "onSuccess: " + uid + "Group" + guid);
-                Snackbar.make(addBtn, userName.getText().toString() + " is added to " + groupName, Snackbar.LENGTH_LONG).show();
-                addBtn.setText("Remove from " + groupName);
+                if(tvBlockUser!=null)
+                    Snackbar.make(tvBlockUser,String.format(getResources().getString(R.string.user_added_to_group),userName.getText().toString(), groupName), Snackbar.LENGTH_LONG).show();
+                addBtn.setText(String.format(getResources().getString(R.string.remove_from_group),groupName));
                 isAlreadyAdded = true;
 
 
@@ -236,8 +338,9 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
         CometChat.kickGroupMember(uid, guid, new CometChat.CallbackListener<String>() {
             @Override
             public void onSuccess(String s) {
-                Snackbar.make(addBtn, userName.getText().toString() + " is removed from " + groupName, Snackbar.LENGTH_LONG).show();
-                addBtn.setText("Add in Group \"" + groupName + "\"");
+                if (tvBlockUser!=null)
+                    Snackbar.make(tvBlockUser, String.format(getResources().getString(R.string.user_removed_from_group),userName.getText().toString(),groupName), Snackbar.LENGTH_LONG).show();
+                addBtn.setText(String.format(getResources().getString(R.string.add_in_group),groupName));
                 addBtn.setVisibility(View.VISIBLE);
                 isAlreadyAdded = false;
 
@@ -245,7 +348,8 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
 
             @Override
             public void onError(CometChatException e) {
-                Toast.makeText(CometChatUserDetailScreenActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                if (tvBlockUser!=null)
+                    Snackbar.make(tvBlockUser, getResources().getString(R.string.kicked_error), Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -258,7 +362,8 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
       CometChat.unblockUsers(uids, new CometChat.CallbackListener<HashMap<String, String>>() {
           @Override
           public void onSuccess(HashMap<String, String> stringStringHashMap) {
-              Snackbar.make(tvBlockUser,userName.getText().toString() + " is Unblocked",Snackbar.LENGTH_SHORT).show();
+              if (tvBlockUser!=null)
+                  Snackbar.make(tvBlockUser,String.format(getResources().getString(R.string.user_unblocked),userName.getText().toString()),Snackbar.LENGTH_SHORT).show();
               isBlocked=false;
               setBlockUnblock();
           }
@@ -266,7 +371,8 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
           @Override
           public void onError(CometChatException e) {
               Log.d(TAG, "onError: "+e.getMessage());
-              Snackbar.make(tvBlockUser,userName.getText().toString() + "Unblock Action Failed",Snackbar.LENGTH_SHORT).show();
+              if (tvBlockUser!=null)
+                 Snackbar.make(tvBlockUser,getResources().getString(R.string.unblock_user_error),Snackbar.LENGTH_SHORT).show();
           }
       });
     }
@@ -279,17 +385,31 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
         CometChat.blockUsers(uids, new CometChat.CallbackListener<HashMap<String, String>>() {
             @Override
             public void onSuccess(HashMap<String, String> stringStringHashMap) {
-                Snackbar.make(tvBlockUser,userName.getText().toString() + " is Blocked",Snackbar.LENGTH_SHORT).show();
+                if (tvBlockUser!=null)
+                    Snackbar.make(tvBlockUser,String.format(getResources().getString(R.string.user_is_blocked),userName.getText().toString()),Snackbar.LENGTH_SHORT).show();
                 isBlocked=true;
                 setBlockUnblock();
             }
 
             @Override
             public void onError(CometChatException e) {
-                Snackbar.make(tvBlockUser,userName.getText().toString() + "Block Action Failed",Snackbar.LENGTH_SHORT).show();
+                if (tvBlockUser!=null)
+                    Snackbar.make(tvBlockUser,String.format(getResources().getString(R.string.block_user_error),userName.getText().toString()),Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "onError: "+e.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        groupListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CometChat.removeGroupListener(TAG);
     }
 
     private void groupListener()
@@ -297,24 +417,28 @@ public class CometChatUserDetailScreenActivity extends AppCompatActivity {
         CometChat.addGroupListener(TAG, new CometChat.GroupListener() {
             @Override
             public void onGroupMemberJoined(Action action, User joinedUser, Group joinedGroup) {
-                addBtn.setText("Remove from " + groupName);
+                updateBtn(joinedUser,R.string.remove_from_group);
             }
 
             @Override
             public void onGroupMemberLeft(Action action, User leftUser, Group leftGroup) {
-                addBtn.setText("Add in Group \"" + groupName + "\"");
+                updateBtn(leftUser,R.string.add_in_group);
             }
 
             @Override
             public void onGroupMemberKicked(Action action, User kickedUser, User kickedBy, Group kickedFrom) {
-                addBtn.setText("Add in Group \"" + groupName + "\"");
+                updateBtn(kickedUser,R.string.add_in_group);
             }
 
             @Override
             public void onMemberAddedToGroup(Action action, User addedby, User userAdded, Group addedTo) {
-                addBtn.setText("Remove from " + groupName);
+                updateBtn(userAdded,R.string.remove_from_group);
             }
         });
     }
 
+    private void updateBtn(User user, int resource_string) {
+        if (user.getUid().equals(uid))
+            addBtn.setText(String.format(getResources().getString(resource_string), groupName ));
+    }
 }

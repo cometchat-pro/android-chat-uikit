@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.Call;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.uikit.R;
@@ -40,11 +41,15 @@ import constant.StringContract;
 import listeners.CustomAlertDialogHelper;
 import listeners.OnAlertDialogButtonClickListener;
 import listeners.OnItemClickListener;
+import screen.CometChatCallActivity;
 import screen.CometChatConversationListScreen;
 import screen.CometChatGroupListScreen;
+import screen.CometChatUserDetailScreenActivity;
+import screen.call.CometChatCallListScreen;
 import screen.messagelist.CometChatMessageListActivity;
 import screen.CometChatUserInfoScreen;
 import screen.CometChatUserListScreen;
+import utils.Utils;
 
 /**
  * Purpose - CometChatUnified class is main class used to launch the fully working chat application.
@@ -122,8 +127,8 @@ public class CometChatUnified extends AppCompatActivity implements
                         View dialogview = getLayoutInflater().inflate(R.layout.cc_dialog, null);
                         TextView tvTitle = dialogview.findViewById(R.id.textViewDialogueTitle);
                         tvTitle.setText("");
-                        new CustomAlertDialogHelper(CometChatUnified.this, "Password", dialogview, "Join",
-                                "", "Cancel", CometChatUnified.this, 1, false);
+                        new CustomAlertDialogHelper(CometChatUnified.this, getResources().getString(R.string.password), dialogview, getResources().getString(R.string.join),
+                                "", getResources().getString(R.string.cancel), CometChatUnified.this, 1, false);
                     } else if (group.getGroupType().equals(CometChatConstants.GROUP_TYPE_PUBLIC)) {
                         joinGroup(group);
                     }
@@ -168,7 +173,7 @@ public class CometChatUnified extends AppCompatActivity implements
      *
      */
     private void joinGroup(Group group) {
-        progressDialog = ProgressDialog.show(this, "", "Joining");
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.joining));
         progressDialog.setCancelable(false);
         CometChat.joinGroup(group.getGuid(), group.getGroupType(), groupPassword, new CometChat.CallbackListener<Group>() {
             @Override
@@ -184,7 +189,7 @@ public class CometChatUnified extends AppCompatActivity implements
             @Override
             public void onError(CometChatException e) {
 
-                Snackbar.make(activityCometChatUnifiedBinding.bottomNavigation,getResources().getString(R.string.unabl_to_join_message),
+                Snackbar.make(activityCometChatUnifiedBinding.bottomNavigation,getResources().getString(R.string.unabl_to_join_message)+e.getMessage(),
                         Snackbar.LENGTH_SHORT).show();
 
                 if (progressDialog != null) {
@@ -225,7 +230,8 @@ public class CometChatUnified extends AppCompatActivity implements
                 } else {
                     badgeDrawable.setVisible(true);
                 }
-                badgeDrawable.setNumber(unreadCount.size());  //add total count of users and groups whose messages are unread in BadgeDrawable
+                if (unreadCount.size()!=0)
+                    badgeDrawable.setNumber(unreadCount.size());  //add total count of users and groups whose messages are unread in BadgeDrawable
             }
 
             @Override
@@ -344,8 +350,10 @@ public class CometChatUnified extends AppCompatActivity implements
             fragment = new CometChatGroupListScreen();
         } else if (itemId == R.id.menu_conversation) {
           fragment = new CometChatConversationListScreen();
-        } else if (itemId == R.id.menu_more)
-        { fragment = new CometChatUserInfoScreen();
+        } else if (itemId == R.id.menu_more) {
+            fragment = new CometChatUserInfoScreen();
+        } else if (itemId == R.id.menu_call) {
+            fragment = new CometChatCallListScreen();
         }
 
         return loadFragment(fragment);
@@ -358,12 +366,12 @@ public class CometChatUnified extends AppCompatActivity implements
             alertDialog.dismiss();
         } else if (which == DialogInterface.BUTTON_POSITIVE) { // Join
             try {
-                progressDialog = ProgressDialog.show(this, "", "Joining");
+                progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.joining));
                 progressDialog.setCancelable(false);
                 groupPassword = groupPasswordInput.getText().toString();
                 if (groupPassword.length() == 0) {
                     groupPasswordInput.setText("");
-                    groupPasswordInput.setError("Incorrect");
+                    groupPasswordInput.setError(getResources().getString(R.string.incorrect));
 
                 } else {
                     try {
@@ -398,6 +406,5 @@ public class CometChatUnified extends AppCompatActivity implements
         super.onPause();
         unreadCount.clear();    //Clear conversation count when app pauses or goes background.
     }
-
 
 }

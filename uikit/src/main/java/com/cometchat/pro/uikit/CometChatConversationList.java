@@ -2,6 +2,7 @@ package com.cometchat.pro.uikit;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,18 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.helpers.CometChatHelper;
+import com.cometchat.pro.models.Action;
+import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.Conversation;
+import com.cometchat.pro.models.CustomMessage;
+import com.cometchat.pro.models.Group;
+import com.cometchat.pro.models.MediaMessage;
+import com.cometchat.pro.models.MessageReceipt;
+import com.cometchat.pro.models.TextMessage;
+import com.cometchat.pro.models.User;
 
 import java.util.List;
 
@@ -29,7 +41,7 @@ import viewmodel.ConversationViewModel;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 16th January 2020
+ * Modified on  - 23rd March 2020
  *
 */
 
@@ -65,7 +77,7 @@ public class CometChatConversationList extends RecyclerView {
     }
 
     /**
-     *   This method set the fetched list into the
+     *   This method set the fetched list into the CometChatConversationList Component.
      *
      * @param conversationList to set into the view CometChatConversationList
      */
@@ -112,7 +124,7 @@ public class CometChatConversationList extends RecyclerView {
                 if (onItemClickListener!=null)
                     onItemClickListener.OnItemClick(conversation,var2);
                 else
-                    throw new NullPointerException("OnItemClickListener<Conversation> is null" );
+                    throw new NullPointerException(getResources().getString(R.string.conversation_itemclick_error));
             }
 
             @Override
@@ -121,10 +133,62 @@ public class CometChatConversationList extends RecyclerView {
                  if (onItemClickListener!=null)
                      onItemClickListener.OnItemLongClick(conversation,var2);
                  else
-                     throw new NullPointerException("OnItemClickListener<Conversation> is null" );
+                     throw new NullPointerException(getResources().getString(R.string.conversation_itemclick_error));
 
             }
         }));
 
+    }
+
+    /**
+     * This method is used to perform search operation in a list of conversations.
+     * @param searchString is a String object which will be searched in conversation.
+     *
+     * @see ConversationViewModel#searchConversation(String)
+     */
+    public void searchConversation(String searchString) {
+        conversationViewModel.searchConversation(searchString);
+    }
+
+    /**
+     * This method is used to refresh conversation list if any new conversation is initiated or updated.
+     * It converts the message recieved from message listener using <code>CometChatHelper.getConversationFromMessage(message)</code>
+     *
+     * @param message
+     * @see CometChatHelper#getConversationFromMessage(BaseMessage)
+     * @see Conversation
+     */
+    public void refreshConversation(BaseMessage message) {
+        Conversation newConversation = CometChatHelper.getConversationFromMessage(message);
+        update(newConversation);
+    }
+
+
+    /**
+     * This method is used to update Reciept of conversation from conversationList.
+     * @param messageReceipt is object of MessageReceipt which is recieved in real-time.
+     *
+     * @see MessageReceipt
+     */
+    public void setReciept(MessageReceipt messageReceipt) {
+        if (conversationViewModel != null && messageReceipt.getReceivertype().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+            if (messageReceipt.getReceiptType().equals(MessageReceipt.RECEIPT_TYPE_DELIVERED))
+                conversationViewModel.setDeliveredReceipts(messageReceipt);
+            else
+                conversationViewModel.setReadReceipts(messageReceipt);
+        }
+    }
+
+    /**
+     * This method is used to clear a list of conversation present in CometChatConversationList Component
+     * @see ConversationViewModel#clear()
+     */
+    public void clearList() {
+        if (conversationViewModel!=null)
+            conversationViewModel.clear();
+    }
+
+    public int size() {
+        return conversationViewModel.size();
     }
 }

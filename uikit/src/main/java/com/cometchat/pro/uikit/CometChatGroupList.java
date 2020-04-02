@@ -29,7 +29,7 @@ import viewmodel.GroupListViewModel;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 16th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 
@@ -119,6 +119,12 @@ public class CometChatGroupList extends RecyclerView {
 
     }
 
+    /**
+     * This method is used to get events on click of group item in group list.
+     *
+     * @param onItemClickListener is a object on OnItemClickListener
+     *
+     */
     public void setItemClickListener(OnItemClickListener<Group> onItemClickListener){
 
         this.addOnItemTouchListener(new RecyclerTouchListener(context, this, new ClickListener() {
@@ -128,7 +134,7 @@ public class CometChatGroupList extends RecyclerView {
                 if (onItemClickListener!=null)
                     onItemClickListener.OnItemClick(group,var2);
                 else
-                    throw new NullPointerException("OnItemClickListener<Group> is null" );
+                    throw new NullPointerException(getResources().getString(R.string.group_itemclick_error));
             }
 
             @Override
@@ -137,9 +143,26 @@ public class CometChatGroupList extends RecyclerView {
                 if (onItemClickListener!=null)
                 onItemClickListener.OnItemLongClick(group,var2);
                 else
-                    throw new NullPointerException("OnItemClickListener<Group> is null" );
+                    throw new NullPointerException(getResources().getString(R.string.group_itemclick_error));
             }
         }));
 
+    }
+
+    /**
+     * This method is used to update a grouplist with a searched groups list in CometChatGroupList Component.
+     * @param groups is object of List<Group>, It is list of searched groups.
+     */
+    public void searchGroupList(List<Group> groups) {
+        groupListViewModel.searchGroupList(groups);
+    }
+
+    /**
+     * This method is used to clear a list of groups present in CometChatGroupList Component.
+     *
+     * @see GroupListViewModel#clear()
+     */
+    public void clear() {
+        groupListViewModel.clear();
     }
 }

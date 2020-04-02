@@ -101,14 +101,7 @@ public class CometChatAdminListScreen extends Fragment {
         setHasOptionsMenu(true);
         RelativeLayout rlAddMember = view.findViewById(R.id.rl_add_Admin);
         MaterialToolbar toolbar = view.findViewById(R.id.admin_toolbar);
-
-        if (Utils.changeToolbarFont(toolbar) != null) {
-            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
-        }
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setToolbar(toolbar);
 
         adapter = new GroupMemberAdapter(getContext(), members, null);
         adminList.setAdapter(adapter);
@@ -159,6 +152,16 @@ public class CometChatAdminListScreen extends Fragment {
             }
         }));
         return view;
+    }
+
+    private void setToolbar(MaterialToolbar toolbar) {
+        if (Utils.changeToolbarFont(toolbar) != null) {
+            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+        }
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
 
@@ -246,25 +249,30 @@ public class CometChatAdminListScreen extends Fragment {
         CometChat.addGroupListener(TAG, new CometChat.GroupListener() {
             @Override
             public void onGroupMemberLeft(Action action, User leftUser, Group leftGroup) {
-                if (adapter != null)
-                    adapter.removeGroupMember(Utils.UserToGroupMember(leftUser, false, CometChatConstants.SCOPE_PARTICIPANT));
+                    updateGroupMember(leftUser,true,null);
             }
 
             @Override
             public void onGroupMemberKicked(Action action, User kickedUser, User kickedBy, Group kickedFrom) {
-                if (adapter != null)
-                    adapter.removeGroupMember(Utils.UserToGroupMember(kickedUser, false, CometChatConstants.SCOPE_PARTICIPANT));
+                    updateGroupMember(kickedUser,true,null);
             }
 
             @Override
             public void onGroupMemberScopeChanged(Action action, User updatedBy, User updatedUser, String scopeChangedTo, String scopeChangedFrom, Group group) {
-                if (adapter != null) {
                     if (action.getNewScope().equals(CometChatConstants.SCOPE_ADMIN))
-                        adapter.addGroupMember(Utils.UserToGroupMember(updatedUser, true, action.getNewScope()));
+                        updateGroupMember(updatedUser,false,action);
                     else if (action.getOldScope().equals(CometChatConstants.SCOPE_ADMIN))
-                        adapter.removeGroupMember(Utils.UserToGroupMember(updatedUser, false, CometChatConstants.SCOPE_PARTICIPANT));
-                }
+                        updateGroupMember(updatedUser,true,null);
             }
         });
+    }
+
+    private void updateGroupMember(User user, boolean isRemove,Action action) {
+        if (adapter != null) {
+            if (isRemove)
+                adapter.removeGroupMember(Utils.UserToGroupMember(user, false, CometChatConstants.SCOPE_PARTICIPANT));
+            else
+                adapter.addGroupMember(Utils.UserToGroupMember(user, true, action.getNewScope()));
+        }
     }
 }

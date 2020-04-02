@@ -29,7 +29,7 @@ import viewmodel.UserListViewModel;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 16th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 
@@ -39,6 +39,8 @@ public class CometChatUserList extends RecyclerView {
     private Context context;
 
     private UserListViewModel userListViewModel;
+
+    private boolean showHeader;
 
     public CometChatUserList(@NonNull Context context) {
         super(context);
@@ -62,6 +64,7 @@ public class CometChatUserList extends RecyclerView {
 
     private void getAttributes(AttributeSet attributeSet) {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.CometChatUserList, 0, 0);
+        showHeader = a.getBoolean(R.styleable.CometChatUserList_headers,false);
     }
 
     /**
@@ -77,7 +80,7 @@ public class CometChatUserList extends RecyclerView {
 
     private void setViewModel() {
         if (userListViewModel == null) {
-            userListViewModel = new UserListViewModel(context,this);
+            userListViewModel = new UserListViewModel(context,this,showHeader);
         }
     }
 
@@ -145,7 +148,7 @@ public class CometChatUserList extends RecyclerView {
                 if (onItemClickListener!=null)
                       onItemClickListener.OnItemClick(user,var2);
                 else
-                    throw new NullPointerException("OnItemClickListener<User> is null" );
+                    throw new NullPointerException(getResources().getString(R.string.user_itemclick_error));
             }
 
             @Override
@@ -154,10 +157,25 @@ public class CometChatUserList extends RecyclerView {
                 if (onItemClickListener!=null)
                      onItemClickListener.OnItemLongClick(user,var2);
                 else
-                  throw new NullPointerException("OnItemClickListener<User> is null" );
+                  throw new NullPointerException(getResources().getString(R.string.user_itemclick_error));
             }
         }));
     }
 
 
+    /**
+     * This method is used to set list of searched user in CometChatUserList Component.
+     * @param userList is object of List<User>. It is list of searched users.
+     */
+    public void searchUserList(List<User> userList)
+    {
+        userListViewModel.searchUserList(userList);
+    }
+
+    /**
+     * This method is used to clear a userlist of CometChatUserList Component.
+     */
+    public void clear() {
+        userListViewModel.clear();
+    }
 }

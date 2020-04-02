@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:id="@+id/tv_title"
-        android:text="Users"
+        android:text="@string/users_title"
         android:visibility="gone"
         tools:visibility="visible"
         android:textColor="@color/primaryTextColor"
@@ -52,8 +52,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/no_user_layout"
+        android:visibility="gone"
+        android:alpha="0.6"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/no_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="@string/no_user_available"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <com.cometchat.pro.uikit.CometChatUserList
         android:id="@+id/rv_user_list"
+        app:headers="true"
         android:layout_below="@id/rl_search_box"
         android:background="@color/textColorWhite"
         android:layout_width="match_parent"

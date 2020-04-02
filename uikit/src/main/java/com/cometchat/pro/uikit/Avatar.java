@@ -191,7 +191,7 @@ public class Avatar extends AppCompatImageView {
     @Override
     public void setScaleType(ScaleType scaleType) {
         if (scaleType != SCALE_TYPE) {
-            throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
+            throw new IllegalArgumentException(String.format(getResources().getString(R.string.scale_type_not_supported), scaleType));
         }
     }
 
@@ -212,7 +212,7 @@ public class Avatar extends AppCompatImageView {
     @Override
     public void setAdjustViewBounds(boolean adjustViewBounds) {
         if (adjustViewBounds) {
-            throw new IllegalArgumentException("adjustViewBounds not supported.");
+            throw new IllegalArgumentException(getResources().getString(R.string.adjust_viewbound_not_supported));
         }
     }
 

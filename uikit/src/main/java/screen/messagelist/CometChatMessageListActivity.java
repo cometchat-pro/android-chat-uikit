@@ -12,13 +12,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.core.Call;
+import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.models.BaseMessage;
+import com.cometchat.pro.models.Group;
+import com.cometchat.pro.models.User;
 import com.cometchat.pro.uikit.R;
 
 import java.util.List;
 
 import adapter.MessageAdapter;
 import constant.StringContract;
+import screen.CometChatUserDetailScreenActivity;
+import utils.Utils;
 
 /**
 
@@ -101,11 +107,6 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void setLongMessageClick(List<BaseMessage> baseMessage) {
         if (fragment!=null)
         ((OnMessageLongClick)fragment).setLongMessageClick(baseMessage);
@@ -115,4 +116,15 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
     {
         void setLongMessageClick(List<BaseMessage> baseMessagesList);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 }

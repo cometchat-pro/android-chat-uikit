@@ -1,7 +1,7 @@
 package adapter;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.models.Action;
 import com.cometchat.pro.models.MessageReceipt;
 import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.uikit.databinding.ConversationListRowBinding;
@@ -28,8 +27,6 @@ import com.cometchat.pro.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-import listeners.OnConversationItemClickListener;
-import screen.CometChatConversationListScreen;
 import utils.FontUtils;
 import utils.Utils;
 
@@ -40,7 +37,7 @@ import utils.Utils;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 24th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 
@@ -171,11 +168,11 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_double_tick, 0, 0, 0);
                 txtTime.setCompoundDrawablePadding(10);
             } else if (baseMessage.getDeliveredAt() != 0) {
-                txtTime.setText(Utils.getHeaderDate(baseMessage.getSentAt()));
+                txtTime.setText(Utils.getHeaderDate(baseMessage.getSentAt()*1000));
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_all_black_24dp, 0, 0, 0);
                 txtTime.setCompoundDrawablePadding(10);
             } else {
-                txtTime.setText(Utils.getHeaderDate(baseMessage.getSentAt()));
+                txtTime.setText(Utils.getHeaderDate(baseMessage.getSentAt()*1000));
                 txtTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_black_24dp, 0, 0, 0);
                 txtTime.setCompoundDrawablePadding(10);
             }
@@ -228,7 +225,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         notifyDataSetChanged();
     }
 
-    public void setDelivered(MessageReceipt deliveryReceipts){
+    public void setDeliveredReceipts(MessageReceipt deliveryReceipts){
         for (int i =0; i<filterConversationList.size()-1; i++) {
             Conversation conversation = filterConversationList.get(i);
             if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)&&
@@ -323,7 +320,7 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
                     filterConversationList = conversationList;
                 } else {
                     List<Conversation> tempFilter = new ArrayList<>();
-                    for (Conversation conversation : conversationList) {
+                    for (Conversation conversation : filterConversationList) {
 
                         if (conversation.getConversationType().equals(CometChatConstants.CONVERSATION_TYPE_USER) &&
                                 ((User) conversation.getConversationWith()).getName().toLowerCase().contains(searchKeyword)) {

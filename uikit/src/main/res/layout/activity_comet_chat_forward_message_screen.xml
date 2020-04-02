@@ -90,7 +90,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            android:text="Send"
+            android:text="@string/send"
             tools:visibility="visible"
             android:id="@+id/btn_forward"
             android:visibility="gone"

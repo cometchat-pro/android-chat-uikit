@@ -87,14 +87,7 @@ public class CometChatGroupMemberListScreen extends Fragment {
         clearSearch = view.findViewById(R.id.clear_search);
 
         MaterialToolbar toolbar = view.findViewById(R.id.add_member_toolbar);
-
-        if (Utils.changeToolbarFont(toolbar) != null) {
-            Utils.changeToolbarFont(toolbar).setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
-        }
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setToolbar(toolbar);
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -169,6 +162,16 @@ public class CometChatGroupMemberListScreen extends Fragment {
         fetchGroupMembers();
 
         return view;
+    }
+
+    private void setToolbar(MaterialToolbar toolbar) {
+        if (Utils.changeToolbarFont(toolbar) != null) {
+            Utils.changeToolbarFont(toolbar).setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
+        }
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void updateScope(GroupMember groupMember) {
@@ -280,8 +283,6 @@ public class CometChatGroupMemberListScreen extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        CometChat.removeUserListener(TAG);
-        CometChat.removeMessageListener(TAG);
     }
 
     @Override

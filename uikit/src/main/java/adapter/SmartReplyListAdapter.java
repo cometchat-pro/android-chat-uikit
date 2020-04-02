@@ -4,24 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 import com.cometchat.pro.uikit.R;
-import com.cometchat.pro.uikit.databinding.UserListRowBinding;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import listeners.StickyHeaderAdapter;
 import utils.FontUtils;
 
 /**
@@ -30,7 +23,7 @@ import utils.FontUtils;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 24th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 

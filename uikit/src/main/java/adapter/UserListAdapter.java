@@ -15,8 +15,6 @@ import com.cometchat.pro.uikit.databinding.UserListRowBinding;
 import com.cometchat.pro.models.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import listeners.StickyHeaderAdapter;
@@ -28,7 +26,7 @@ import utils.FontUtils;
  *
  * Created on - 20th December 2019
  *
- * Modified on  - 24th January 2020
+ * Modified on  - 23rd March 2020
  *
  */
 
@@ -245,6 +243,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
             userArrayList.remove(index);
             notifyItemRemoved(index);
         }
+    }
+
+    public void clear() {
+        userArrayList.clear();
+        notifyDataSetChanged();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {

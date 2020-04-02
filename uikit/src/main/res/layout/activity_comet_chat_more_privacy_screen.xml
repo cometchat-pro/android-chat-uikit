@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/privacy_toolbar"
         android:layout_width="match_parent"
-        app:title="Privacy and Security"
+        app:title="@string/privacy_security"
         android:layout_height="wrap_content"/>
 
     <RelativeLayout
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:text="Blocked Users"
+            android:text="@string/blocked_user"
             android:textSize="@dimen/name"
             android:textColor="@color/primaryTextColor"
             android:textStyle="bold"
@@ -45,83 +45,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/light_grey"/>
-    <TextView
-        android:paddingLeft="16dp"
-        android:text="PRIVACY"
-        android:layout_marginTop="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <RelativeLayout
-        android:paddingLeft="16dp"
-        android:id="@+id/groupView"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Groups"
-            android:textSize="@dimen/name"
-            android:textColor="@color/primaryTextColor"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/group_subtext"
-            android:gravity="center"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Spinner
-                android:entries="@array/privacySettings"
-                android:background="@android:color/transparent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/ic_arrow_right_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </RelativeLayout>
-    <RelativeLayout
-        android:paddingLeft="16dp"
-        android:id="@+id/callView"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Calls"
-            android:textSize="@dimen/name"
-            android:textColor="@color/primaryTextColor"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/call_subtext"
-            android:gravity="center"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Spinner
-                android:id="@+id/callPrivacySettings"
-                android:entries="@array/privacySettings"
-                android:background="@android:color/transparent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/ic_arrow_right_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </RelativeLayout>
+
 </LinearLayout>

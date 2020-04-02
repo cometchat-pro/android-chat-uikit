@@ -8,6 +8,7 @@ import com.cometchat.pro.models.User;
 import java.util.List;
 
 import adapter.UserListAdapter;
+import listeners.StickyHeaderDecoration;
 
 public class UserListViewModel {
 
@@ -21,10 +22,10 @@ public class UserListViewModel {
 
 
 
-    public UserListViewModel(Context context,CometChatUserList cometChatUserList){
+    public UserListViewModel(Context context,CometChatUserList cometChatUserList,boolean showHeader){
         this.userListView=cometChatUserList;
         this.context=context;
-        setUserListAdapter(cometChatUserList);
+        setUserListAdapter(cometChatUserList,showHeader);
     }
 
     private UserListViewModel(){
@@ -65,8 +66,17 @@ public class UserListViewModel {
             userListAdapter.removeUser(index);
     }
 
-    private void setUserListAdapter(CometChatUserList cometChatUserList){
+    public void clear()
+    {
+        if (userListAdapter!=null)
+            userListAdapter.clear();
+    }
+    private void setUserListAdapter(CometChatUserList cometChatUserList,boolean showHeader){
         userListAdapter=new UserListAdapter(context);
+        if(showHeader) {
+            StickyHeaderDecoration stickyHeaderDecoration = new StickyHeaderDecoration(userListAdapter);
+            cometChatUserList.addItemDecoration(stickyHeaderDecoration, 0);
+        }
         cometChatUserList.setAdapter(userListAdapter);
     }
 
@@ -74,13 +84,14 @@ public class UserListViewModel {
           getAdapter().updateList(usersList);
     }
 
-    public void setUserListView(CometChatUserList userListView) {
-        this.userListView = userListView;
-    }
-
     public void update(int index, User user) {
         if (userListAdapter!=null)
             userListAdapter.updateUser(index,user);
+    }
+
+    public void searchUserList(List<User> userList) {
+        if (userListAdapter!=null)
+            userListAdapter.searchUser(userList);
     }
 }
 

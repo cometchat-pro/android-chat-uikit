@@ -18,7 +18,7 @@
 
     <declare-styleable name="CometChatUserList">
         <attr name="userlist" format="reference" />
-
+        <attr name="headers" format="boolean"/>
     </declare-styleable>
 
 
@@ -33,6 +33,11 @@
 
     <declare-styleable name="SmartReplyList">
         <attr name="replylist" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SharedMediaView">
+        <attr name="reciever_id" format="string"/>
+        <attr name="reciever_type" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="BadgeCount">

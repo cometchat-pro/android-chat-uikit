@@ -20,14 +20,18 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.core.GroupsRequest;
 import com.cometchat.pro.exceptions.CometChatException;
+import com.cometchat.pro.uikit.CometChatGroupList;
 import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.Group;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import adapter.GroupListAdapter;
@@ -44,7 +48,7 @@ import utils.FontUtils;
 
 * Created on - 20th December 2019
 
-* Modified on  - 16th January 2020
+* Modified on  - 23rd March 2020
 
 */
 
@@ -52,7 +56,7 @@ public class CometChatGroupListScreen extends Fragment  {
 
     private static OnItemClickListener event;
 
-    private RecyclerView rvGroupList;   //Uses to display list of groups.
+    private CometChatGroupList rvGroupList;   //Uses to display list of groups.
 
     private GroupListAdapter groupListAdapter;
 
@@ -64,7 +68,11 @@ public class CometChatGroupListScreen extends Fragment  {
 
     private ImageView ivCreateGroup;
 
-    private static final String TAG = "CometChatGroupListScree";
+    private LinearLayout noGroupLayout;
+
+    private List<Group> groupList = new ArrayList<>();
+
+    private static final String TAG = "CometChatGroupListScreen";
 
     public CometChatGroupListScreen() {
         // Required empty public constructor
@@ -78,6 +86,7 @@ public class CometChatGroupListScreen extends Fragment  {
         TextView title = view.findViewById(R.id.tv_title);
         title.setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
         rvGroupList=view.findViewById(R.id.rv_group_list);
+        noGroupLayout = view.findViewById(R.id.no_group_layout);
         etSearch = view.findViewById(R.id.search_bar);
         clearSearch = view.findViewById(R.id.clear_search);
 
@@ -102,6 +111,7 @@ public class CometChatGroupListScreen extends Fragment  {
                 if(editable.length()==0) {
                     // if etSearch is empty then fetch all groups.
                     groupsRequest=null;
+                    rvGroupList.clear();
                     fetchGroup();
                 }
                 else {
@@ -148,22 +158,13 @@ public class CometChatGroupListScreen extends Fragment  {
         });
 
         // Used to trigger event on click of group item in rvGroupList (RecyclerView)
-        rvGroupList.addOnItemTouchListener(new RecyclerTouchListener(getContext(), rvGroupList, new ClickListener() {
+        rvGroupList.setItemClickListener(new OnItemClickListener<Group>() {
             @Override
-            public void onClick(View var1, int var2) {
-                Group group=(Group)var1.getTag(R.string.group);
-                if (event!=null) {
-                    event.OnItemClick(group, var2);
-                }
-            }
-
-            @Override
-            public void onLongClick(View var1, int var2) {
-                Group group=(Group)var1.getTag(R.string.group);
+            public void OnItemClick(Group group, int position) {
                 if (event!=null)
-                    event.OnItemLongClick(group,var2);
+                    event.OnItemClick(group,position);
             }
-        }));
+        });
         return view;
     }
 
@@ -185,11 +186,20 @@ public class CometChatGroupListScreen extends Fragment  {
         groupsRequest.fetchNext(new CometChat.CallbackListener<List<Group>>() {
             @Override
             public void onSuccess(List<Group> groups) {
-                setAdapter(groups);
+                rvGroupList.setGroupList(groups); // sets the groups in rvGroupList i.e CometChatGroupList Component.
+                groupList.addAll(groups);
+                if (groupList.size()==0) {
+                    noGroupLayout.setVisibility(View.VISIBLE);
+                    rvGroupList.setVisibility(View.GONE);
+                } else {
+                    noGroupLayout.setVisibility(View.GONE);
+                    rvGroupList.setVisibility(View.VISIBLE);
+                }
             }
             @Override
             public void onError(CometChatException e) {
-
+                if (rvGroupList!=null)
+                    Snackbar.make(rvGroupList,getResources().getString(R.string.group_list_error),Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -207,8 +217,9 @@ public class CometChatGroupListScreen extends Fragment  {
         groupsRequest.fetchNext(new CometChat.CallbackListener<List<Group>>() {
             @Override
             public void onSuccess(List<Group> groups) {
-                groupListAdapter.searchGroup(groups);
+                rvGroupList.searchGroupList(groups); // sets the groups in rvGroupList i.e CometChatGroupList Component.
             }
+
 
             @Override
             public void onError(CometChatException e) {
@@ -217,22 +228,6 @@ public class CometChatGroupListScreen extends Fragment  {
         });
     }
 
-    /**
-     * It sets the adapter for rvGroupList.
-     * @param groupList
-     */
-    private void setAdapter(List<Group> groupList){
-        if (groupListAdapter==null){
-            // if adapter is not initialized.
-            groupListAdapter=new GroupListAdapter(getContext(),groupList);
-            rvGroupList.setAdapter(groupListAdapter);
-        }
-        else {
-            // if adapter is initialized, then update adapter list with groups.
-             if (groupList!=null&&groupList.size()!=0)
-            groupListAdapter.updateGroupList(groupList);
-        }
-    }
 
     /**
      *

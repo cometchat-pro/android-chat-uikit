@@ -4,8 +4,13 @@
   <item
       android:id="@+id/menu_conversation"
       android:title="Conversation"
-      android:icon="@drawable/ic_nav_chat"
-      />
+      android:icon="@drawable/ic_nav_chat" />
+
+  <item
+      android:id="@+id/menu_call"
+      android:title="@string/call"
+      android:icon="@drawable/ic_call_24dp" />
+
   <item
       android:id="@+id/menu_users"
       android:title="Users"

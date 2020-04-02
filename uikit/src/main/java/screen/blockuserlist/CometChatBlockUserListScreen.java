@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +58,9 @@ public class CometChatBlockUserListScreen extends Fragment {
 
     private FontUtils fontUtils;
 
+    private TextView noBlockUserLayout;
+
+    private List<User> userList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,20 +75,9 @@ public class CometChatBlockUserListScreen extends Fragment {
         View view = inflater.inflate(R.layout.block_user_screen, container, false);
         setHasOptionsMenu(true);
         rvUserList = view.findViewById(R.id.rv_blocked_user_list);
-
+        noBlockUserLayout = view.findViewById(R.id.no_block_user);
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar_blocked_user);
-
-         if (getActivity()!=null) {
-             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-             if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-         }
-
-        if (Utils.changeToolbarFont(toolbar)!=null){
-            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
-        }
-
-
+        setToolbar(toolbar);
 
         rvUserList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -130,6 +123,18 @@ public class CometChatBlockUserListScreen extends Fragment {
         return view;
     }
 
+    private void setToolbar(MaterialToolbar toolbar) {
+        if (getActivity()!=null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (Utils.changeToolbarFont(toolbar)!=null){
+            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+        }
+    }
+
     private void unBlockUser(User user, View var1) {
 
         ArrayList<String> uids = new ArrayList<>();
@@ -137,8 +142,11 @@ public class CometChatBlockUserListScreen extends Fragment {
         CometChat.unblockUsers(uids, new CometChat.CallbackListener<HashMap<String, String>>() {
             @Override
             public void onSuccess(HashMap<String, String> stringStringHashMap) {
+                if (userList.contains(user))
+                    userList.remove(user);
                 blockedUserAdapter.removeUser(user);
                 Snackbar.make(var1,String.format(getResources().getString(R.string.user_unblocked),user.getName()),Snackbar.LENGTH_SHORT).show();
+                checkIfNoUserVisible();
             }
 
             @Override
@@ -161,9 +169,11 @@ public class CometChatBlockUserListScreen extends Fragment {
         blockedUserRequest.fetchNext(new CometChat.CallbackListener<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {
+                userList.addAll(users);
                 if (users.size() > 0) {
                     setAdapter(users);
                 }
+                checkIfNoUserVisible();
             }
 
             @Override
@@ -172,6 +182,16 @@ public class CometChatBlockUserListScreen extends Fragment {
                 Snackbar.make(rvUserList,getResources().getString(R.string.block_user_list_error),Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void checkIfNoUserVisible() {
+        if (userList.size()==0) {
+            noBlockUserLayout.setVisibility(View.VISIBLE);
+            rvUserList.setVisibility(View.GONE);
+        } else {
+            noBlockUserLayout.setVisibility(View.GONE);
+            rvUserList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -207,7 +227,5 @@ public class CometChatBlockUserListScreen extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        CometChat.removeUserListener(TAG);
-        CometChat.removeMessageListener(TAG);
     }
 }

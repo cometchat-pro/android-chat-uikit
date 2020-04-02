@@ -11,8 +11,6 @@
         android:id="@+id/chatList_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
-
-    <!--It -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_message_list"
         android:layout_width="match_parent"
@@ -21,6 +19,11 @@
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_above="@id/rv_smartReply"/>
+    <include layout="@layout/messages_shimmer"
+        android:layout_above="@id/rv_smartReply"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/chatList_toolbar" />
     <com.cometchat.pro.uikit.SmartReplyList
         android:layout_width="match_parent"
         android:visibility="gone"
@@ -90,7 +93,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:textStyle="bold"
             android:layout_alignParentLeft="true"
-            android:text="Delete"
+            android:text="@string/delete"
             android:textColor="@color/colorPrimary"
             android:padding="16dp"
             android:layout_width="wrap_content"
@@ -100,7 +103,7 @@
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
             android:textStyle="bold"
-            android:text="Forward"
+            android:text="@string/forward"
             android:layout_centerInParent="true"
             android:textColor="@color/colorPrimary"
             android:padding="16dp"
@@ -112,7 +115,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:layout_alignParentRight="true"
             android:textStyle="bold"
-            android:text="Edit"
+            android:text="@string/edit"
             android:textColor="@color/colorPrimary"
             android:padding="16dp"
             android:layout_width="wrap_content"

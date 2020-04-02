@@ -93,16 +93,11 @@ public class CometChatAddMemberScreen extends Fragment {
         // Inflate the layout
         setHasOptionsMenu(true);
         rvUserList = view.findViewById(R.id.rv_user_list);
-        ChipGroup selectedUser = view.findViewById(R.id.selected_user);
         etSearch = view.findViewById(R.id.search_bar);
 
         MaterialToolbar toolbar = view.findViewById(R.id.add_member_toolbar);
 
-        if (Utils.changeToolbarFont(toolbar)!=null){
-            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
-        }
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar(toolbar);
 
 
         clearSearch = view.findViewById(R.id.clear_search);
@@ -156,9 +151,7 @@ public class CometChatAddMemberScreen extends Fragment {
 
                 if (!recyclerView.canScrollVertically(1)) {
                     fetchUsers();
-               
                 }
-
             }
         });
 
@@ -193,11 +186,18 @@ public class CometChatAddMemberScreen extends Fragment {
         }));
     }
 
+    private void setToolbar(MaterialToolbar toolbar) {
+        if (Utils.changeToolbarFont(toolbar)!=null){
+            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+        }
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     private void handleArguments() {
         if (getArguments() != null) {
             guid = getArguments().getString(StringContract.IntentStrings.GUID);
             groupName = getArguments().getString(StringContract.IntentStrings.GROUP_NAME);
-            groupMembersUids.clear();
             groupMembersUids = getArguments().getStringArrayList(StringContract.IntentStrings.GROUP_MEMBER);
         }
     }
@@ -284,7 +284,6 @@ public class CometChatAddMemberScreen extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: ");
-        addPresenceListener();
         usersRequest=null;
         userListAdapter=null;
         fetchUsers();
@@ -292,32 +291,11 @@ public class CometChatAddMemberScreen extends Fragment {
 
 
 
-    private void addPresenceListener() {
-        CometChat.addUserListener(TAG, new CometChat.UserListener() {
-            @Override
-            public void onUserOnline(User user) {
-                Log.d(TAG, "onUserOnline: "+user.toString());
-                if (userListAdapter!=null){
-                    userListAdapter.updateUser(user);
-                }
-            }
-
-            @Override
-            public void onUserOffline(User user) {
-                Log.d(TAG, "onUserOffline: "+user.toString());
-                if (userListAdapter!=null){
-                    userListAdapter.updateUser(user);
-                }
-            }
-        });
-    }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        CometChat.removeUserListener(TAG);
-        CometChat.removeMessageListener(TAG);
     }
 
 

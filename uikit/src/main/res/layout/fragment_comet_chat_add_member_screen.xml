@@ -22,7 +22,7 @@
             android:id="@+id/add_member_toolbar"
             android:layout_width="match_parent"
             android:background="@android:color/white"
-            app:title="Add Member"
+            app:title="@string/add_members"
             android:layout_height="wrap_content"/>
 
         <RelativeLayout
@@ -59,28 +59,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
-        <HorizontalScrollView
-            android:id="@+id/selected_view"
-            android:layout_below="@+id/searchbar_view"
-            android:layout_width="match_parent"
-            android:scrollbars="none"
-            android:layout_height="wrap_content">
-           <com.google.android.material.chip.ChipGroup
-               android:layout_width="match_parent"
-               app:singleLine="true"
-               android:id="@+id/selected_user"
-               android:layout_height="wrap_content"/>
-        </HorizontalScrollView>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_user_list"
-            android:layout_below="@+id/selected_view"
+            android:layout_below="@+id/searchbar_view"
             android:layout_width="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/user_list_row"
             android:layout_height="match_parent"/>
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            android:text="Add"
+            android:text="@string/add"
             tools:visibility="visible"
             app:icon="@drawable/ic_add_24dp"
             app:iconTint="@color/textColorWhite"

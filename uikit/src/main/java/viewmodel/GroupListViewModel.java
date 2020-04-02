@@ -55,7 +55,7 @@ public class GroupListViewModel {
     public void setGroupList(List<Group> groupList){
          if (groupListAdapter!=null) {
               if (groupList!=null&&groupList.size()!=0)
-             groupListAdapter.updateGroupList(groupList);
+                groupListAdapter.updateGroupList(groupList);
          }
     }
 
@@ -74,5 +74,15 @@ public class GroupListViewModel {
     public void add(Group group) {
         if (groupListAdapter!=null)
             groupListAdapter.add(group);
+    }
+
+    public void searchGroupList(List<Group> groups) {
+        if (groupListAdapter!=null)
+            groupListAdapter.searchGroup(groups);
+    }
+
+    public void clear() {
+        if (groupListAdapter!=null)
+            groupListAdapter.clear();
     }
 }

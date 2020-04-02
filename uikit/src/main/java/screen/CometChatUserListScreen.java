@@ -29,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,10 +42,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.core.UsersRequest;
 import com.cometchat.pro.exceptions.CometChatException;
+import com.cometchat.pro.uikit.CometChatUserList;
 import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.User;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import adapter.UserListAdapter;
@@ -62,11 +65,11 @@ import utils.Utils;
 
 * @author - CometChat
 
-* @version - v1.0 - beta1
+* @version - v1.0
 
 * Created on - 20th December 2019
 
-* Modified on  - 16th January 2020
+* Modified on  - 23rd March 2020
 
 */
 
@@ -78,8 +81,6 @@ public class CometChatUserListScreen extends Fragment {
 
     private int LIMIT = 30;
 
-    private List<User> userList;
-
     private Context context;
 
     private boolean isSearching;
@@ -88,7 +89,7 @@ public class CometChatUserListScreen extends Fragment {
 
     private UsersRequest usersRequest;    // Use to fetch users
 
-    private RecyclerView rvUserList;  // Use to display list of users
+    private CometChatUserList rvUserList;  // Use to display list of users
 
     private EditText etSearch;    // Use to perform search operation on list of users.
 
@@ -100,6 +101,9 @@ public class CometChatUserListScreen extends Fragment {
 
     private RelativeLayout rlSearchBox;
 
+    private LinearLayout noUserLayout;
+
+    private List<User> userList = new ArrayList<>();
 
     public CometChatUserListScreen() {
         // Required empty public constructor
@@ -113,6 +117,7 @@ public class CometChatUserListScreen extends Fragment {
         title = view.findViewById(R.id.tv_title);
         title.setTypeface(FontUtils.getInstance(getActivity()).getTypeFace(FontUtils.robotoMedium));
         rvUserList = view.findViewById(R.id.rv_user_list);
+        noUserLayout = view.findViewById(R.id.no_user_layout);
         etSearch = view.findViewById(R.id.search_bar);
         clearSearch = view.findViewById(R.id.clear_search);
         rlSearchBox=view.findViewById(R.id.rl_search_box);
@@ -131,6 +136,7 @@ public class CometChatUserListScreen extends Fragment {
                 if(editable.length()==0) {
                     // if etSearch is empty then fetch all users.
                     usersRequest=null;
+                    rvUserList.clear();
                     fetchUsers();
                 }
                 else {
@@ -180,23 +186,13 @@ public class CometChatUserListScreen extends Fragment {
         });
 
         // Used to trigger event on click of user item in rvUserList (RecyclerView)
-        rvUserList.addOnItemTouchListener(new RecyclerTouchListener(getContext(), rvUserList, new ClickListener() {
-
+        rvUserList.setItemClickListener(new OnItemClickListener<User>() {
             @Override
-            public void onClick(View var1, int var2) {
-                User user = (User) var1.getTag(R.string.user);
-                if (events != null)
-                    events.OnItemClick(user, var2);
+            public void OnItemClick(User user, int position) {
+                if (events!=null)
+                    events.OnItemClick(user,position);
             }
-
-            @Override
-            public void onLongClick(View var1, int var2) {
-                User user = (User) var1.getTag(R.string.user);
-                if (events != null)
-                    events.OnItemLongClick(user, var2);
-            }
-        }));
-
+        });
         return view;
     }
 
@@ -231,8 +227,17 @@ public class CometChatUserListScreen extends Fragment {
             @Override
             public void onSuccess(List<User> users) {
                 Log.e(TAG, "onfetchSuccess: "+users.size() );
+                userList.addAll(users);
                 stopHideShimmer();
-                setAdapter(users);
+                rvUserList.setUserList(users); // set the users to rvUserList i.e CometChatUserList Component.
+
+                if (userList.size()==0) {
+                    noUserLayout.setVisibility(View.VISIBLE);
+                    rvUserList.setVisibility(View.GONE);
+                } else {
+                    rvUserList.setVisibility(View.VISIBLE);
+                    noUserLayout.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -257,8 +262,7 @@ public class CometChatUserListScreen extends Fragment {
         usersRequest.fetchNext(new CometChat.CallbackListener<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {
-                if (userListAdapter != null)
-                    userListAdapter.searchUser(users);
+                rvUserList.searchUserList(users); // set the users to rvUserList i.e CometChatUserList Component.
             }
 
             @Override
@@ -268,51 +272,6 @@ public class CometChatUserListScreen extends Fragment {
         });
     }
 
-    /**
-     * It sets the adapter for rvUserList (RecyclerView)
-     * @param users
-     */
-    private void setAdapter(List<User> users) {
-        if (context != null) {
-            if (userListAdapter == null) {
-                //If adapter is not initialized,
-                userListAdapter = new UserListAdapter(context, Utils.userSort(users));
-                StickyHeaderDecoration stickyHeaderDecoration = new StickyHeaderDecoration(userListAdapter);
-                rvUserList.addItemDecoration(stickyHeaderDecoration, 0);
-                rvUserList.setAdapter(userListAdapter);
-            } else {
-                //If adapter is initialized then update adapter list with users.
-                userListAdapter.updateList(Utils.userSort(users));
-            }
-        }
-    }
-
-
-    /**
-     * This method is used to know the realtime status of users. i.e users are online or offline
-     * @see CometChat#addUserListener(String, CometChat.UserListener)
-     */
-    private void addPresenceListener() {
-        CometChat.addUserListener(TAG, new CometChat.UserListener() {
-            @Override
-            public void onUserOnline(User user) {
-                //if user is online update user.
-                if (userListAdapter != null) {
-                    if (user.getUid().equals(CometChat.getLoggedInUser().getUid()))
-                        userListAdapter.updateUser(user);
-                }
-            }
-
-            @Override
-            public void onUserOffline(User user) {
-                //if user is offline update user.
-                if (userListAdapter != null) {
-                     if (user.getUid().equals(CometChat.getLoggedInUser().getUid()))
-                            userListAdapter.updateUser(user);
-                }
-            }
-        });
-    }
 
     /**
      *
@@ -328,15 +287,13 @@ public class CometChatUserListScreen extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        addPresenceListener();
+
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        CometChat.removeUserListener(TAG);
-        CometChat.removeMessageListener(TAG);
     }
 
     @Override

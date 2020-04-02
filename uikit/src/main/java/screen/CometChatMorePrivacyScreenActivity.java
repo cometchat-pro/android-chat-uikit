@@ -63,16 +63,16 @@ public class CometChatMorePrivacyScreenActivity extends AppCompatActivity {
                 if (users.size() == 0) {
                     tvBlockUserCount.setText("");
                 } else if (users.size() < 2) {
-                    tvBlockUserCount.setText(users.size() + " user");
+                    tvBlockUserCount.setText(users.size() +" "+getResources().getString(R.string.user));
                 } else {
-                    tvBlockUserCount.setText(users.size() + " users");
+                    tvBlockUserCount.setText(users.size() + " "+getResources().getString(R.string.users));
                 }
 
             }
 
             @Override
             public void onError(CometChatException e) {
-                Snackbar.make(tvBlockUserCount,"Blocked user retrieval failed",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(tvBlockUserCount,getResources().getString(R.string.blocked_list_error),Snackbar.LENGTH_SHORT).show();
                 Toast.makeText(CometChatMorePrivacyScreenActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

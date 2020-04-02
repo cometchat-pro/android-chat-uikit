@@ -37,6 +37,12 @@ public class StringContract {
         public static final String IS_ADD_MEMBER ="is_add_member" ;
 
         public static final String IS_BLOCKED_BY_ME = "is_blocked_by_me";
+
+        public static final String SESSION_ID = "sessionId";
+
+        public static final String INCOMING = "incoming";
+
+        public static final String FROM_CALL_LIST = "from_call_list" ;
     }
 
     public static class Tab {

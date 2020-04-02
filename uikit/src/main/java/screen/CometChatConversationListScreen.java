@@ -1,8 +1,6 @@
 package screen;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.core.ConversationsRequest;
 import com.cometchat.pro.exceptions.CometChatException;
@@ -31,6 +28,7 @@ import com.cometchat.pro.models.Action;
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.MessageReceipt;
 import com.cometchat.pro.models.User;
+import com.cometchat.pro.uikit.CometChatConversationList;
 import com.cometchat.pro.uikit.R;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.Conversation;
@@ -42,12 +40,8 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.ConversationListAdapter;
-import listeners.ClickListener;
 import listeners.OnItemClickListener;
-import listeners.RecyclerTouchListener;
 import utils.FontUtils;
-import utils.Utils;
 
 /*
 
@@ -56,15 +50,13 @@ import utils.Utils;
 
 * Created on - 20th December 2019
 
-* Modified on  - 16th January 2020
+* Modified on  - 23rd March 2020
 
 */
 
 public class CometChatConversationListScreen extends Fragment {
 
-    private RecyclerView rvConversationList;    //Uses to display list of conversations.
-
-    private ConversationListAdapter conversationListAdapter;
+    private CometChatConversationList rvConversationList;    //Uses to display list of conversations.
 
     private ConversationsRequest conversationsRequest;    //Uses to fetch Conversations.
 
@@ -78,11 +70,11 @@ public class CometChatConversationListScreen extends Fragment {
 
     private RelativeLayout rlSearchBox;
 
+    private LinearLayout noConversationView;
+
     private static final String TAG = "ConversationList";
 
     private View view;
-
-    private List<Conversation> conversationList = new ArrayList<>();
 
     public CometChatConversationListScreen() {
         // Required empty public constructor
@@ -92,9 +84,11 @@ public class CometChatConversationListScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-         view = inflater.inflate(R.layout.conversation_screen, container, false);
+         view = inflater.inflate(R.layout.fragment_conversation_screen, container, false);
 
         rvConversationList = view.findViewById(R.id.rv_conversation_list);
+
+        noConversationView = view.findViewById(R.id.no_conversation_view);
 
         searchEdit = view.findViewById(R.id.search_bar);
 
@@ -120,25 +114,20 @@ public class CometChatConversationListScreen extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() == 0) {
-                    // if searchEdit is empty then fetch all conversations.
+//                    // if searchEdit is empty then fetch all conversations.
                     conversationsRequest = null;
-
-                    if (conversationListAdapter!=null)
-                        conversationListAdapter.resetAdapterList();
-
+                    rvConversationList.clearList();
                     makeConversationList();
                 } else {
-                    // Search conversation based on text in searchEdit field.
-                   if (conversationListAdapter!=null)
-                       conversationListAdapter.getFilter().filter(editable.toString());
+//                    // Search conversation based on text in searchEdit field.
+                    rvConversationList.searchConversation(editable.toString());
                 }
             }
         });
 
         searchEdit.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEARCH) {
-                if (conversationListAdapter!=null)
-                    conversationListAdapter.getFilter().filter(textView.getText().toString());
+                rvConversationList.searchConversation(textView.getText().toString());
                 return true;
             }
             return false;
@@ -158,29 +147,13 @@ public class CometChatConversationListScreen extends Fragment {
         });
 
         // Used to trigger event on click of conversation item in rvConversationList (RecyclerView)
-        rvConversationList.addOnItemTouchListener(new RecyclerTouchListener(getContext(), rvConversationList, new ClickListener() {
+        rvConversationList.setItemClickListener(new OnItemClickListener<Conversation>() {
             @Override
-            public void onClick(View var1, int var2) {
-
-                Conversation conversation = (Conversation) var1.getTag(R.string.conversation);
-
-                RelativeLayout vw = var1.findViewById(R.id.conversationView);
-                vw.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (events != null)
-                            events.OnItemClick(conversation, var2);
-                    }
-                });
+            public void OnItemClick(Conversation conversation, int position) {
+                if (events!=null)
+                    events.OnItemClick(conversation,position);
             }
-
-            @Override
-            public void onLongClick(View var1, int var2) {
-                Conversation conversation = (Conversation) var1.getTag(R.string.conversation);
-                if (events != null)
-                    events.OnItemLongClick(conversation, var2);
-            }
-        }));
+        });
 
         return view;
     }
@@ -199,9 +172,13 @@ public class CometChatConversationListScreen extends Fragment {
         conversationsRequest.fetchNext(new CometChat.CallbackListener<List<Conversation>>() {
             @Override
             public void onSuccess(List<Conversation> conversations) {
-
-                stopHideShimmer();
-                setAdapter(conversations);
+                if (conversations.size() != 0) {
+                    stopHideShimmer();
+                    noConversationView.setVisibility(View.GONE);
+                    rvConversationList.setConversationList(conversations);
+                } else {
+                    checkNoConverstaion();
+                }
             }
 
             @Override
@@ -214,6 +191,20 @@ public class CometChatConversationListScreen extends Fragment {
         });
     }
 
+    private void checkNoConverstaion() {
+        if (rvConversationList.size()==0) {
+            stopHideShimmer();
+            noConversationView.setVisibility(View.VISIBLE);
+            rvConversationList.setVisibility(View.GONE);
+        } else {
+            noConversationView.setVisibility(View.GONE);
+            rvConversationList.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * This method is used to hide shimmer effect if the list is loaded.
+     */
     private void stopHideShimmer() {
         conversationShimmer.stopShimmer();
         conversationShimmer.setVisibility(View.GONE);
@@ -222,22 +213,6 @@ public class CometChatConversationListScreen extends Fragment {
     }
 
 
-
-    /**
-     * It sets the adapter for rvConversationList.
-     *
-     * @param conversations
-     */
-    private void setAdapter(List<Conversation> conversations) {
-        if (conversationListAdapter == null) {
-            conversationList = conversations;
-            conversationListAdapter = new ConversationListAdapter(getContext(), conversations);
-            rvConversationList.setAdapter(conversationListAdapter);
-        } else {
-            conversationListAdapter.updateList(conversations);
-        }
-    }
-
     /**
      * @param onItemClickListener An object of <code>OnItemClickListener&lt;T&gt;</code> abstract class helps to initialize with events
      *                            to perform onItemClick & onItemLongClick.
@@ -245,22 +220,6 @@ public class CometChatConversationListScreen extends Fragment {
      */
     public static void setItemClickListener(OnItemClickListener<Conversation> onItemClickListener) {
         events = onItemClickListener;
-    }
-
-
-    /**
-     * This method is used to refresh conversation list if any new conversation is initiated or updated.
-     * It converts the message recieved from message listener using <code>CometChatHelper.getConversationFromMessage(message)</code>
-     *
-     * @param message
-     * @see CometChatHelper#getConversationFromMessage(BaseMessage)
-     * @see Conversation
-     */
-    private void refreshConversation(BaseMessage message) {
-        if (conversationListAdapter != null) {
-            Conversation newConversation = CometChatHelper.getConversationFromMessage(message);
-            conversationListAdapter.update(newConversation);
-        }
     }
 
     /**
@@ -272,39 +231,50 @@ public class CometChatConversationListScreen extends Fragment {
         CometChat.addMessageListener(TAG, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage message) {
-                refreshConversation(message);
+                if (rvConversationList!=null) {
+                    rvConversationList.refreshConversation(message);
+                    checkNoConverstaion();
+                }
             }
 
             @Override
             public void onMediaMessageReceived(MediaMessage message) {
-                refreshConversation(message);
+                if (rvConversationList != null) {
+                    rvConversationList.refreshConversation(message);
+                    checkNoConverstaion();
+                }
             }
 
             @Override
             public void onCustomMessageReceived(CustomMessage message) {
-                refreshConversation(message);
+                if (rvConversationList != null) {
+                    rvConversationList.refreshConversation(message);
+                    checkNoConverstaion();
+                }
             }
 
             @Override
             public void onMessagesDelivered(MessageReceipt messageReceipt) {
-                if (conversationListAdapter!=null&&messageReceipt.getReceivertype().equals(CometChatConstants.RECEIVER_TYPE_USER))
-                    conversationListAdapter.setDelivered(messageReceipt);
+                if (rvConversationList!=null)
+                   rvConversationList.setReciept(messageReceipt);
             }
 
             @Override
             public void onMessagesRead(MessageReceipt messageReceipt) {
-                if (conversationListAdapter!=null&&messageReceipt.getReceivertype().equals(CometChatConstants.RECEIVER_TYPE_USER))
-                    conversationListAdapter.setReadReceipts(messageReceipt);
+                if (rvConversationList!=null)
+                    rvConversationList.setReciept(messageReceipt);
             }
 
             @Override
             public void onMessageEdited(BaseMessage message) {
-                refreshConversation(message);
+                if (rvConversationList!=null)
+                    rvConversationList.refreshConversation(message);
             }
 
             @Override
             public void onMessageDeleted(BaseMessage message) {
-                refreshConversation(message);
+                if (rvConversationList!=null)
+                    rvConversationList.refreshConversation(message);
             }
         });
         CometChat.addGroupListener(TAG, new CometChat.GroupListener() {
@@ -312,50 +282,65 @@ public class CometChatConversationListScreen extends Fragment {
             public void onGroupMemberKicked(Action action, User kickedUser, User kickedBy, Group kickedFrom) {
                 Log.e(TAG, "onGroupMemberKicked: "+kickedUser);
                 if (kickedUser.getUid().equals(CometChat.getLoggedInUser().getUid())) {
-                    removeConversation(action);
+                    if (rvConversationList!=null)
+                        updateConversation(action,true);
                 }
                 else {
-                    updateConversation(action);
+                    updateConversation(action,false);
                 }
             }
 
             @Override
             public void onMemberAddedToGroup(Action action, User addedby, User userAdded, Group addedTo) {
                 Log.e(TAG, "onMemberAddedToGroup: " );
-                updateConversation(action);
+                updateConversation(action,false);
             }
 
             @Override
             public void onGroupMemberJoined(Action action, User joinedUser, Group joinedGroup) {
                 Log.e(TAG, "onGroupMemberJoined: " );
-                updateConversation(action);
+                updateConversation(action,false);
             }
 
             @Override
             public void onGroupMemberLeft(Action action, User leftUser, Group leftGroup) {
                 Log.e(TAG, "onGroupMemberLeft: " );
                 if (leftUser.getUid().equals(CometChat.getLoggedInUser().getUid())) {
-                    removeConversation(action);
+                    updateConversation(action,true);
                 }
                 else {
-                   updateConversation(action);
+                   updateConversation(action,false);
                 }
             }
         });
     }
 
-    private void updateConversation(BaseMessage baseMessage) {
-        if (conversationListAdapter != null) {
+    /**
+     * This method is used to update conversation received in real-time.
+     * @param baseMessage is object of BaseMessage.class used to get respective Conversation.
+     * @param isRemove is boolean used to check whether conversation needs to be removed or not.
+     *
+     * @see CometChatHelper#getConversationFromMessage(BaseMessage) This method return the conversation
+     * of receiver using baseMessage.
+     *
+     */
+    private void updateConversation(BaseMessage baseMessage,boolean isRemove) {
+        if (rvConversationList != null) {
             Conversation conversation = CometChatHelper.getConversationFromMessage(baseMessage);
-            conversationListAdapter.update(conversation);
+            if (isRemove)
+                rvConversationList.remove(conversation);
+            else
+                rvConversationList.update(conversation);
+            checkNoConverstaion();
         }
     }
 
-    private void removeConversation(BaseMessage baseMessage) {
-        if (conversationListAdapter != null) {
-            Conversation conversation = CometChatHelper.getConversationFromMessage(baseMessage);
-            conversationListAdapter.remove(conversation);
-        }
+    /**
+     * This method is used to remove the conversationlistener.
+     */
+    private void removeConversationListener() {
+        CometChat.removeMessageListener(TAG);
+        CometChat.removeGroupListener(TAG);
     }
 
     @Override
@@ -363,12 +348,8 @@ public class CometChatConversationListScreen extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume: ");
         conversationsRequest = null;
-        if (conversationListAdapter != null) {
-            conversationListAdapter.resetAdapterList();
-        }
-        else {
-            setAdapter(conversationList);
-        }
+
+        rvConversationList.clearList();
         makeConversationList();
         addConversationListener();
     }
@@ -385,11 +366,6 @@ public class CometChatConversationListScreen extends Fragment {
         super.onPause();
         Log.d(TAG, "onPause: ");
         removeConversationListener();
-    }
-
-    private void removeConversationListener() {
-        CometChat.removeMessageListener(TAG);
-        CometChat.removeGroupListener(TAG);
     }
 
     @Override

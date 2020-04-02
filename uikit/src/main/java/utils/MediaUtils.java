@@ -13,11 +13,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -111,6 +115,14 @@ public class MediaUtils {
         return intent;
     }
 
+    /**
+     * This method is used to open file from url.
+     * @param url is Url of file.
+     */
+    public static void openFile(String url, Context context) {
+        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    }
+
     public static Intent openCamera(Context context) {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -160,7 +172,7 @@ public class MediaUtils {
         List<Intent> allIntents = new ArrayList();
         PackageManager packageManager = activity.getPackageManager();
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
+        galleryIntent.setType("image/* video/*");
         List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
         for (ResolveInfo res : listGallery) {
             Intent intent = new Intent(galleryIntent);
@@ -546,4 +558,48 @@ public class MediaUtils {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    public static Camera openFrontCam()
+    {
+        int camCount=0;
+        Camera camera=null;
+        Camera.CameraInfo cameraInfo=new Camera.CameraInfo();
+        camCount=Camera.getNumberOfCameras();
+        for (int i = 0; i < camCount; i++) {
+            Camera.getCameraInfo(i,cameraInfo);
+            if (cameraInfo.facing==Camera.CameraInfo.CAMERA_FACING_FRONT)
+            {
+                try {
+                    camera= Camera.open(i);
+                    camera.setDisplayOrientation(90);
+                }catch (RuntimeException re)
+                {
+
+                }
+            }
+        }
+        return camera;
+    }
+
+    public static void playSendSound(Context context ,int ringId) {
+        MediaPlayer mMediaPlayer = MediaPlayer.create(context, ringId);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.start();
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+            }
+        });
+
+    }
+    public static void vibrate(Context context)
+    {
+        Vibrator vibrator= (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(100);
+
+    }
 }
