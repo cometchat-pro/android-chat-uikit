@@ -193,22 +193,6 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.CallVi
 
     }
 
-    private void setCallClick(String uid, String type, String callTypeAudio) {
-        Call callM = new Call(uid,type,callTypeAudio);
-        CometChat.initiateCall(callM, new CometChat.CallbackListener<Call>() {
-            @Override
-            public void onSuccess(Call call) {
-                if (type.equals(CometChatConstants.RECEIVER_TYPE_USER))
-                    Utils.startCallIntent(context,(User)call.getCallReceiver(),callTypeAudio,false,call.getSessionId());
-            }
-
-            @Override
-            public void onError(CometChatException e) {
-                Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     @Override
     public int getItemCount() {
         return callList.size();

@@ -41,7 +41,7 @@ import viewmodel.ConversationViewModel;
  *
 */
 
-@BindingMethods( value ={@BindingMethod(type = CometChatCallList.class, attribute = "app:conversationlist", method = "setConversationList")})
+@BindingMethods( value ={@BindingMethod(type = CometChatCallList.class, attribute = "app:calllist", method = "setCallList")})
 public class CometChatCallList extends RecyclerView {
 
     private  Context context;
