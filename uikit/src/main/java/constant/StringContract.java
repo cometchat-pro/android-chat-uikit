@@ -131,6 +131,6 @@ public class StringContract {
 
         public static final String MAPS_URL = "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=380x220&markers=color:red|";
 
-        public static final String MAP_ACCESS_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXX";  //Replace with your Maps API
+        public static final String MAP_ACCESS_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX";  //Replace with your Maps API
     }
 }
