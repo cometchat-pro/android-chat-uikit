@@ -234,7 +234,7 @@ public class Utils {
                 if (lastMessage instanceof TextMessage) {
 
                     if (isLoggedInUser(lastMessage.getSender()))
-                        message = context.getString(R.string.you) + (((TextMessage) lastMessage).getText()==null
+                        message = context.getString(R.string.you) +": "+ (((TextMessage) lastMessage).getText()==null
                                 ?context.getString(R.string.this_message_deleted):((TextMessage) lastMessage).getText());
                     else
                         message = lastMessage.getSender().getName() + ": " + ((TextMessage) lastMessage).getText();

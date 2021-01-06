@@ -9,14 +9,18 @@
 
 # Android Java Chat UI Kit
 
-The UI Kit library is collection of custom UI Components and UI Screens design to build chat application within few minutes. UI kit is designed to avoid boilerplate code for building UI,it has three different ways to build a chat application with fully customizable UI. It will help developers to build a chat application within using various UI Components.
-<br/><br/>
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](#)
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
+
+<img align="center" src="https://files.readme.io/49d88c3-UI_Kit__2.png"/>
+
+The UI Kit library is collection of custom UI Components and UI Screens design to build chat application within few minutes. UI kit is designed to avoid boilerplate code for building UI,it has three different ways to build a chat application with fully customizable UI. It will help developers to build a chat application within using various UI Components.
+<br/><br/>
+
 <hr/>
 
 ## Prerequisites :star:

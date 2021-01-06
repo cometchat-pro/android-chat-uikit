@@ -1736,15 +1736,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         +context.getString(R.string.unban)+" "+((User)((Action) baseMessage).getActionOn()).getName();
             else if (((Action) baseMessage).getAction().equals(CometChatConstants.ActionKeys.ACTION_LEFT))
                 actionMessage = ((User)((Action)baseMessage).getActioBy()).getName()+" "+context.getString(R.string.left);
-            else if (((Action) baseMessage).getAction().equals(CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED)) {
+            else if (((Action) baseMessage).getAction().equals(CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED))
                 if (((Action)baseMessage).getNewScope().equals(CometChatConstants.SCOPE_MODERATOR)) {
                     actionMessage = ((User) ((Action) baseMessage).getActioBy()).getName() + " " + context.getString(R.string.made) + " "
                             + ((User) ((Action) baseMessage).getActionOn()).getName() + " " + context.getString(R.string.moderator);
                 } else if (((Action)baseMessage).getNewScope().equals(CometChatConstants.SCOPE_ADMIN)) {
                     actionMessage = ((User) ((Action) baseMessage).getActioBy()).getName() + " " + context.getString(R.string.made) + " "
                             + ((User) ((Action) baseMessage).getActionOn()).getName() + " " + context.getString(R.string.admin);
+                } else if (((Action)baseMessage).getNewScope().equals(CometChatConstants.SCOPE_PARTICIPANT)) {
+                    actionMessage = ((User) ((Action) baseMessage).getActioBy()).getName() + " " + context.getString(R.string.made) + " "
+                            + ((User) ((Action) baseMessage).getActionOn()).getName() + " " + context.getString(R.string.participant);
                 }
-            }
             else
                 actionMessage = ((Action) baseMessage).getMessage();
             viewHolder.textView.setText(actionMessage);
@@ -2043,6 +2045,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 message = Extensions.checkProfanityMessage(baseMessage);
             if (CometChat.isExtensionEnabled("data-masking"))
                 message = Extensions.checkDataMasking(baseMessage);
+
+            if (baseMessage.getMetadata()!=null && baseMessage.getMetadata().has("values")) {
+                try {
+                    if (Extensions.isMessageTranslated(baseMessage.getMetadata().getJSONObject("values"), ((TextMessage) baseMessage).getText())) {
+                        String translatedMessage = Extensions.getTranslatedMessage(baseMessage);
+                        message = message + "\n(" + translatedMessage + ")";
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(context, context.getString(R.string.no_translation_available), Toast.LENGTH_SHORT).show();
+                }
+            }
 
             viewHolder.txtMessage.setText(message);
             viewHolder.txtMessage.setTypeface(fontUtils.getTypeFace(FontUtils.robotoRegular));
