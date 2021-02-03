@@ -70,7 +70,7 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:2.1.7-beta2'
+  implementation 'com.cometchat:pro-android-chat-sdk:2.1.7-beta3'
 }
 ```
 
