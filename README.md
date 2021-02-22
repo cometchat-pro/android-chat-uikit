@@ -9,6 +9,9 @@
 
 # Android Java Chat UI Kit
 
+CometChat Java UI Kit is a collection of custom UI Components designed to build text chat and voice/video callings features in your application. 
+The UI Kit is developed to keep developers in mind and aims to reduce development efforts significantly<br/><br/>
+
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](#)
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
@@ -17,9 +20,6 @@
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
 <img align="center" src="https://files.readme.io/49d88c3-UI_Kit__2.png"/>
-
-The UI Kit library is collection of custom UI Components and UI Screens design to build chat application within few minutes. UI kit is designed to avoid boilerplate code for building UI,it has three different ways to build a chat application with fully customizable UI. It will help developers to build a chat application within using various UI Components.
-<br/><br/>
 
 <hr/>
 
@@ -70,7 +70,7 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:2.1.7-beta3'
+  implementation 'com.cometchat:pro-android-chat-sdk:2.2.0'
 }
 ```
 
@@ -104,6 +104,10 @@ The init() method initializes the settings required for CometChat. We suggest ca
 <table><td>
 
 ```java
+import com.cometchat.pro.core.AppSettings;
+import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.exceptions.CometChatException;
+
 String appID = "APP_ID"; // Replace with your App ID
 String region = "REGION"; // Replace with your App Region ("eu" or "us")
 
@@ -132,6 +136,9 @@ Once you have created the user successfully, you will need to log the user into 
 <table><td>
 
 ```java
+import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.exceptions.CometChatException;
+
 String UID = "user1"; // Replace with the UID of the user to login
 String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
@@ -260,7 +267,9 @@ To use CometChat UI user has to launch `CometChatUI` class. Add the following co
 <table><td>
 
  ```java
- startActivity(new Intent(YourActivity.this,CometChatUI.class))
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI;
+
+ startActivity(new Intent(YourActivity.this,CometChatUI.class));
  ```
 
 </td></table>
