@@ -9,7 +9,7 @@
 
 # Android Java Chat UI Kit
 
-CometChat Java UI Kit is a collection of custom UI Components designed to build text chat and voice/video callings features in your application. 
+CometChat Java UI Kit is a collection of custom UI Components designed to build text chat and voice/video calling features in your application. 
 The UI Kit is developed to keep developers in mind and aims to reduce development efforts significantly<br/><br/>
 
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](#)
@@ -19,7 +19,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
-<img align="center" src="https://files.readme.io/49d88c3-UI_Kit__2.png"/>
+<img align="center" src="https://files.readme.io/b81d92b-UI_Kit__2.png"/>
 
 <hr/>
 
@@ -39,7 +39,7 @@ To setup Android Chat UI Kit, you  need to first register on CometChat Dashboard
 ### i. Get your Application Keys :key:
 
 1. Create a new app: Click **Add App** option available  →  Enter App Name & other information  → Create App
-2. You will find `APP_ID`, `API_KEY` and `REGION` key at top in **QuickStart** section or else go to "API & Auth Keys" section and copy the `APP_ID`, `API_KEY` and `REGION` key from the "Auth Only API Key" tab.
+2. You will find `APP_ID`, `AUTH_KEY` and `REGION` key at top in **QuickStart** section or else go to "API & Auth Keys" section and copy the `APP_ID`, `AUTH_KEY` and `REGION` key from the "Auth Only API Key" tab.
 [Credentials Sample](Screenshot/qs.jpg)
 <img align="center" src="https://files.readme.io/4b771c5-qs_copy.jpg"/>
 
