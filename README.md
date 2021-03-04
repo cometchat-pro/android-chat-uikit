@@ -70,7 +70,7 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:2.2.0'
+  implementation 'com.cometchat:pro-android-chat-sdk:2.2.1'
 }
 ```
 
@@ -195,14 +195,10 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 	The following is the list of Material Components themes you can use to get the latest component styles and theme-level attributes.
 
-	`Theme.MaterialComponents` </br>
 	`Theme.MaterialComponents.NoActionBar`  </br>
-	`Theme.MaterialComponents.Light` </br>
 	`Theme.MaterialComponents.Light.NoActionBar` </br>
-	`Theme.MaterialComponents.Light.DarkActionBar` </br>
-	`Theme.MaterialComponents.DayNight` </br>
 	`Theme.MaterialComponents.DayNight.NoActionBar` </br>
-	`Theme.MaterialComponents.DayNight.DarkActionBar` </br>
+	`Theme.MaterialComponents.DayNight.NoActionBar.Bridge` </br>
 
 	Update your app theme to inherit from one of these themes, e.g.:
 	
