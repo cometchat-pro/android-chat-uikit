@@ -54,7 +54,7 @@ To setup Android Chat UI Kit, you  need to first register on CometChat Dashboard
 allprojects {
   repositories {
     maven {
-      url "https://dl.bintray.com/cometchat/pro"
+      url "https://dl.cloudsmith.io/public/cometchat/cometchat-pro-android/maven/"
     }
   }
 }
@@ -70,7 +70,7 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:2.2.1'
+  implementation 'com.cometchat:pro-android-chat-sdk:3.0.0-beta1'
 }
 ```
 
