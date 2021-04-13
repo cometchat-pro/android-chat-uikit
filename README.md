@@ -16,6 +16,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
+![Version](https://shields.io/badge/version-v3.0.0--beta1--2-orange)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
@@ -276,10 +277,10 @@ import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI;
 ## Checkout our sample apps
 
 ### Java: 
-Visit our [Java sample app](https://github.com/cometchat-pro/android-java-chat-app) repo to run the java sample app.
+Visit our [Java sample app](https://github.com/cometchat-pro/android-java-chat-app/tree/v3) repo to run the java sample app.
 
 ### Kotlin: 
-Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-chat-app) repo to run the kotlin sample app.
+Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-chat-app/tree/v3) repo to run the kotlin sample app.
 
 <hr/>
 
