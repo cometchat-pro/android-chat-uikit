@@ -16,7 +16,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
-![Version](https://shields.io/badge/version-v3.0.0--1-orange)
+![Version](https://shields.io/badge/version-v3.0.0--2-orange)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
