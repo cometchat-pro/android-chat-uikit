@@ -16,7 +16,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 <img src="https://img.shields.io/badge/Repo%20Size-9.26%20MB-blue" />
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
-![Version](https://shields.io/badge/version-v2.4.1--1-orange)
+![Version](https://shields.io/badge/version-v2.4.1--2-orange)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
@@ -28,7 +28,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 Before you begin, ensure you have met the following requirements:<br/>
  ✅ &nbsp; You have `Android Studio` installed in your machine.<br/>
  ✅ &nbsp; You have a `Android Device or Emulator` with Android Version 6.0 or above.<br/>
- ✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/docs/concepts).<br/>
+ ✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/v2.1/docs/concepts).<br/>
 
 <hr/>
 
@@ -98,7 +98,7 @@ android {
 </td></table>
 
  You can refer to the below link for instructions on how to do so:<br/>
-[📝 Add CometChat Dependency](https://prodocs.cometchat.com/docs/android-quick-start#section-add-the-cometchat-dependency)
+[📝 Add CometChat Dependency](https://prodocs.cometchat.com/v2.1/docs/android-quick-start#section-add-the-cometchat-dependency)
 
 <hr/>
 
@@ -173,7 +173,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 <hr/>
 
-📝  &nbsp; Please refer to our [Developer Documentation](https://prodocs.cometchat.com/docs/android-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
+📝  &nbsp; Please refer to our [Developer Documentation](https://prodocs.cometchat.com/v2.1/docs/android-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
 
 <hr/>
 
@@ -181,7 +181,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro-samples/android-java-chat-uikit/) repository.
 
-2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/docs/android-ui-kit-setup) )
+2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/v2.1/docs/android-ui-kit-setup) )
 
 3. If the Library is added successfully, it will look like mentioned in the below image.
 <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
@@ -292,7 +292,7 @@ Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-ch
 
 ## Troubleshooting
 
-- To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/docs/android-ui-kit)  .
+- To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/v2.1/docs/android-ui-kit)  .
 
 - Facing any issues while integrating or installing the UI Kit please <a href="https://app.cometchat.io/"> connect with us via real time support present in CometChat Dashboard.</a>.
 
