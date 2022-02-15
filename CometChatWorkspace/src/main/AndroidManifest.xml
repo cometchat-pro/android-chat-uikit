@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.cometchatworkspace">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <queries>
+
+        <!-- Gallery -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+
+            <data android:mimeType="image/* video/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PICK" />
+
+            <data android:mimeType="image/* video/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CHOOSER" />
+        </intent>
+    </queries>
+
+    <application
+        android:extractNativeLibs="false"
+        android:hardwareAccelerated="true"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
+        tools:node="merge"
+        tools:targetApi="m">
+        <activity android:name=".components.messages.common.extensions.Collaborative.CometChatWebViewActivity" />
+        <activity android:name=".components.messages.common.extensions.Reactions.CometChatReactionInfoActivity" />
+        <activity android:name=".components.messages.common.media_view.CometChatMediaViewActivity" />
+        <activity android:name=".components.messages.common.message_information.CometChatMessageInfoActivity" />
+        <activity
+            android:name=".components.calls.callManager.CometChatStartCallActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:supportsPictureInPicture="true"
+            android:configChanges=
+                "screenSize|smallestScreenSize|screenLayout|orientation"/>
+
+        <activity
+            android:name=".components.messages.common.forward_message.CometChatForwardMessageActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/*" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.cometchatworkspace.components.messages.message_list.CometChatMessagesActivity"
+            android:screenOrientation="portrait" />
+        <meta-data
+            android:name="com.cometchatworkspace"
+            android:value="${file_provider}" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${file_provider}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path" />
+        </provider>
+
+    </application>
+
+</manifest>

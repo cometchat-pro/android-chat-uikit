@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_gravity="end"
+    android:animateLayoutChanges="true">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:id="@+id/cv_message_container"
+        android:layout_margin="8dp"
+        android:padding="16dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/custom_layout"
+            android:animateLayoutChanges="true">
+            <TextView
+                tools:text="Sample"
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
+        android:id="@+id/reactions_group"
+        app:messageReaction_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:id="@+id/thread_reply_count"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        tools:text="2 replies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/receipt_layout"
+        layout="@layout/cometchat_message_receipt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp" />
+</LinearLayout>

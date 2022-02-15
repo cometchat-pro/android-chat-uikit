@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <include layout="@layout/messages_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"  />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_message_list"
+        android:layout_width="match_parent"
+        android:clipToPadding="false"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rv_smartReply"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    <include layout="@layout/new_message_layout"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/new_message_layout"/>
+    <com.cometchatworkspace.components.shared.secondaryComponents.cometchatSmartReplies.CometChatSmartReplies
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:elevation="16dp"
+        android:orientation="horizontal"
+        tools:listitem="@layout/cometchat_smartreply_row"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:id="@+id/rv_smartReply"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

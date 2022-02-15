@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <RelativeLayout
+        android:layoutDirection="ltr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_message">
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
+            android:layout_width="24dp"
+            android:id="@+id/iv_user"
+            tools:src="@tools:sample/avatars"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_height="24dp"/>
+        <TextView
+            android:id="@+id/tv_user"
+            tools:text="Iron Man"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/iv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_toEndOf="@+id/iv_user"
+            android:layout_below="@+id/iv_user"
+            android:id="@+id/cv_message_container"
+            android:layout_marginStart="8dp"
+            app:cardBackgroundColor="@color/message_bubble_grey"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/cv_message_container_layout"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_question"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:maxWidth="240dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="16dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:textStyle="bold"
+                    tools:text="What color is rose ?" />
+
+                <ProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/loading_progressBar"
+                    android:layout_gravity="end"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"/>
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:orientation="vertical"
+                    android:id="@+id/options_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+                <TextView
+                    android:text="0 Votes"
+                    android:id="@+id/total_votes"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textStyle="italic"
+                    android:textColor="@color/primaryTextColor"
+                    tools:text="2 Votes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cv_message_container"
+            android:layout_alignStart="@id/cv_message_container"
+            android:layout_marginBottom="16dp"
+            android:gravity="start"
+            android:orientation="vertical">
+
+            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
+                android:id="@+id/reactions_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:messageReaction_gravity="start" />
+
+            <TextView
+                android:id="@+id/thread_reply_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:clickable="true"
+                android:foreground="?selectableItemBackground"
+                android:textColor="@color/colorPrimary"
+                tools:text="2 replies" />
+
+            <include
+                android:id="@+id/receipt_layout"
+                layout="@layout/cometchat_message_receipt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

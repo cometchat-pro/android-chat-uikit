@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <include layout="@layout/new_message_layout"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/bottom_layout"
+        android:id="@+id/new_message_layout"/>
+    <com.cometchatworkspace.components.messages.header.CometChatMessagesHeader
+        android:id="@+id/chatList_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.cometchatworkspace.components.messages.message_list.CometChatMessageList
+        android:layout_width="match_parent"
+        android:id="@+id/message_list"
+        android:layout_below="@+id/chatList_toolbar"
+        app:alignment="leftAligned"
+        app:actionSheetMode="gridMode"
+        android:layout_above="@id/bottom_layout"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/bottom_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/cometchat_block_user_message_view"/>
+
+        <com.cometchatworkspace.components.messages.composer.CometChatComposer
+            android:id="@+id/message_box"
+            app:composerBackground="@color/light_grey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/reactions_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/sticker_layout"
+        android:background="@drawable/cc_message_bubble_left"
+        android:backgroundTint="@color/grey_100"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatStickers.StickerView
+            android:layout_width="match_parent"
+            android:padding="8dp"
+            android:id="@+id/stickersView"
+            android:layout_height="250dp"/>
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:padding="8dp"
+            android:id="@+id/close_sticker_layout"
+            android:src="@drawable/ic_close_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</RelativeLayout>

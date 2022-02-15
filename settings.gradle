@@ -1,2 +1,2 @@
-include ':uikit'
+include ':CometChatWorkspace'
 rootProject.name='Android UI Kit'

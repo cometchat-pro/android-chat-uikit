@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:animateLayoutChanges="true"
+    android:id="@+id/message_box"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/message_actions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/cometchat_edit_message_view" />
+        <include layout="@layout/cometchat_reply_message_view" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_below="@+id/message_actions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:contentDescription="Attachment Button"
+            android:padding="8dp"
+            android:src="@drawable/add_circle_filled"
+            tools:ignore="RedundantDescriptionCheck" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/flBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toStartOf="@+id/boxEndLayout"
+            android:layout_toEndOf="@id/ivArrow"
+            app:cardCornerRadius="24dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <com.cometchatworkspace.components.messages.composer.CometChatEditText
+                    android:id="@+id/etComposeBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/message"
+                    android:imeOptions="actionSend"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:padding="8dp"
+                    android:singleLine="false"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <RelativeLayout
+            android:visibility="gone"
+            android:layout_alignBottom="@+id/boxEndLayout"
+            android:id="@+id/voiceMessageLayout"
+            android:layout_toStartOf="@+id/boxEndLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:id="@+id/ivDelete"
+                android:src="@drawable/ic_delete"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/grey"
+                android:contentDescription="Delete Voice Note" />
+            <SeekBar
+                tools:visibility="visible"
+                android:visibility="gone"
+                android:id="@+id/voice_message_seekbar"
+                android:layout_toEndOf="@+id/ivDelete"
+                android:layout_above="@+id/record_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.cometchatworkspace.components.messages.composer.audioVisualizer.AudioRecordView
+                tools:visibility="visible"
+                android:layout_toEndOf="@+id/ivDelete"
+                android:id="@+id/record_audio_visualizer"
+                app:chunkAlignTo="bottom"
+                app:chunkMaxHeight="150dp"
+                app:chunkColor="@color/colorPrimary"
+                app:chunkSpace="1dp"
+                app:chunkWidth="2dp"
+                app:chunkMinHeight="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+            <Chronometer
+                android:layout_toRightOf="@+id/ivDelete"
+                android:layout_width="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/record_time"
+                android:elevation="8dp"
+                android:textSize="12sp"
+                android:layout_marginLeft="8dp"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:id="@+id/boxEndLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/ivMic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_microphone_grey_selected"
+                android:padding="8dp"
+                android:background="@android:color/transparent"/>
+
+            <ImageView
+                android:id="@+id/ivSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Send Button"
+                android:padding="8dp"
+                android:src="@drawable/ic_send"
+                android:visibility="gone"
+                tools:ignore="RedundantDescriptionCheck"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/live_reaction_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:src="@drawable/heart_reaction"
+                tools:ignore="ImageContrastCheck"
+                android:contentDescription="Live Reaction Button" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatLocationBubble
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:messageAlignment="left"
+    android:id="@+id/location_message_bubble"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"/>

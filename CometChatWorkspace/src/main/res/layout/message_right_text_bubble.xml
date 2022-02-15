@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layoutDirection="ltr"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="end"
+    android:animateLayoutChanges="true">
+
+    <RelativeLayout
+        android:id="@+id/rl_message"
+        android:animateLayoutChanges="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_alignParentRight="true"
+            android:id="@+id/cv_message_container"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <include
+                    layout="@layout/message_right_reply_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <RelativeLayout
+                    android:id="@+id/cv_message_container_layout"
+                    android:layout_below="@+id/replyLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/text_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:maxWidth="270dp"
+                        android:padding="10dp"
+                        android:textColor="@color/textColorWhite"
+                        android:textColorHighlight="@color/colorSecondary"
+                        android:textColorLink="@color/dark_blue"
+                        tools:text="@tools:sample/lorem" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="end"
+            android:layout_marginBottom="16dp"
+            android:layout_alignEnd="@id/cv_message_container"
+            android:layout_below="@+id/cv_message_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
+                android:id="@+id/reactions_group"
+                app:messageReaction_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:clickable="true"
+                android:foreground="?selectableItemBackground"
+                android:id="@+id/thread_reply_count"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                tools:text="2 replies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <include
+                android:id="@+id/receipt_layout"
+                layout="@layout/cometchat_message_receipt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

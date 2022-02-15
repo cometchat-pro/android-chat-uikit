@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/primaryTextColor"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <HorizontalScrollView
+        android:layout_marginStart="16dp"
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:id="@+id/reactions_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </HorizontalScrollView>
+</com.google.android.material.card.MaterialCardView>

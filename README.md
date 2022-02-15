@@ -44,7 +44,7 @@ To setup Android Chat UI Kit, you  need to first register on CometChat Dashboard
 <img align="center" src="https://files.readme.io/4b771c5-qs_copy.jpg"/>
 
 
-### ii. Add the CometChat Dependency
+### ii. Add the CometChat UI Kit Dependency
 
 **Step 1 -** Add the repository URL to the project level build.gradle file in the repositories block under the allprojects section.
 
@@ -70,33 +70,14 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:3.0.1'
-  
-    /** From v2.4+ onwards, Voice & Video Calling functionality has been 
-    moved to a separate library. In case you plan to use the calling 
-    feature, please add the Calling dependency.**/
-    implementation 'com.cometchat:pro-android-calls-sdk:2.1.0'
+  implementation 'com.cometchat:android-java-chat-ui-kit:3.0.4-pluto.beta1'
 }
 ```
 
 </td></table>
 
-2. Add the below lines android section
 
-<table><td>
-
-```groovy
-android {
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-}
-```
-
-</td></table>
-
- You can refer to the below link for instructions on how to do so:<br/>
+ You can refer to the below link for next instructions:<br/>
 [📝 Add CometChat Dependency](https://prodocs.cometchat.com/docs/android-quick-start#section-add-the-cometchat-dependency)
 
 <hr/>
@@ -177,6 +158,8 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 <hr/>
 
 ## Add UI Kit Library
+| :information_source: &nbsp; <b>Note - If you have added android-java-ui-kit as Dependency, then you can skip first three steps.</b> |
+|------------------------------------------------------------------------------------------------------------|
 
 1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro/android-java-chat-ui-kit/tree/v3) repository.
 

@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Common Attributes-->
+    <attr name="corner_radius" format="dimension"/>
+    <attr name="backgroundColor" format="color"/>
+    <attr name="backgroundView" format="reference"/>
+    <attr name="avatar" format="reference"/>
+    <attr name="avatarVisibility" format="enum">
+        <enum name="visible" value="0"/>
+        <enum name="invisible" value="4"/>
+        <enum name="gone" value="8"/>
+    </attr>
+    <attr name="userNameVisibility" format="enum">
+        <enum name="visible" value="0"/>
+        <enum name="invisible" value="4"/>
+        <enum name="gone" value="8"/>
+    </attr>
+    <attr name="userName" format="string"/>
+    <attr name="userNameColor" format="color"/>
+    <attr name="messageAlignment" format="enum">
+        <enum name="left" value="0"/>
+        <enum name="right" value="1"/>
+    </attr>
+
+    <attr name="listBackgroundColor" format="color"/>
+    <attr name="searchBackgroundColor" format="color"/>
+    <attr name="searchCornerRadius" format="dimension"/>
+    <attr name="searchBorderWidth" format="dimension"/>
+    <attr name="searchBorderColor" format="color"/>
+    <attr name="hideSearch" format="boolean"/>
+    <attr name="searchTextColor" format="color"/>
+    <attr name="title" format="string"/>
+    <attr name="titleColor" format="color"/>
+    <attr name="titleHidden" format="boolean"/>
+
+    <attr name="subtitle" format="string"/>
+    <attr name="subtitleColor" format="color"/>
+
+    <attr name="text" format="string"/>
+    <attr name="text_color"  format="color"/>
+    <attr name="playButtonDrawable" format="reference"/>
+    <attr name="icon" format="reference"/>
+    <attr name="iconVisibility" format="enum">
+        <enum name="visible" value="0"/>
+        <enum name="invisible" value="4"/>
+        <enum name="gone" value="8"/>
+    </attr>
+
+    <attr name="borderColor" format="color"/>
+    <attr name="borderRadius" format="float"/>
+    <!---End-->
+    <declare-styleable name="Avatar">
+        <attr name="avatar"/>
+        <attr name="avatar_initials" format="string" />
+        <attr name="borderColor" />
+        <attr name="borderWidth" />
+        <attr name="corner_radius"/>
+        <attr name="background_color" format="color"/>
+        <attr name="image" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="StatusIndicator">
+        <attr name="user_status" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="CometChatUserList">
+        <attr name="userList" format="reference" />
+        <attr name="headers" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="CometChatReactionList">
+        <attr name="reactionlist" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CometChatReceiptsList">
+        <attr name="receiptlist" format="reference" />
+        <attr name="showDeliveryReceipt" format="boolean"/>
+        <attr name="showReadReceipt" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="CometChatConversationList">
+        <attr name="conversationlist" format="reference" />
+
+    </declare-styleable>
+    <declare-styleable name="CometChatGroupList">
+        <attr name="grouplist" format="reference" />
+
+    </declare-styleable>
+
+    <declare-styleable name="SmartReplyList">
+        <attr name="replylist" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SharedMediaView">
+        <attr name="reciever_id" format="string"/>
+        <attr name="reciever_type" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="BadgeCount">
+        <attr name="count" format="integer" />
+        <attr name="count_size" format="dimension" />
+        <attr name="count_color" format="color" />
+        <attr name="count_background_color" format="color" />
+
+    </declare-styleable>
+
+    <declare-styleable name="Composer">
+        <attr name="sendIcon" format="reference"/>
+        <attr name="sendIconTint" format="color"/>
+        <attr name="microphoneIcon" format="reference"/>
+        <attr name="microphoneIconTint" format="color"/>
+        <attr name="hideMicrophone" format="boolean"/>
+        <attr name="attachmentIcon" format="reference"/>
+        <attr name="attachmentIconTint" format="color"/>
+        <attr name="hideAttachment" format="boolean"/>
+        <attr name="placeholder" format="string"/>
+        <attr name="placeholderColor" format="color"/>
+        <attr name="composerBackground" format="color"/>
+        <attr name="corner_radius"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="CometChatDate">
+        <attr name="text" />
+        <attr name="text_color"/>
+        <attr name="date_format" format="string"/>
+        <attr name="text_size" format="integer"/>
+    </declare-styleable>
+
+
+
+    <declare-styleable name="SwipeRevealLayout">
+        <attr name="dragEdge">
+            <flag name="left" value="1" />
+            <flag name="right" value="2" />
+            <flag name="top" value="4" />
+            <flag name="bottom" value="8" />
+        </attr>
+
+        <attr name="mode">
+            <enum name="normal" value="0" />
+            <enum name="same_level"   value="1" />
+        </attr>
+
+        <attr name="flingVelocity" format="integer" />
+
+        <attr name="minDistRequestDisallowParent" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="RecordAudio">
+        <attr name="slide_to_cancel_text" format="string" />
+        <attr name="slide_to_cancel_arrow" format="reference" />
+        <attr name="slide_to_cancel_margin_right" format="dimension" />
+        <attr name="slide_to_cancel_bounds" format="dimension" />
+        <attr name="slide_to_cancel_arrow_color" format="color" />
+        <attr name="counter_time_color" format="color" />
+
+    </declare-styleable>
+
+    <declare-styleable name="RecordMic">
+
+        <attr name="mic_icon" format="reference" />
+
+    </declare-styleable>
+
+    <declare-styleable name="Conversations">
+        <attr name="hideStartConversation" format="boolean"/>
+        <attr name="startConversationIconColor" format="color"/>
+        <attr name="startConversationIcon" format="reference"/>
+        <attr name="conversationType" format="string"/>
+        <attr name="listBackgroundColor" />
+        <attr name="searchBackgroundColor" />
+        <attr name="searchCornerRadius" />
+        <attr name="hideSearch" />
+        <attr name="searchTextColor" />
+        <attr name="searchBorderColor"/>
+        <attr name="searchBorderWidth"/>
+        <attr name="title" />
+        <attr name="titleColor" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatConversationListItem">
+        <attr name="conversationListItem_hideAvatar" format="boolean"/>
+        <attr name="conversationListItem_hideTitle" format="boolean"/>
+        <attr name="conversationListItem_titleColor" format="color"/>
+        <attr name="conversationListItem_hideSubTitle" format="boolean"/>
+        <attr name="conversationListItem_subTitleColor" format="color"/>
+        <attr name="conversationListItem_hideUserPresence" format="boolean"/>
+        <attr name="conversationListItem_hideTime" format="boolean"/>
+        <attr name="conversationListItem_timeColor" format="color"/>
+        <attr name="conversationListItem_hideHelperText" format="boolean"/>
+        <attr name="conversationListItem_helperTextColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="UserList">
+        <attr name="showHeader" format="boolean"/>
+        <attr name="headerColor" format="color"/>
+        <attr name="userType" format="string"/>
+        <attr name="listBackgroundColor" />
+        <attr name="searchBackgroundColor" />
+        <attr name="searchCornerRadius" />
+        <attr name="hideSearch" />
+        <attr name="searchTextColor"/>
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="titleHidden" />
+    </declare-styleable>
+
+    <declare-styleable name="CometChatUserListItem">
+        <attr name="userListItem_hideAvatar" format="boolean"/>
+        <attr name="userListItem_hideTitle" format="boolean"/>
+        <attr name="userListItem_titleColor" format="color"/>
+        <attr name="userListItem_hideSubTitle" format="boolean"/>
+        <attr name="userListItem_subTitleColor" format="color"/>
+        <attr name="userListItem_hideUserPresence" format="boolean"/>
+        <attr name="userListItem_hideTime" format="boolean"/>
+        <attr name="userListItem_timeColor" format="color"/>
+        <attr name="userListItem_hideHelperText" format="boolean"/>
+        <attr name="userListItem_helperTextColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="GroupList">
+        <attr name="createGroup" format="boolean"/>
+        <attr name="createGroupIconColor" format="color"/>
+        <attr name="listBackgroundColor"/>
+        <attr name="searchBackgroundColor" />
+        <attr name="searchCornerRadius" />
+        <attr name="hideSearch" />
+        <attr name="searchTextColor" />
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="titleHidden" />
+    </declare-styleable>
+    <declare-styleable name="CometChatGroupListItem">
+        <attr name="group" format="reference"/>
+        <attr name="hideIcon" format="boolean"/>
+        <attr name="groupListItem_hideTitle" format="boolean"/>
+        <attr name="groupListItem_titleColor" format="color"/>
+        <attr name="groupListItem_hideSubTitle" format="boolean"/>
+        <attr name="groupListItem_subTitleColor" format="color"/>
+        <attr name="groupListItem_typeIconTint" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CallList">
+        <attr name="newCall" format="boolean"/>
+        <attr name="newCallIconColor" format="color"/>
+        <attr name="listBackgroundColor" />
+        <attr name="tabBarBackgroundColor" format="color"/>
+        <attr name="tabActiveTextColor" format="color"/>
+        <attr name="tabPassiveTextColor" format="color"/>
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="titleHidden" />
+    </declare-styleable>
+
+    <!--Message Bubble Starts-->
+
+    <declare-styleable name="TextMessageBubble">
+        <attr name="corner_radius"/>
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+
+        <attr name="userNameVisibility"/>
+
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="text" />
+        <attr name="text_color" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="subtitle"/>
+        <attr name="subtitleColor"/>
+        <attr name="paragraph" format="string"/>
+        <attr name="buttonText" format="string"/>
+        <attr name="iconVisibility"/>
+        <attr name="playButtonDrawable"/>
+        <attr name="image"/>
+
+        <attr name="messageType" format="enum">
+            <enum name="text_message" value="0"/>
+            <enum name="link_message" value="1"/>
+        </attr>
+
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="ImageMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="drawable" format="reference"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="StickerMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="stickerDrawable" format="reference"/>
+    </declare-styleable>
+
+
+
+    <declare-styleable name="VideoMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="AudioMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+        <attr name="iconVisibility"/>
+        <attr name="icon"/>
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="subtitle" />
+        <attr name="subtitleColor" />
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="FileMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="subtitle"/>
+        <attr name="subtitleColor"/>
+        <attr name="secondaryBackground" format="color"/>
+        <attr name="type" format="string"/>
+        <attr name="typeColor" format="color"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="LocationMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="subtitle"/>
+        <attr name="subtitleColor"/>
+        <attr name="image"/>
+
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="WhiteboardMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+        <attr name="buttonText"/>
+
+    </declare-styleable>
+
+
+
+    <declare-styleable name="WriteboardMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+        <attr name="buttonText"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="GroupCallMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+        <attr name="buttonText"/>
+
+    </declare-styleable>
+
+
+
+    <declare-styleable name="ActionMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="title" />
+        <attr name="titleColor"/>
+        <attr name="time" format="string"/>
+        <attr name="timeColor" format="color"/>
+        <attr name="icon"/>
+        <attr name="iconTint"/>
+
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="PollsMessageBubble">
+        <attr name="corner_radius" />
+        <attr name="backgroundColor" />
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="userNameVisibility" />
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+        <attr name="borderColor"/>
+        <attr name="borderWidth"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageList">
+        <attr name="alignment" format="enum">
+            <enum name="standard" value="0"/>
+            <enum name="leftAligned" value="1"/>
+        </attr>
+        <attr name="actionSheetMode" format="enum">
+            <enum name="listMode" value="0"/>
+            <enum name="gridMode" value="1"/>
+        </attr>
+        <attr name="leftMessageBubbleColor" format="color"/>
+        <attr name="leftMessageTextColor" format="color"/>
+        <attr name="rightMessageBubbleColor" format="color"/>
+        <attr name="rightMessageTextColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CometChatMessagesHeader">
+        <attr name="title"/>
+        <attr name="titleColor"/>
+        <attr name="subtitle"/>
+        <attr name="subtitleColor"/>
+        <attr name="audioCallIcon" format="reference"/>
+        <attr name="audioCallIconTint" format="color"/>
+        <attr name="videoCallIcon" format="reference"/>
+        <attr name="videoCallIconTint" format="color"/>
+        <attr name="viewDetailsIcon" format="reference"/>
+        <attr name="viewDetailsIconTint" format="color"/>
+        <attr name="backIconTint" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CometChatMessageReceipt">
+        <attr name="messageProgressIcon" format="reference"/>
+        <attr name="messageSentIcon" format="reference"/>
+        <attr name="messageDeliveredIcon" format="reference"/>
+        <attr name="messageReadIcon" format="reference"/>
+        <attr name="messageErrorIcon" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="CometChatMessageReaction">
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+        <attr name="borderRadius"/>
+        <attr name="messageReaction_activeColor" format="color"/>
+        <attr name="messageReaction_passiveColor" format="color"/>
+        <attr name="messageReaction_textColor" format="color"/>
+        <attr name="messageReaction_backgroundColor" format="color"/>
+
+        <attr name="messageReaction_gravity" format="enum">
+            <enum value="8388611" name="start"/>
+            <enum value="8388613" name="end"/>
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="AudioRecordView">
+
+        <attr name="chunkWidth" format="dimension" />
+        <attr name="chunkMaxHeight" format="dimension" />
+        <attr name="chunkMinHeight" format="dimension" />
+        <attr name="chunkSpace" format="dimension" />
+        <attr name="chunkColor" format="color" />
+        <attr name="chunkRoundedCorners" format="boolean" />
+        <attr name="chunkAlignTo" format="enum">
+            <enum name="center" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
+        <attr name="chunkSoftTransition" format="boolean" />
+    </declare-styleable>
+
+</resources>
