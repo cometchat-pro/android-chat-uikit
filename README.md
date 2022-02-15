@@ -16,7 +16,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
-![Version](https://shields.io/badge/version-v3.0.1--1-orange)
+![Version](https://shields.io/badge/version-v3.0.4--pluto.beta1-orange)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
@@ -158,7 +158,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 <hr/>
 
 ## Add UI Kit Library
-| :information_source: &nbsp; <b>Note - If you have added android-java-ui-kit as Dependency, then you can skip first three steps.</b> |
+| :information_source: &nbsp; <b>Note - If you have added <code>android-java-ui-kit</code> as Dependency, then you can skip first three steps.</b> |
 |------------------------------------------------------------------------------------------------------------|
 
 1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro/android-java-chat-ui-kit/tree/v3) repository.
@@ -240,38 +240,6 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 <hr/>
 
-## Launch CometChat UI
-
-![Studio Guide](https://files.readme.io/d5d1f1d-Artboard__1.png)
-
-**CometChat UI** is a way to launch a fully working chat application using the UI Kit .In CometChat UI all the UI Screens and UI Components working together to give the full experience of a chat application with minimal coding effort.*
-
-To use CometChat UI user has to launch `CometChatUI` class. Add the following code snippet to launch `CometChatUI`.
-
-<table><td>
-
- ```java
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI;
-
- startActivity(new Intent(YourActivity.this,CometChatUI.class));
- ```
-
-</td></table>
-
-</br>
-
-<hr/>
-
-## Checkout our sample apps
-
-### Java: 
-Visit our [Java sample app](https://github.com/cometchat-pro/android-java-chat-app/tree/v3) repo to run the java sample app.
-
-### Kotlin: 
-Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-chat-app/tree/v3) repo to run the kotlin sample app.
-
-<hr/>
-
 ## Troubleshooting
 
 - To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/docs/android-ui-kit)  .
@@ -285,8 +253,7 @@ Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-ch
 
 Thanks to the following people who have contributed to this project:
 
-[👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali) <br>
-[👨‍💻 @yadavmangesh 💻](https://github.com/yadavmangesh)
+[👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali) 
 
 [Contribution guidelines for this project]()
 
