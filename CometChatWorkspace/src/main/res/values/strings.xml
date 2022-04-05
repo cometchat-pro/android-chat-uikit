@@ -4,7 +4,7 @@
 
     <!--Tags-->
     <string name="user" translatable="false">user</string>
-    <string name="group" translatable="false">group</string>
+    <string name="group">group</string>
     <string name="conversation" translatable="false">conversation</string>
     <string name="replyTxt" translatable="false">reply</string>
     <string name="call" translatable="false">Call</string>
@@ -29,6 +29,7 @@
     <string name="admin">Admin</string>
     <string name="moderator">Moderator</string>
     <string name="members">Members</string>
+    <string name="member">Member</string>
     <string name="join">Join</string>
 
 
@@ -215,8 +216,18 @@
     <string name="new_messages">" New Messages"</string>
     <string name="offline">offline</string>
     <string name="err_internet_unavailable">No Internet Available</string>
-    <string name="background_location_permission_title">Allow Background Location Permisssion</string>
+    <string name="background_location_permission_title">Allow Background Location Permission</string>
     <string name="channel_description">Channel Description</string>
     <string name="action_item" translatable="false">action_item</string>
     <string name="add_to_chat">Add to Chat</string>
+    <string name="tags">Tags</string>
+    <string name="no_user">No Users</string>
+    <string name="no_groups">No Groups</string>
+    <string name="error_cant_load_user">Can\'t load Users. Please try again</string>
+    <string name="error_cant_load_conversation">Can\'t load Conversation. Please try again</string>
+    <string name="error_cant_load_group">Can\'t load Group. Please try again</string>
+    <string name="try_again">TRY AGAIN</string>
+    <string name="create_group">create group</string>
+    <string name="no_chats">No Chats</string>
+
 </resources>

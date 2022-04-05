@@ -170,4 +170,20 @@
     <string name="votes">वोट</string>
     <string name="replies">जवाब</string>
     <string name="reply_message_privately">निजी तौर पर उत्तर दें</string>
+    <string name="started">शुरू कर दिया है</string>
+    <string name="reply_in_thread">" उत्तर_इन_थ्रेड"</string>
+    <string name="background_location_permission_title">" पृष्ठभूमि स्थान की अनुमति दें"</string>
+    <string name="add_to_chat">" चैट में जोड़ें"</string>
+    <string name="no_user">कोई उपयोगकर्ता नहीं</string>
+    <string name="no_groups">" कोई समूह नहीं"</string>
+    <string name="channel_description">" चैनल विवरण"</string>
+    <string name="tags">टैग</string>
+    <string name="in_thread">" एक सूत्र में"</string>
+    <string name="member">सदस्य</string>
+    <string name="error_cant_load_user">उपयोगकर्ता लोड नहीं कर सकते. कृपया पुन: प्रयास करें</string>
+    <string name="try_again">पुनः प्रयास करें</string>
+    <string name="create_group">" समूह बनाना"</string>
+    <string name="error_cant_load_conversation">बातचीत लोड नहीं की जा सकती. कृपया पुन: प्रयास करें</string>
+    <string name="error_cant_load_group">समूह लोड नहीं किया जा सकता. कृपया पुन: प्रयास करें</string>
+    <string name="no_chats">" चाय त्"</string>
 </resources>

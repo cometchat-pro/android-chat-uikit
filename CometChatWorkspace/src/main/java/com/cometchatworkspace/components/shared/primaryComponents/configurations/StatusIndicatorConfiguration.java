@@ -4,12 +4,14 @@ import android.content.Context;
 
 import androidx.annotation.ColorInt;
 
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
+
 public class StatusIndicatorConfiguration extends CometChatConfigurations {
-    private boolean isAvatarHidden;
 
     private int color;
+    private @CometChatStatusIndicator.STATUS
+    String status;
     private int cornerRadius;
-    private int titleColor;
     private int borderWidth;
     private int width;
     private int height;
@@ -19,10 +21,6 @@ public class StatusIndicatorConfiguration extends CometChatConfigurations {
         this.context = context;
     }
 
-    public StatusIndicatorConfiguration setTextColor(@ColorInt int color) {
-        titleColor = color;
-        return this;
-    }
 
 
     public StatusIndicatorConfiguration setCornerRadius(int radius) {
@@ -43,11 +41,11 @@ public class StatusIndicatorConfiguration extends CometChatConfigurations {
         return borderWidth;
     }
 
-    public StatusIndicatorConfiguration setColor(@ColorInt int color) {
+    public StatusIndicatorConfiguration setColor(@ColorInt int color,@CometChatStatusIndicator.STATUS String status) {
         this.color = color;
+        this.status = status;
         return this;
     }
-
 
     public StatusIndicatorConfiguration setWidth(int width) {
         this.width = width;
@@ -69,5 +67,9 @@ public class StatusIndicatorConfiguration extends CometChatConfigurations {
 
     public int getColor() {
         return color;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

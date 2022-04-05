@@ -2,13 +2,15 @@ package com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatU
 
 import android.content.Context;
 
+import com.cometchat.pro.models.Conversation;
 import com.cometchat.pro.models.User;
 
 import java.util.List;
 
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.resources.utils.sticker_header.StickyHeaderDecoration;
 
-public class UserListViewModel {
+public class CometChatUserListViewModel {
 
     private static final String TAG = "UserListViewModel";
 
@@ -16,18 +18,14 @@ public class UserListViewModel {
 
     private CometChatUsersAdapter userListAdapter;
 
-    private CometChatUsers userListView;
+    private CometChatUserList userListView;
 
 
 
-    public UserListViewModel(Context context, CometChatUsers cometChatUserList, boolean showHeader){
+    public CometChatUserListViewModel(Context context, CometChatUserList cometChatUserList, boolean showHeader){
         this.userListView=cometChatUserList;
         this.context=context;
         setUserListAdapter(cometChatUserList,showHeader);
-    }
-
-    private UserListViewModel(){
-
     }
 
     private CometChatUsersAdapter getAdapter() {
@@ -69,13 +67,13 @@ public class UserListViewModel {
         if (userListAdapter!=null)
             userListAdapter.clear();
     }
-    private void setUserListAdapter(CometChatUsers cometChatUserList, boolean showHeader){
+    private void setUserListAdapter(CometChatUserList cometChatUserList, boolean showHeader){
         userListAdapter=new CometChatUsersAdapter(context);
         if(showHeader) {
             StickyHeaderDecoration stickyHeaderDecoration = new StickyHeaderDecoration(userListAdapter);
-            cometChatUserList.addItemDecoration(stickyHeaderDecoration, 0);
+            cometChatUserList.getRecyclerView().addItemDecoration(stickyHeaderDecoration, 0);
         }
-        cometChatUserList.setAdapter(userListAdapter);
+        cometChatUserList.getRecyclerView().setAdapter(userListAdapter);
     }
 
     public void setUsersList(List<User> usersList){
@@ -93,8 +91,46 @@ public class UserListViewModel {
     }
 
     public void setHeaderColor(int color) {
-        if (userListAdapter!=null)
+        if (userListAdapter!=null && color!=0)
             userListAdapter.setHeaderColor(color);
+
+    }
+    public void setHeaderTextAppearance(int Appearance){
+        if(userListAdapter!=null && Appearance!=0)
+            userListAdapter.setHeaderAppearance(Appearance);
+    }
+
+    public int size() {
+        if (userListAdapter!=null)
+            return userListAdapter.getItemCount();
+        else
+            return 0;
+    }
+
+    public User getUser(int position) {
+        User user = null;
+        if (userListAdapter!=null)
+            user = userListAdapter.getItemAtPosition(position);
+        return user;
+    }
+
+    public void setUserListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem,
+                                                boolean hideTitleListItem, int titleColorListItem,
+                                                boolean hideSubtitleListItem, int subTitleColorListItem,
+                                                int backgroundColorListItem, float cornerRadiusListItem) {
+        if (userListAdapter!=null)
+            userListAdapter.setUserListItemProperty(hideAvatar,
+                    hideUserPresenceListItem,hideTitleListItem,titleColorListItem,
+                    hideSubtitleListItem,subTitleColorListItem,
+                    backgroundColorListItem,cornerRadiusListItem);
+    }
+
+    public void setConfiguration(CometChatConfigurations configuration) {
+        userListAdapter.setConfiguration(configuration);
+    }
+
+    public void setConfiguration(List<CometChatConfigurations> configurations) {
+        userListAdapter.setConfiguration(configurations);
 
     }
 }

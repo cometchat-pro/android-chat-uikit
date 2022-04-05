@@ -37,6 +37,7 @@ import com.cometchat.pro.models.MediaMessage;
 import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatSnackBar;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.CometChatConversationList;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.CometChatConversationListAdapter;
@@ -225,7 +226,7 @@ public class CometChatForwardMessageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Utils.changeToolbarFont(toolbar)!=null){
-            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(FontUtils.robotoMedium));
+            Utils.changeToolbarFont(toolbar).setTypeface(fontUtils.getTypeFace(CometChatTheme.Typography.robotoMedium));
         }
         selectedUsers = findViewById(R.id.selected_user);
 

@@ -73,13 +73,14 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     private ActionSheetAdapter adapter;
 
-    private @ActionSheet.LayoutMode String mode;
+    private @ActionSheet.LayoutMode
+    String mode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fontUtils = FontUtils.getInstance(getContext());
-        if (getArguments()!=null) {
+        if (getArguments() != null) {
             reactionVisible = getArguments().getBoolean("reactionVisible");
             String layoutMode = getArguments().getString("layoutMode");
             if (layoutMode.equalsIgnoreCase(ActionSheet.LayoutMode.gridMode))
@@ -87,7 +88,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             else
                 isGridLayout = false;
             listOfItems = getArguments().getParcelableArrayList("listOfItems");
-            columnCount = getArguments().getInt("columnCount",columnCount);
+            columnCount = getArguments().getInt("columnCount", columnCount);
         }
     }
 
@@ -103,7 +104,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 //        if (isGridLayout)
 //            view = inflater.inflate(R.layout.cometchat_action_sheet_grid,container,false);
 //        else
-            view = inflater.inflate(R.layout.cometchat_action_sheet_list, container, false);
+        view = inflater.inflate(R.layout.cometchat_action_sheet_list, container, false);
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -121,13 +122,12 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         if (reactionVisible) {
             reactionsLayout.setVisibility(View.VISIBLE);
             setupReactions();
-        }
-        else
+        } else
             reactionsLayout.setVisibility(View.GONE);
 
 
         recyclerViewLayout = view.findViewById(R.id.recyclerView);
-        if (recyclerViewLayout !=null) {
+        if (recyclerViewLayout != null) {
             if (isGridLayout)
                 recyclerViewLayout.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
             else
@@ -147,39 +147,11 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         });
 
 
-
         recyclerViewLayout.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerViewLayout, new ClickListener() {
             @Override
             public void onClick(View var1, int var2) {
                 ActionItem item = (ActionItem) var1.getTag(R.string.action_item);
-                if (item.getTitle().equalsIgnoreCase(getString(R.string.translate_message)))
-                    cometChatMessageActionListener.onTranslateMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.start_thread)) ||
-                        item.name.equalsIgnoreCase(getString(R.string.reply_in_thread)))
-                    cometChatMessageActionListener.onThreadMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.reply_message)))
-                    cometChatMessageActionListener.onReplyMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.reply_message_privately)))
-                    cometChatMessageActionListener.onReplyMessagePrivately();
-                else if (item.name.equalsIgnoreCase(getString(R.string.send_message_privately)))
-                    cometChatMessageActionListener.onSendMessagePrivately();
-                else if (item.name.equalsIgnoreCase(getString(R.string.copy_message)))
-                    cometChatMessageActionListener.onCopyMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.forward_message)))
-                    cometChatMessageActionListener.onForwardMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.share_message)))
-                    cometChatMessageActionListener.onShareMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.message_information)))
-                    cometChatMessageActionListener.onMessageInfoClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.retry)))
-                    cometChatMessageActionListener.onRetryClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.edit_message)))
-                    cometChatMessageActionListener.onEditMessageClick();
-                else if (item.name.equalsIgnoreCase(getString(R.string.delete_message)))
-                    cometChatMessageActionListener.onDeleteMessageClick();
-                else {
-                    cometChatActionSheetListener.onActionItemClick(item);
-                }
+                cometChatActionSheetListener.onActionItemClick(item);
             }
         }));
 
@@ -197,8 +169,9 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             recyclerViewLayout.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
         }
     }
+
     private void initializeAdapter() {
-        adapter = new ActionSheetAdapter(getContext(),listOfItems,isGridLayout);
+        adapter = new ActionSheetAdapter(getContext(), listOfItems, isGridLayout);
         recyclerViewLayout.setAdapter(adapter);
         adapter.hideText(columnCount > 3);
         recyclerViewLayout.scheduleLayoutAnimation();
@@ -206,8 +179,8 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     private void setupReactions() {
         List<Reaction> reactions = Extensions.getInitialReactions(CometChatTheme.ActionSheetLayout.reactionCount);
-        for(Reaction reaction : reactions) {
-            View vw = LayoutInflater.from(getContext()).inflate(R.layout.reaction_list_row,null);
+        for (Reaction reaction : reactions) {
+            View vw = LayoutInflater.from(getContext()).inflate(R.layout.reaction_list_row, null);
             TextView textView = vw.findViewById(R.id.reaction);
             LinearLayout.LayoutParams params = new LinearLayout.
                     LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -221,7 +194,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (cometChatMessageActionListener !=null)
+                    if (cometChatMessageActionListener != null)
                         cometChatMessageActionListener.onReactionClick(reaction);
                     dismiss();
                 }
@@ -230,7 +203,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         ImageView addEmojiView = new ImageView(getContext());
         addEmojiView.setImageDrawable(getResources().getDrawable(R.drawable.ic_reactions));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                (int) Utils.dpToPx(getContext(),36),(int)Utils.dpToPx(getContext(),36));
+                (int) Utils.dpToPx(getContext(), 36), (int) Utils.dpToPx(getContext(), 36));
         layoutParams.topMargin = 8;
         layoutParams.leftMargin = 16;
         addEmojiView.setLayoutParams(layoutParams);
@@ -238,26 +211,26 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         addEmojiView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cometChatMessageActionListener !=null)
-                    cometChatMessageActionListener.onReactionClick(new Reaction("add_emoji",0));
+                if (cometChatMessageActionListener != null)
+                    cometChatMessageActionListener.onReactionClick(new Reaction("add_emoji", 0));
                 dismiss();
             }
         });
     }
 
     public void setTitle(String str) {
-        if (title!=null)
+        if (title != null)
             title.setText(str);
     }
 
 
     public void setTitleFont(String font) {
-        if (title!=null)
+        if (title != null)
             title.setTypeface(fontUtils.getTypeFace(font));
     }
 
     public void setTitleColor(@ColorInt int color) {
-        if (color!=0 && title!=null)
+        if (color != 0 && title != null)
             title.setTextColor(color);
     }
 
@@ -284,17 +257,17 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 //    }
 
     public void setLayoutModeIcon(Drawable icon) {
-        if (layoutModeButton!=null && icon!=null)
+        if (layoutModeButton != null && icon != null)
             layoutModeButton.setImageDrawable(icon);
     }
 
     public void setLayoutModeIconTint(@ColorInt int color) {
-        if (color!=0 && layoutModeButton!=null)
+        if (color != 0 && layoutModeButton != null)
             layoutModeButton.setImageTintList(ColorStateList.valueOf(color));
     }
 
     public void hideLayoutMode(boolean isHidden) {
-        if (layoutModeButton!=null) {
+        if (layoutModeButton != null) {
             if (isHidden)
                 layoutModeButton.setVisibility(View.GONE);
             else
@@ -303,12 +276,12 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
     }
 
     public void add(ActionItem actionItem) {
-        if (adapter!=null)
+        if (adapter != null)
             adapter.addActionItem(actionItem);
     }
 
     public void update(ActionItem actionItem) {
-        if (adapter!=null)
+        if (adapter != null)
             adapter.updateActionItem(actionItem);
     }
 
@@ -328,7 +301,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     public void setList(List<ActionItem> list) {
         Bundle bundle = getArguments();
-        if (bundle==null)
+        if (bundle == null)
             bundle = new Bundle();
         bundle.putParcelableArrayList("listOfItems", (ArrayList<? extends Parcelable>) list);
         setArguments(bundle);
@@ -336,9 +309,9 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     public void showReactions(boolean isVisible) {
         Bundle bundle = getArguments();
-        if (bundle==null)
+        if (bundle == null)
             bundle = new Bundle();
-        bundle.putBoolean("reactionVisible",isVisible);
+        bundle.putBoolean("reactionVisible", isVisible);
         setArguments(bundle);
     }
 
@@ -368,18 +341,27 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     public interface CometChatMessageActionListener {
         void onThreadMessageClick();
+
         void onEditMessageClick();
+
         void onReplyMessageClick();
+
         void onForwardMessageClick();
+
         void onDeleteMessageClick();
+
         void onCopyMessageClick();
+
         void onShareMessageClick();
+
         void onMessageInfoClick();
 
         void onReactionClick(Reaction reaction);
 
         void onTranslateMessageClick();
+
         void onRetryClick();
+
         void onSendMessagePrivately();
 
         void onReplyMessagePrivately();

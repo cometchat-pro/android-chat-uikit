@@ -27,6 +27,7 @@ import com.cometchat.pro.models.CustomMessage;
 import com.cometchatworkspace.R;
 
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
+import com.cometchatworkspace.components.messages.message_list.CometChatMessages;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatCallActionBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatGroupActionBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatAudioBubble;
@@ -42,6 +43,7 @@ import com.cometchatworkspace.components.messages.message_list.message_bubble.Co
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatDocumentBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchat.pro.models.BaseMessage;
@@ -1412,7 +1414,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else
             viewHolder.actionMessageBubble.titleColor(context.getResources().getColor(R.color.primaryTextColor));
 
-        viewHolder.actionMessageBubble.titleFont(FontUtils.robotoMedium);
+        viewHolder.actionMessageBubble.titleFont(CometChatTheme.Typography.robotoMedium);
         if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.ActionKeys.ACTION_TYPE_GROUP_MEMBER)) {
             viewHolder.actionMessageBubble.groupActionObject(baseMessage);
         }
@@ -1560,7 +1562,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 viewHolder.avatar.setAvatar(baseMessage.getSender().getAvatar(),baseMessage.getSender().getName());
             }
             viewHolder.title.setText(context.getResources().getString(R.string.custom_message)+"("+baseMessage.getType()+")");
-            viewHolder.title.setTypeface(fontUtils.getTypeFace(FontUtils.robotoLight));
+            viewHolder.title.setTypeface(fontUtils.getTypeFace(CometChatTheme.Typography.robotoLight));
 
             viewHolder.customMessageLayout.setOnClickListener(view -> {
                 setSelectedMessage(baseMessage.getId());

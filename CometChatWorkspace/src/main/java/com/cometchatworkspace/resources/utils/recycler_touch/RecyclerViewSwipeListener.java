@@ -52,9 +52,12 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
             Point point = new Point((int) e.getRawX(), (int) e.getRawY());
 
             RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForAdapterPosition(swipedPos);
-            View swipedItem = swipedViewHolder.itemView;
             Rect rect = new Rect();
-            swipedItem.getGlobalVisibleRect(rect);
+
+            if (swipedViewHolder != null) {
+                View swipedItem = swipedViewHolder.itemView;
+                swipedItem.getGlobalVisibleRect(rect);
+            }
 
             if (e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP || e.getAction() == MotionEvent.ACTION_MOVE) {
                 if (rect.top < point.y && rect.bottom > point.y)
@@ -186,7 +189,7 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
     }
 
     public void attachToRecyclerView(RecyclerView recyclerView) {
-        if (recyclerView!=null) {
+        if (recyclerView != null) {
             this.recyclerView = recyclerView;
             this.recyclerView.setOnTouchListener(onTouchListener);
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(this);
@@ -244,9 +247,9 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
             float x = cWidth / 2f - r.width() / 2f - r.left;
             float y = cHeight / 2f + r.height() / 2f - r.bottom;
             if (!text.isEmpty())
-                c.drawText(text, rect.left + x, rect.top+y/0.72f, p);
-            if (imageBitmap!=null) {
-                c.drawBitmap(imageBitmap,rect.left+x/0.9f,rect.top+y/3f,p);
+                c.drawText(text, rect.left + x, rect.top + y / 0.72f, p);
+            if (imageBitmap != null) {
+                c.drawBitmap(imageBitmap, rect.left + x / 0.9f, rect.top + y / 3f, p);
             }
 
             clickRegion = rect;

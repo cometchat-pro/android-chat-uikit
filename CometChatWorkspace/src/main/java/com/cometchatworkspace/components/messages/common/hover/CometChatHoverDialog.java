@@ -131,6 +131,7 @@ public class CometChatHoverDialog {
             textView.setLayoutParams(params);
             textView.setTextSize(20f);
             textView.setTypeface(null, Typeface.BOLD);
+
             textView.setText(reaction.getName());
             reactionsLayout.addView(vw);
             textView.setOnClickListener(new View.OnClickListener() {

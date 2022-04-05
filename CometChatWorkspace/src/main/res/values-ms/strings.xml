@@ -170,4 +170,20 @@
     <string name="votes">Undi</string>
     <string name="replies">Balasan</string>
     <string name="reply_message_privately">Balas secara tertutup</string>
+    <string name="started">" bermula"</string>
+    <string name="reply_in_thread">" reply_in_thread"</string>
+    <string name="background_location_permission_title">Benarkan Kebenaran Lokasi Latar Belakang</string>
+    <string name="add_to_chat">" Tambahkan pada Sembang"</string>
+    <string name="no_user">" Tiada Pengguna"</string>
+    <string name="no_groups">Tiada Kumpulan</string>
+    <string name="channel_description">Penerangan Saluran</string>
+    <string name="tags">Tag</string>
+    <string name="in_thread">Dalam benang</string>
+    <string name="member">Ahli</string>
+    <string name="error_cant_load_user">Tidak dapat memuatkan Pengguna. Sila cuba lagi</string>
+    <string name="try_again">CUBA LAGI</string>
+    <string name="create_group">buat kumpulan</string>
+    <string name="error_cant_load_conversation">Tidak dapat memuatkan Perbualan. Sila cuba lagi</string>
+    <string name="error_cant_load_group">Tidak dapat memuatkan Kumpulan. Sila cuba lagi</string>
+    <string name="no_chats">Teh ts</string>
 </resources>

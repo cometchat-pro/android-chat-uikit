@@ -29,8 +29,11 @@ import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.User;
 
 import com.cometchatworkspace.R;
+import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.ConversationsConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.ConversationListConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatSnackBar;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.CometChatConversationList;
 import com.cometchatworkspace.components.shared.primaryComponents.CometChatListBase;
@@ -58,11 +61,11 @@ import java.util.List;
  */
 public class CometChatConversations extends CometChatListBase {
 
-    private CometChatConversationList cometchatConversationList;    //Uses to display list of conversations.
+    public CometChatConversationList cometchatConversationList;    //Uses to display list of conversations.
 
     private String conversationListType; // Used to set Conversation Type i.e Group or User
 
-    private static final HashMap<String,Events> events = new HashMap<>(); //Used to handle events given by CometChatConversations. Refer https://cometchat.com/docs/android-chat-uikit/CometChatConversations#Events
+    private static final HashMap<String, Events> events = new HashMap<>(); //Used to handle events given by CometChatConversations. Refer https://cometchat.com/docs/android-chat-uikit/CometChatConversations#Events
 
     private static final String TAG = "ConversationList";
 
@@ -72,8 +75,15 @@ public class CometChatConversations extends CometChatListBase {
 
     private FontUtils fontUtils;
 
-    private boolean hideStartConversation, showDeleteConversation=true;
+    private Palette palette;
+
+    private Typography typography;
+
+    private String errorFont = null;
+    private int errorColor = 0;
+    private boolean hideStartConversation, hideDeleteConversation = false;
     /**
+     *
      * The Hide avatar.
      */
 //CometChatConversationListItem Properties
@@ -93,7 +103,7 @@ public class CometChatConversations extends CometChatListBase {
     /**
      * The Hide helper text list item.
      */
-    hideHelperTextListItem=true,
+    hideHelperTextListItem = true,
     /**
      * The Hide time list item.
      */
@@ -101,19 +111,19 @@ public class CometChatConversations extends CometChatListBase {
     /**
      * The Title color list item.
      */
-    int titleColorListItem=0,
+    int titleColorListItem = 0,
     /**
      * The Sub title color list item.
      */
-    subTitleColorListItem=0,
+    subTitleColorListItem = 0,
     /**
      * The Helper text color list item.
      */
-    helperTextColorListItem=0,
+    helperTextColorListItem = 0,
     /**
      * The Time text color list item.
      */
-    timeTextColorListItem=0,
+    timeTextColorListItem = 0,
     /**
      * The Background color list item.
      */
@@ -135,7 +145,7 @@ public class CometChatConversations extends CometChatListBase {
 
     private ProgressDialog progressDialog;
 
-    private  RecyclerViewSwipeListener swipeHelper;
+    private RecyclerViewSwipeListener swipeHelper;
 
     /**
      * Instantiates a new Comet chat conversations.
@@ -144,8 +154,8 @@ public class CometChatConversations extends CometChatListBase {
      */
     public CometChatConversations(Context context) {
         super(context);
-        if(!isInEditMode())
-        initViewComponent(context, null, -1);
+        if (!isInEditMode())
+            initViewComponent(context, null, -1);
     }
 
     /**
@@ -156,8 +166,8 @@ public class CometChatConversations extends CometChatListBase {
      */
     public CometChatConversations(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if(!isInEditMode())
-        initViewComponent(context, attrs, -1);
+        if (!isInEditMode())
+            initViewComponent(context, attrs, -1);
     }
 
     /**
@@ -169,25 +179,26 @@ public class CometChatConversations extends CometChatListBase {
      */
     public CometChatConversations(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if(!isInEditMode())
-        initViewComponent(context, attrs, defStyleAttr);
+        if (!isInEditMode())
+            initViewComponent(context, attrs, defStyleAttr);
     }
 
     /**
      * This method is used to initialize the component available in CometChatConversations
      *
-     * @param context - It is reference object of Context
+     * @param context      - It is reference object of Context
      * @param attributeSet - It is object of AttributeSet which is used to handle attributes passed from xml
      * @param defStyleAttr
-     *
      * @author CometChat Team
      * Copyright &copy;  2021 CometChat Inc.
      */
-    private void initViewComponent(Context context,AttributeSet attributeSet,int defStyleAttr) {
+    private void initViewComponent(Context context, AttributeSet attributeSet, int defStyleAttr) {
         // Inflate the layout for this fragment
         fontUtils = FontUtils.getInstance(context);
+        palette = Palette.getInstance(context);
+        typography = Typography.getInstance();
         this.context = context;
-        view = View.inflate(context,R.layout.cometchat_conversations, null);
+        view = View.inflate(context, R.layout.cometchat_conversations, null);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
                 R.styleable.Conversations,
@@ -198,60 +209,69 @@ public class CometChatConversations extends CometChatListBase {
         String title = a.getString(R.styleable.Conversations_title);
 
         int titleColor = a.getColor(R.styleable.
-                Conversations_titleColor,0);
+                Conversations_titleColor, palette.getAccent());
 
-        boolean startConversationVisible = a.getBoolean(
-                R.styleable.Conversations_hideStartConversation,false);
+        boolean hideStartConversation = a.getBoolean(
+                R.styleable.Conversations_hideStartConversation, true);
         int startConversationIconColor = a.getColor(R.styleable.
-                Conversations_startConversationIconColor,0);
+                Conversations_startConversationIconColor, palette.getPrimary());
         Drawable startConversationIcon = a.getDrawable(R.styleable.Conversations_startConversationIcon);
-        boolean searchBoxVisible = a.getBoolean(R.styleable.
-                Conversations_hideSearch,false);
+//        boolean hideSearch = a.getBoolean(R.styleable.
+//                Conversations_hideSearch, true);
         float searchBoxRadius = a.getDimension(R.styleable.
-                Conversations_searchCornerRadius,0f);
+                Conversations_searchCornerRadius, 0f);
         int searchBoxColor = a.getColor(R.styleable.
-                Conversations_searchBackgroundColor,0);
+                Conversations_searchBackgroundColor, palette.getSearchBackground());
         int searchTextColor = a.getColor(R.styleable.
-                Conversations_searchTextColor,0);
-        int searchBorderWidth = (int) a.getDimension(R.styleable.Conversations_searchBorderWidth,0f);
-        int searchBorderColor = a.getColor(R.styleable.Conversations_searchBorderColor,0);
-
+                Conversations_searchTextColor, palette.getAccent600());
+        int searchBorderWidth = (int) a.getDimension(R.styleable.Conversations_searchBorderWidth, 0f);
+        int searchBorderColor = a.getColor(R.styleable.Conversations_searchBorderColor, 0);
+        boolean showBackButton = a.getBoolean(R.styleable.Conversations_showBackButton, false);
         int listBackgroundColor = a.getColor(R.styleable.
-                Conversations_listBackgroundColor,0);
+                Conversations_listBackgroundColor, getResources().getColor(android.R.color.transparent));
+        String searchPlaceHolder = a.getString(R.styleable.
+                Conversations_searchHint);
+
+        Drawable backButtonIcon = a.getDrawable(R.styleable.Conversations_backButtonIcon);
 
         //End of Handling Attributes
 
         //Below method will set color of StatusBar.
         setStatusBarColor();
-        this.hideStartConversation = !startConversationVisible;
-
 
         cometchatConversationList = view.findViewById(R.id.cometchat_conversation_list);
 
-        cometchatConversationList.setConversationType(conversationListType);
-
+        super.showBackButton(showBackButton);
         super.setTitle(title);
+        super.backIcon(backButtonIcon);
+        setConversationType(conversationListType);
+        super.setSearchTextAppearance(typography.getText1());
+        super.setTitleAppearance(typography.getHeading());
+        setNoListMessageTextAppearance(typography.getHeading());
+        setNoListMessageTextColor(palette.getAccent400());
+        super.addSearchViewPlaceHolder(searchPlaceHolder);
         super.setTitleColor(titleColor);
+        super.setBaseBackGroundColor(palette.getBackground());
         super.setSearchTextColor(searchTextColor);
         super.setSearchBorderColor(searchBorderColor);
         super.setSearchBorderWidth(searchBorderWidth);
         super.setSearchPlaceHolderColor(searchTextColor);
         setListBackgroundColor(listBackgroundColor);
         super.setSearchBackground(searchBoxColor);
-        super.hideSearch(searchBoxVisible);
+        super.hideSearch(true);
         super.setSearchCornerRadius(searchBoxRadius);
         super.addListView(view);
 
-        if (titleColor==0)
+        if (titleColor == 0)
             checkDarkMode();
 
         CometChatError.init(getContext());
-        if (!startConversationVisible) {
+        if (!hideStartConversation) {
             icon = new ImageView(context);
             icon.setImageResource(R.drawable.ic_create);
             icon.setTag(R.string.tap_to_start_conversation, icon);
             super.addMenuIcon(icon);
-            icon.setOnClickListener(new View.OnClickListener() {
+            icon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     for (Events e : events.values()) {
@@ -268,21 +288,21 @@ public class CometChatConversations extends CometChatListBase {
             @Override
             public void onSearch(String state, String text) {
                 if (state.equals(SearchState.Filter)) {
-                    progressDialog = ProgressDialog.show(getContext(),"",context.getString(R.string.search));
+                    progressDialog = ProgressDialog.show(getContext(), "", context.getString(R.string.search));
                     cometchatConversationList.refreshConversation(new CometChat.CallbackListener<List<Conversation>>() {
                         @Override
                         public void onSuccess(List<Conversation> conversationList) {
-                            if (progressDialog!=null)
+                            if (progressDialog != null)
                                 progressDialog.dismiss();
                             cometchatConversationList.searchConversation(text);
                         }
 
                         @Override
                         public void onError(CometChatException e) {
-                            if (progressDialog!=null)
+                            if (progressDialog != null)
                                 progressDialog.dismiss();
                             CometChatSnackBar.show(getContext(), cometchatConversationList,
-                                    CometChatError.localized(e),CometChatSnackBar.ERROR);
+                                    CometChatError.localized(e), CometChatSnackBar.ERROR);
                         }
                     });
                 } else if (state.equals(SearchState.TextChange)) {
@@ -298,16 +318,15 @@ public class CometChatConversations extends CometChatListBase {
 
             @Override
             public void onBack() {
-                ((Activity)context).onBackPressed();
+                ((Activity) context).onBackPressed();
             }
         });
-
 
         // Used to trigger event on click of conversation item in rvConversationList (RecyclerView)
         cometchatConversationList.setItemClickListener(new OnItemClickListener<Conversation>() {
             @Override
             public void OnItemClick(Conversation conversation, int position) {
-                if (events!=null) {
+                if (events != null) {
                     for (Events e : events.values()) {
                         e.OnItemClick(conversation, position);
                     }
@@ -315,27 +334,106 @@ public class CometChatConversations extends CometChatListBase {
             }
         });
 
-       swipeHelper = new RecyclerViewSwipeListener(getContext()) {
+        swipeHelper = new RecyclerViewSwipeListener(getContext()) {
             @Override
             public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
 
-                    Bitmap deleteBitmap = Utils.drawableToBitmap(getResources().getDrawable(R.drawable.ic_delete_conversation));
-                    underlayButtons.add(new UnderlayButton(
-                            "Delete",
-                            deleteBitmap,
-                            getResources().getColor(R.color.red),
-                            new UnderlayButtonClickListener() {
-                                @Override
-                                public void onClick(final int pos) {
-                                    Conversation conversation = cometchatConversationList.getConversation(pos);
-                                    handleDeleteConversation(conversation);
-                                }
+                Bitmap deleteBitmap = Utils.drawableToBitmap(getResources().getDrawable(R.drawable.ic_delete_conversation));
+                underlayButtons.add(new UnderlayButton(
+                        "Delete",
+                        deleteBitmap,
+                        getResources().getColor(R.color.red),
+                        new UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(final int pos) {
+                                Conversation conversation = cometchatConversationList.getConversation(pos);
+                                handleDeleteConversation(conversation);
                             }
-                    ));
-                }
+                        }
+                ));
+            }
 
         };
-        if (showDeleteConversation) {
+        hideDeleteConversation(hideDeleteConversation);
+    }
+
+
+    public void setNoListMessageTextFont(String font) {
+        if (cometchatConversationList != null && font != null)
+            cometchatConversationList.setNoListTextFont(font);
+
+    }
+
+    public void setNoListMessageTextColor(@ColorInt int color) {
+        if (cometchatConversationList != null && color != 0)
+            cometchatConversationList.setNoListTextColor(color);
+    }
+
+    public void setNoListMessageTextAppearance(int appearance) {
+        if (cometchatConversationList != null && appearance != 0)
+            cometchatConversationList.setNoListTextAppearance(appearance);
+    }
+
+    /**
+     * @param res this method is exposed for the user to change the backIcon as per there preference
+     */
+    public void setBackIcon(int res) {
+        super.backIcon(res);
+    }
+
+    /**
+     * @param res this method is exposed for the user to change the search Icon as per there preference
+     */
+    public void setSearchBoxSearchIcon(int res) {
+        super.setSearchBoxStartIcon(res);
+    }
+
+    /**
+     * @param style
+     * @method setStyle is use to customize the inner components as per user need
+     */
+    public void setStyle(Style style) {
+        if (style.getBackground() != 0) {
+            super.setBaseBackGroundColor(style.getBackground());
+        }
+
+        if (style.getBorder() != 0) {
+            super.setStrokeWidth(style.getBorder());
+        }
+
+        if (style.getCornerRadius() != 0) {
+            super.setRadius(style.getCornerRadius());
+        }
+
+        if (style.getTitleFont() != null) {
+            super.setTitleFont(style.getTitleFont());
+        }
+        if (style.getTitleColor() != 0) {
+            super.setTitleColor(style.getTitleColor());
+        }
+        if (style.getBackIconTint() != 0) {
+            super.backIconTint(style.getBackIconTint());
+        }
+        if (style.getSearchBorder() != 0) {
+            super.setSearchBorderWidth(style.getSearchBorder());
+        }
+        if (style.getSearchBackground() != 0) {
+            super.setSearchBackground(style.getSearchBackground());
+        }
+        if (style.getSearchTextFont() != null) {
+            super.setSearchTextFont(style.getSearchTextFont());
+        }
+        if (style.getSearchTextColor() != 0) {
+            super.setSearchTextColor(style.getSearchTextColor());
+        }
+        if (style.getSearchIconTint() != 0) {
+            super.setStartIconTint(style.getSearchIconTint());
+        }
+
+    }
+
+    public void hideDeleteConversation(boolean hideDeleteConversation) {
+        if (!hideDeleteConversation) {
             swipeHelper.attachToRecyclerView(cometchatConversationList.getRecyclerView());
         } else {
             swipeHelper.attachToRecyclerView(null);
@@ -348,28 +446,27 @@ public class CometChatConversations extends CometChatListBase {
      * method whenever user click "Yes" and no it dismiss the dialog.
      *
      * @param conversation is a specific Conversation object that will be deleted.
-     *
-     * @see com.cometchat.pro.core.CometChat#deleteConversation(String, String, CometChat.CallbackListener)
-     * @see com.cometchatworkspace.components.chats.CometChatConversations
-     *
      * @author CometChat Team
      * Copyright &copy;  2021 CometChat Inc.
+     * @see com.cometchat.pro.core.CometChat#deleteConversation(String, String, CometChat.CallbackListener)
+     * @see com.cometchatworkspace.components.chats.CometChatConversations
      */
+
     private void handleDeleteConversation(Conversation conversation) {
-        if (conversation!=null) {
+        if (conversation != null) {
             String conversationUid = "";
             String type = "";
             if (conversation.getConversationType()
                     .equalsIgnoreCase(CometChatConstants.CONVERSATION_TYPE_GROUP)) {
-                conversationUid = ((Group)conversation.getConversationWith()).getGuid();
+                conversationUid = ((Group) conversation.getConversationWith()).getGuid();
                 type = CometChatConstants.CONVERSATION_TYPE_GROUP;
             } else {
-                conversationUid = ((User)conversation.getConversationWith()).getUid();
+                conversationUid = ((User) conversation.getConversationWith()).getUid();
                 type = CometChatConstants.CONVERSATION_TYPE_USER;
             }
             String finalConversationUid = conversationUid;
             String finalType = type;
-            new CustomAlertDialogHelper(getContext(),
+            new CustomAlertDialogHelper(getContext(), errorFont, errorColor,
                     context.getString(R.string.delete_conversation_message),
                     null,
                     context.getString(R.string.yes),
@@ -381,7 +478,7 @@ public class CometChatConversations extends CometChatListBase {
                                                   View v,
                                                   int which,
                                                   int popupId) {
-                            if (which== DialogInterface.BUTTON_POSITIVE) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
                                 ProgressDialog progressDialog = ProgressDialog.show(getContext(),
                                         null, context.getString(R.string.deleting_conversation));
                                 CometChat.deleteConversation(
@@ -405,7 +502,7 @@ public class CometChatConversations extends CometChatListBase {
                                                 e.printStackTrace();
                                             }
                                         });
-                            } else if (which==DialogInterface.BUTTON_NEGATIVE) {
+                            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                                 alertDialog.dismiss();
                             }
                         }
@@ -424,13 +521,9 @@ public class CometChatConversations extends CometChatListBase {
      */
 
     private void setStatusBarColor() {
-        ColorDrawable viewColor = (ColorDrawable) getBackground();
-        int backgroundColor = getResources().getColor(R.color.colorPrimaryDark);
-        if (viewColor!=null)
-            backgroundColor = viewColor.getColor();
-        if (backgroundColor!=0)
-            ((Activity)context).getWindow().setStatusBarColor(backgroundColor);
-
+        int backgroundColor = palette.getPrimary();
+        if (backgroundColor != 0)
+            ((Activity) context).getWindow().setStatusBarColor(backgroundColor);
     }
 
     /**
@@ -442,8 +535,8 @@ public class CometChatConversations extends CometChatListBase {
      * @see com.cometchatworkspace.components.chats.CometChatConversations#setListBackgroundColor(int)
      */
     public void setListBackgroundColor(@ColorInt int listBackgroundColor) {
-        if (cometchatConversationList!=null) {
-            if (listBackgroundColor!=0)
+        if (cometchatConversationList != null) {
+            if (listBackgroundColor != 0)
                 cometchatConversationList.setCardBackgroundColor(listBackgroundColor);
             else {
                 cometchatConversationList.setCardBackgroundColor(Color.TRANSPARENT);
@@ -454,7 +547,7 @@ public class CometChatConversations extends CometChatListBase {
     }
 
     private void checkDarkMode() {
-        if(Utils.isDarkMode(getContext())) {
+        if (Utils.isDarkMode(getContext())) {
             setTitleColor(getResources().getColor(R.color.textColorWhite));
         } else {
             setTitleColor(getResources().getColor(R.color.primaryTextColor));
@@ -468,7 +561,7 @@ public class CometChatConversations extends CometChatListBase {
      */
     public void setConversationType(String conversationListType) {
         this.conversationListType = conversationListType;
-        if (cometchatConversationList!=null)
+        if (cometchatConversationList != null)
             cometchatConversationList.setConversationType(conversationListType);
     }
 
@@ -478,7 +571,7 @@ public class CometChatConversations extends CometChatListBase {
      *
      * @param TAG             the tag
      * @param onEventListener An object of <code>OnItemClickListener&lt;T&gt;</code> abstract class helps to initialize with events
-     * to perform onItemClick &amp; onItemLongClick.
+     *                        to perform onItemClick &amp; onItemLongClick.
      * @see Events
      */
     public static void addListener(String TAG, Events<Conversation> onEventListener) {
@@ -512,7 +605,7 @@ public class CometChatConversations extends CometChatListBase {
      * @param b is a boolean object. If b=true show "DeleteConversation" else hide "DeleteConversation"
      */
     public void showDeleteConversation(boolean b) {
-        showDeleteConversation = b;
+        hideDeleteConversation = b;
         invalidate();
     }
 
@@ -527,9 +620,9 @@ public class CometChatConversations extends CometChatListBase {
      * @param color is Color Object i.e R.color.blue
      */
     public void startConversationIconTint(@ColorInt int color) {
-        if (color!=0) {
+        if (color != 0) {
             ImageView icon = (ImageView) super.getIconAt(0);
-            if (icon!=null)
+            if (icon != null)
                 icon.setImageTintList(ColorStateList.valueOf(color));
         }
     }
@@ -540,9 +633,9 @@ public class CometChatConversations extends CometChatListBase {
      * @param iconDrawable the icon drawable
      */
     public void startConversationIcon(Drawable iconDrawable) {
-        if (iconDrawable!=null) {
+        if (iconDrawable != null) {
             ImageView icon = (ImageView) super.getIconAt(0);
-            if (icon!=null)
+            if (icon != null)
                 icon.setImageDrawable(iconDrawable);
         }
     }
@@ -554,9 +647,9 @@ public class CometChatConversations extends CometChatListBase {
      * @param iconDrawable the icon drawable
      */
     public void startConversationIcon(@DrawableRes int iconDrawable) {
-        if (iconDrawable!=0) {
+        if (iconDrawable != 0) {
             ImageView icon = (ImageView) super.getIconAt(0);
-            if (icon!=null)
+            if (icon != null)
                 icon.setImageResource(iconDrawable);
         }
     }
@@ -581,14 +674,14 @@ public class CometChatConversations extends CometChatListBase {
         backgroundColorListItemPosition = cometChatListItemProperty.backgroundColorAtPosition;
         cornerRadiusListItem = cometChatListItemProperty.cornerRadius;
         typingIndicatorColorListItem = cometChatListItemProperty.typingIndicatorColor;
-        if (cometchatConversationList !=null)
-            cometchatConversationList.setConversationListItemProperty(hideAvatar,hideUserPresenceListItem,
-                    hideTitleListItem,titleColorListItem,
-                    hideSubtitleListItem,subTitleColorListItem,
-                    hideHelperTextListItem,helperTextColorListItem,
-                    hideTimeListItem,timeTextColorListItem,
-                    backgroundColorListItem,backgroundColorListItemPosition,
-                    cornerRadiusListItem,typingIndicatorColorListItem);
+        if (cometchatConversationList != null)
+            cometchatConversationList.setConversationListItemProperty(hideAvatar, hideUserPresenceListItem,
+                    hideTitleListItem, titleColorListItem,
+                    hideSubtitleListItem, subTitleColorListItem,
+                    hideHelperTextListItem, helperTextColorListItem,
+                    hideTimeListItem, timeTextColorListItem,
+                    backgroundColorListItem, backgroundColorListItemPosition,
+                    cornerRadiusListItem, typingIndicatorColorListItem);
 
     }
 
@@ -598,11 +691,13 @@ public class CometChatConversations extends CometChatListBase {
      * @param configuration the configuration
      */
     public void setConfiguration(CometChatConfigurations configuration) {
-        if (configuration instanceof ConversationsConfiguration) {
-           showDeleteConversation = ((ConversationsConfiguration) configuration)
-                   .isDeleteConversationHidden();
-           hideStartConversation = ((ConversationsConfiguration) configuration)
-                   .isStartConversationHidden();
+        if (configuration instanceof ConversationListConfiguration) {
+            hideDeleteConversation = ((ConversationListConfiguration) configuration)
+                    .isDeleteConversationHidden();
+            showDeleteConversation(hideDeleteConversation);
+            hideStartConversation = ((ConversationListConfiguration) configuration)
+                    .isStartConversationHidden();
+
         } else {
             cometchatConversationList.setConfiguration(configuration);
         }
@@ -686,7 +781,7 @@ public class CometChatConversations extends CometChatListBase {
          * @return the user presence hidden
          */
         public CometChatListItemProperty setUserPresenceHidden(boolean isHidden) {
-           isUserPresenceHidden = isHidden;
+            isUserPresenceHidden = isHidden;
             return this;
         }
 
@@ -753,7 +848,7 @@ public class CometChatConversations extends CometChatListBase {
          * @param position the position
          * @return the background color
          */
-        public CometChatListItemProperty setBackgroundColor(@ColorInt int color,int position) {
+        public CometChatListItemProperty setBackgroundColor(@ColorInt int color, int position) {
             backgroundColor = color;
             backgroundColorAtPosition = position;
             return this;
@@ -813,12 +908,14 @@ public class CometChatConversations extends CometChatListBase {
          *
          * @param var the var
          */
-        public void onDeleteConversation   (T var) {}
+        public void onDeleteConversation(T var) {
+        }
 
         /**
          * On start conversation.
          */
-        public void onStartConversation() {}
+        public void onStartConversation() {
+        }
 
         /**
          * On item long click.
@@ -826,6 +923,7 @@ public class CometChatConversations extends CometChatListBase {
          * @param var      the var
          * @param position the position
          */
-        public void OnItemLongClick(T var,int position) {}
+        public void OnItemLongClick(T var, int position) {
+        }
     }
 }

@@ -51,10 +51,6 @@ public class Conversations extends Fragment {
         // Inflate the layout for this fragment
          view = inflater.inflate(R.layout.fragment_cometchat_conversationlist, container, false);
          cometChatConversations = view.findViewById(R.id.conversationList);
-         cometChatConversations.setTitle("Chats");
-         cometChatConversations.showDeleteConversation(false);
-         cometChatConversations.hideStartConversation(true);
-         cometChatConversations.hideSearch(false);
 
         return view;
     }

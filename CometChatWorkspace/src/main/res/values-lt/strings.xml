@@ -200,5 +200,21 @@
     <string name="votes">Balsai</string>
     <string name="replies">Atsakymai</string>
     <string name="reply_message_privately">Atsakykite privačiai</string>
+    <string name="started">" prasidėjo"</string>
+    <string name="reply_in_thread">reply_in_thread</string>
+    <string name="background_location_permission_title">" Leisti fono vietos leidimą"</string>
+    <string name="add_to_chat">" Pridėti prie pokalbių"</string>
+    <string name="no_user">" Nėra vartotojų"</string>
+    <string name="no_groups">" Nėra grupių"</string>
+    <string name="channel_description">" Kanalo aprašymas"</string>
+    <string name="tags">" Žymos"</string>
+    <string name="in_thread">Gijoje</string>
+    <string name="member">" narys"</string>
+    <string name="error_cant_load_user">Nepavyko įkelti vartotojų. Prašau, pabandykite dar kartą</string>
+    <string name="try_again">BANDYK IŠ NAUJO</string>
+    <string name="create_group">sukurti grupę</string>
+    <string name="error_cant_load_conversation">Nepavyko įkelti pokalbio. Prašau, pabandykite dar kartą</string>
+    <string name="error_cant_load_group">Nepavyko įkelti grupės. Prašau, pabandykite dar kartą</string>
+    <string name="no_chats">Arbatos ts</string>
 
 </resources>

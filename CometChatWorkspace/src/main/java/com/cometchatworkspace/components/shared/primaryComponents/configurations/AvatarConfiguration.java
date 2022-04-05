@@ -26,6 +26,7 @@ public class AvatarConfiguration extends CometChatConfigurations {
     public int getCornerRadius() {
             return cornerRadius;
     }
+
     public AvatarConfiguration setBorderWidth(int width) {
         borderWidth = width;
         return this;

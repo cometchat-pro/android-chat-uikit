@@ -171,4 +171,20 @@
     <string name="new_message"> Новое сообщение</string>
     <string name="offline">Не в сети</string>
     <string name="reply_message_privately">Ответить лично</string>
+    <string name="started">" начал"</string>
+    <string name="reply_in_thread">" ответ_в_треде"</string>
+    <string name="background_location_permission_title">" Разрешить разрешение на фоновое местоположение"</string>
+    <string name="add_to_chat">" Добавить в чат"</string>
+    <string name="no_user">Нет пользователей</string>
+    <string name="no_groups">" Нет групп"</string>
+    <string name="channel_description">Описание канала</string>
+    <string name="tags">" Теги"</string>
+    <string name="in_thread">В потоке</string>
+    <string name="member">Член</string>
+    <string name="error_cant_load_user">Не удается загрузить пользователей. Пожалуйста, попробуйте еще раз</string>
+    <string name="try_again">ПОПРОБУЙТЕ СНОВА</string>
+    <string name="create_group">создать группу</string>
+    <string name="error_cant_load_conversation">Не удалось загрузить чат. Пожалуйста, попробуйте еще раз</string>
+    <string name="error_cant_load_group">Не удалось загрузить группу. Пожалуйста, попробуйте еще раз</string>
+    <string name="no_chats">" Чай тс"</string>
 </resources>

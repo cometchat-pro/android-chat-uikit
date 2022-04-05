@@ -11,7 +11,6 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 
 import com.cometchat.pro.constants.CometChatConstants;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.resources.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
@@ -29,16 +28,19 @@ import com.google.android.material.card.MaterialCardView;
 @BindingMethods(value ={@BindingMethod(type = CometChatStatusIndicator.class, attribute = "app:user_status", method = "setUserStatus")})
 public class CometChatStatusIndicator extends MaterialCardView {
 
-    @Presence
+    @STATUS
     String status;
 
     /*
      * Constants to define shape
      * */
-    @StringDef({Presence.ONLINE,Presence.OFFLINE})
-    public @interface Presence {
+    @StringDef({STATUS.ONLINE, STATUS.OFFLINE, STATUS.PASSWORD, STATUS.PRIVATE, STATUS.PUBLIC})
+    public @interface STATUS {
         String OFFLINE = CometChatConstants.USER_STATUS_OFFLINE;
         String ONLINE = CometChatConstants.USER_STATUS_ONLINE;
+        String PRIVATE = CometChatConstants.GROUP_TYPE_PRIVATE;
+        String PASSWORD = CometChatConstants.GROUP_TYPE_PASSWORD;
+        String PUBLIC = CometChatConstants.GROUP_TYPE_PUBLIC;
     }
 
     public CometChatStatusIndicator(Context context) {
@@ -73,19 +75,19 @@ public class CometChatStatusIndicator extends MaterialCardView {
     }
 
     public void color(@ColorInt int color) {
-        if (color!=0 && status.equals(Presence.ONLINE))
+        if (color!=0 && status.equals(STATUS.ONLINE))
             setCardBackgroundColor(color);
         else
             setVisibility(View.GONE);
     }
 
-    public void status(@Presence String userStatus) {
+    public void status(@STATUS String userStatus) {
          status = userStatus;
          setValues();
     }
 
     private void setValues() {
-        if(status.equalsIgnoreCase(Presence.ONLINE))
+        if(status.equalsIgnoreCase(STATUS.ONLINE))
             setCardBackgroundColor(getResources().getColor(R.color.online_green));
         else {
             setCardBackgroundColor(getResources().getColor(R.color.offline));
@@ -102,23 +104,24 @@ public class CometChatStatusIndicator extends MaterialCardView {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.StatusIndicator, 0, 0);
         String userStatus = a.getString(R.styleable.StatusIndicator_user_status);
         if (userStatus == null) {
-            status = Presence.OFFLINE;
+            status = STATUS.OFFLINE;
         } else {
             if (getContext().getString(R.string.online).equalsIgnoreCase(userStatus)) {
-                status = Presence.ONLINE ;
+                status = STATUS.ONLINE ;
             } else {
-                status = Presence.OFFLINE;
+                status = STATUS.OFFLINE;
             }
         }
     }
 
     protected void init() {
-        if (status.equals(Presence.ONLINE)) {
+        if (status.equals(STATUS.ONLINE)) {
             setVisibility(View.VISIBLE);
             setCardBackgroundColor(getResources().getColor(R.color.online_green));
-        } else {
+        } else if(status.equals(STATUS.OFFLINE)){
             setVisibility(View.GONE);
             setCardBackgroundColor(getResources().getColor(R.color.offline));
         }
+//        else if()
     }
 }

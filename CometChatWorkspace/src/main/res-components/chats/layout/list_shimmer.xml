@@ -44,27 +44,27 @@
                 android:background="@drawable/search_box_shimmer" />
 
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
-            <include layout="@layout/conversation_shimmer_row" />
+            <include layout="@layout/list_shimmer_row" />
 
         </LinearLayout>
 

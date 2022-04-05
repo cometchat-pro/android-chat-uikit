@@ -2,7 +2,9 @@ package com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatC
 
 import android.content.Context;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -23,8 +25,11 @@ import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.cometchatworkspace.components.shared.primaryComponents.InputData;
+import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.AvatarConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.BadgeCountConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
@@ -41,21 +46,22 @@ import org.json.JSONObject;
  * Purpose - ConversationListAdapter is a subclass of RecyclerView Adapter which is used to display
  * the list of conversations. It helps to organize the list data in recyclerView.
  * It also help to perform search operation on list of conversation.
- *
+ * <p>
  * Created on - 20th December 2019
- *
+ * <p>
  * Modified on  - 23rd March 2020
- *
  */
 
-public class CometChatConversationListAdapter extends RecyclerView.Adapter<CometChatConversationListAdapter.ConversationViewHolder> implements Filterable {
+public class CometChatConversationListAdapter extends
+        RecyclerView.Adapter<CometChatConversationListAdapter.ConversationViewHolder>
+        implements Filterable {
 
     private final Context context;
 
-    private boolean isAvatarHidden,isUserPresenceHidden,isTitleHidden,isSubtitleHidden,
-            isHelperTextHidden=true,isTimeHidden,isDeleteMessageHidden,isGroupActionHidden,
+    private boolean isAvatarHidden, isUserPresenceHidden, isTitleHidden, isSubtitleHidden,
+            isHelperTextHidden = true, isTimeHidden, isDeleteMessageHidden, isGroupActionHidden,
             isBadgeCountHidden;
-    private int titleColor,subTitleColor,helperTextColor,timeColor,backgroundColor,
+    private int titleColor, subTitleColor, helperTextColor, timeColor, backgroundColor,
             typingIndicatorColor;
 
     float cornerRadius;
@@ -81,14 +87,14 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      * It is constructor which takes conversationList as parameter and bind it with conversationList
      * and filterConversationList in adapter.
      *
-     * @param context is a object of Context.
+     * @param context          is a object of Context.
      * @param conversationList is list of conversations used in this adapter.
      */
     public CometChatConversationListAdapter(Context context, List<Conversation> conversationList) {
         this.conversationList = conversationList;
         this.filterConversationList = conversationList;
         this.context = context;
-        fontUtils=FontUtils.getInstance(context);
+        fontUtils = FontUtils.getInstance(context);
     }
 
     /**
@@ -98,7 +104,7 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      */
     public CometChatConversationListAdapter(Context context) {
         this.context = context;
-        fontUtils=FontUtils.getInstance(context);
+        fontUtils = FontUtils.getInstance(context);
     }
 
     @NonNull
@@ -113,61 +119,100 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
     }
 
     /**
-     *  This method is used to bind the ConversationViewHolder contents with conversation at given
-     *  position. It set avatar, name, lastMessage, unreadMessageCount and messageTime of conversation
-     *  in a respective ConversationViewHolder content. It checks whether conversation type is user
-     *  or group and set name and avatar as accordingly. It also checks whether last message is text, media
-     *  or file and modify txtUserMessage view accordingly.
+     * This method is used to bind the ConversationViewHolder contents with conversation at given
+     * position. It set avatar, name, lastMessage, unreadMessageCount and messageTime of conversation
+     * in a respective ConversationViewHolder content. It checks whether conversation type is user
+     * or group and set name and avatar as accordingly. It also checks whether last message is text, media
+     * or file and modify txtUserMessage view accordingly.
      *
      * @param viewHolder is a object of ConversationViewHolder.
-     * @param position is a position of item in recyclerView.
-     *
+     * @param position   is a position of item in recyclerView.
      * @see Conversation
      */
     @Override
     public void onBindViewHolder(@NonNull ConversationViewHolder viewHolder, int position) {
         Conversation conversation = filterConversationList.get(position);
 
-
-        if(Utils.isDarkMode(context)) {
-            viewHolder.conversationListRowBinding.conversationListItem.setTitleColor(context.getResources().getColor(R.color.textColorWhite));
-        } else {
-            viewHolder.conversationListRowBinding.conversationListItem.setTitleColor(context.getResources().getColor(R.color.primaryTextColor));
-        }
         //set properties passed from parent
         viewHolder.conversationListRowBinding.conversationListItem.hideAvatar(isAvatarHidden);
         viewHolder.conversationListRowBinding.conversationListItem.hideStatusIndicator(isUserPresenceHidden);
-//        viewHolder.conversationListRowBinding.conversationListItem.hideTitle(isTitleHidden);
-        viewHolder.conversationListRowBinding.conversationListItem.setTitleColor(titleColor);
-//        viewHolder.conversationListRowBinding.conversationListItem.hideSubTitle(isSubtitleHidden);
-        viewHolder.conversationListRowBinding.conversationListItem.setSubTitleColor(subTitleColor);
         viewHolder.conversationListRowBinding.conversationListItem.hideThreadIndicator(isHelperTextHidden);
         viewHolder.conversationListRowBinding.conversationListItem.setThreadIndicatorColor(helperTextColor);
         viewHolder.conversationListRowBinding.conversationListItem.hideTime(isTimeHidden);
         viewHolder.conversationListRowBinding.conversationListItem.setTimeColor(timeColor);
         viewHolder.conversationListRowBinding.conversationListItem.setTypingIndicatorColor(typingIndicatorColor);
-        viewHolder.conversationListRowBinding.conversationListItem.setConversation(conversation);
         viewHolder.conversationListRowBinding.conversationListItem.hideDeletedMessage(isDeleteMessageHidden);
         viewHolder.conversationListRowBinding.conversationListItem.hideGroupActionMessage(isGroupActionHidden);
         if (isBadgeCountHidden)
             viewHolder.conversationListRowBinding.conversationListItem.hideUnreadCount(true);
 
-        if (isTypingVisible && typingIndicator!=null) {
-            viewHolder.conversationListRowBinding.conversationListItem.showTypingIndicator(isTypingVisible);
+        if (typingIndicator!=null) {
             if (typingIndicator.getReceiverType().equalsIgnoreCase(CometChatConstants.RECEIVER_TYPE_USER)) {
-                viewHolder.conversationListRowBinding.conversationListItem
-                        .setTypingIndicator(context.getString(R.string.is_typing));
+                viewHolder.conversationListRowBinding.conversationListItem.setTypingIndicator(context.getString(R.string.is_typing));
             } else {
-                viewHolder.conversationListRowBinding.conversationListItem
-                        .setTypingIndicator(typingIndicator.getSender().getName()+
-                                " "+context.getString(R.string.is_typing));
+                viewHolder.conversationListRowBinding.conversationListItem.setTypingIndicator(typingIndicator.getSender().getName()+" "+context.getString(R.string.is_typing));
+            }
+            if (isTypingVisible) {
+                viewHolder.conversationListRowBinding.conversationListItem.hideSubTitle(false);
+                viewHolder.conversationListRowBinding.conversationListItem.hideReceipt(false);
+                viewHolder.conversationListRowBinding.conversationListItem.showTypingIndicator(false);
+            } else {
+                viewHolder.conversationListRowBinding.conversationListItem.hideSubTitle(true);
+                viewHolder.conversationListRowBinding.conversationListItem.hideReceipt(true);
+                viewHolder.conversationListRowBinding.conversationListItem.showTypingIndicator(true);
             }
         }
+        viewHolder.conversationListRowBinding.conversationListItem.setConversation(conversation);
+
+        /**
+         *   set inputData method
+         */
+        String id, avatar, status, title, subtitle;
+        long time;
+        int unreadCount;
+        id = conversation.getConversationId();
+        if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+            User conversationUser = ((User) conversation.getConversationWith());
+            avatar = conversationUser.getAvatar();
+            title = conversationUser.getName();
+            status = conversationUser.getStatus();
+        } else {
+            Group conversationGroup = ((Group) conversation.getConversationWith());
+            avatar = conversationGroup.getIcon();
+            title = conversationGroup.getName();
+            status = conversationGroup.getGroupType();
+        }
+        BaseMessage baseMessage = conversation.getLastMessage();
+        if (baseMessage != null) {
+            subtitle = Utils.getLastMessage(context, baseMessage);
+
+            if (baseMessage.getDeletedAt() > 0) {
+                subtitle = "";
+            }
+
+        } else {
+            subtitle = context.getResources().getString(R.string.tap_to_start_conversation);
+        }
+
+        time = conversation.getUpdatedAt();
+        unreadCount = conversation.getUnreadMessageCount();
+        /**
+         * @InputData is a class which is helpful to set data into the view and control visibility
+         * as per value passed in constructor .
+         * i.e we can control the visibility of the component inside the CometChatUserListItem,
+         * and also decide what value i need to show in that particular view
+         */
+//        InputData data = new InputData(id, avatar, title, subtitle, status, time, unreadCount);
+//        viewHolder.conversationListRowBinding.conversationListItem.inputData(data);
+        /**
+         *   end set inputData
+         */
 
         checkWithConfigurations(viewHolder.conversationListRowBinding.conversationListItem);
 
         viewHolder.conversationListRowBinding.executePendingBindings();
         viewHolder.conversationListRowBinding.getRoot().setTag(R.string.conversation, conversation);
+
     }
 
     private void checkWithConfigurations(CometChatConversationListItem listItem) {
@@ -176,7 +221,7 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
                 configuration = cometChatConfigurations;
                 setConfiguration(listItem);
             }
-        } else if (configuration!=null) {
+        } else if (configuration != null) {
             setConfiguration(listItem);
         }
     }
@@ -184,35 +229,36 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
     private void setConfiguration(CometChatConversationListItem listItem) {
         if (configuration instanceof AvatarConfiguration) {
             AvatarConfiguration avatarConfig = (AvatarConfiguration) configuration;
-            if (avatarConfig.getCornerRadius()!=-1)
+            if (avatarConfig.getCornerRadius() != -1)
                 listItem.getAvatar().setCornerRadius(avatarConfig.getCornerRadius());
-            if (avatarConfig.getBorderWidth()!=-1)
+            if (avatarConfig.getBorderWidth() != -1)
                 listItem.getAvatar().setBorderWidth(avatarConfig.getBorderWidth());
-            if (avatarConfig.getOuterViewColor()!=0)
+            if (avatarConfig.getOuterViewColor() != 0)
                 listItem.getAvatar().setOuterViewColor(avatarConfig.getOuterViewColor());
-            if (avatarConfig.getOuterViewWidth()!=-1)
+            if (avatarConfig.getOuterViewWidth() != -1)
                 listItem.getAvatar().setOuterViewSpacing(avatarConfig.getOuterViewWidth());
             if (avatarConfig.getWidth() != -1 && avatarConfig.getHeight() != -1) {
-                int avWidth = (int) Utils.dpToPx(context,avatarConfig.getWidth());
-                int avHeight = (int) Utils.dpToPx(context,avatarConfig.getHeight());
+                int avWidth = (int) Utils.dpToPx(context, avatarConfig.getWidth());
+                int avHeight = (int) Utils.dpToPx(context, avatarConfig.getHeight());
                 RelativeLayout.LayoutParams layoutParams =
-                        new RelativeLayout.LayoutParams(avWidth,avHeight);
+                        new RelativeLayout.LayoutParams(avWidth, avHeight);
                 listItem.getAvatar().setLayoutParams(layoutParams);
             }
         }
         if (configuration instanceof StatusIndicatorConfiguration) {
             StatusIndicatorConfiguration statusConfiguration = (
                     StatusIndicatorConfiguration) configuration;
+            listItem.getStatusIndicator().status(statusConfiguration.getStatus());
             listItem.getStatusIndicator().color(statusConfiguration.getColor());
 
-            if (statusConfiguration.getCornerRadius()!=-1)
+            if (statusConfiguration.getCornerRadius() != -1)
                 listItem.getStatusIndicator().cornerRadius(statusConfiguration.getCornerRadius());
 
             if (statusConfiguration.getWidth() != -1 && statusConfiguration.getHeight() != -1) {
-                int avWidth = (int) Utils.dpToPx(context,statusConfiguration.getWidth());
-                int avHeight = (int) Utils.dpToPx(context,statusConfiguration.getHeight());
+                int avWidth = (int) Utils.dpToPx(context, statusConfiguration.getWidth());
+                int avHeight = (int) Utils.dpToPx(context, statusConfiguration.getHeight());
                 RelativeLayout.LayoutParams layoutParams =
-                        new RelativeLayout.LayoutParams(avWidth,avHeight);
+                        new RelativeLayout.LayoutParams(avWidth, avHeight);
                 listItem.getStatusIndicator().setLayoutParams(layoutParams);
             }
             listItem.getStatusIndicator().borderWidth(statusConfiguration.getBorderWidth());
@@ -220,30 +266,30 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
         if (configuration instanceof BadgeCountConfiguration) {
             BadgeCountConfiguration badgeCountConfiguration =
                     (BadgeCountConfiguration) configuration;
-            if (badgeCountConfiguration.getCornerRadius()!=-1)
+            if (badgeCountConfiguration.getCornerRadius() != -1)
                 listItem.getBadgeCount().cornerRadius(badgeCountConfiguration.getCornerRadius());
-            if (badgeCountConfiguration.getTextSize()!=-1)
+            if (badgeCountConfiguration.getTextSize() != -1)
                 listItem.getBadgeCount().setTextSize(badgeCountConfiguration.getTextSize());
-            if (badgeCountConfiguration.getBorderWidth()!=-1)
+            if (badgeCountConfiguration.getBorderWidth() != -1)
                 listItem.getBadgeCount().borderWidth(badgeCountConfiguration.getBorderWidth());
             if (badgeCountConfiguration.getWidth() != -1 && badgeCountConfiguration.getHeight() != -1) {
-                int avWidth = (int) Utils.dpToPx(context,badgeCountConfiguration.getWidth());
-                int avHeight = (int) Utils.dpToPx(context,badgeCountConfiguration.getHeight());
+                int avWidth = (int) Utils.dpToPx(context, badgeCountConfiguration.getWidth());
+                int avHeight = (int) Utils.dpToPx(context, badgeCountConfiguration.getHeight());
                 RelativeLayout.LayoutParams layoutParams =
-                        new RelativeLayout.LayoutParams(avWidth,avHeight);
+                        new RelativeLayout.LayoutParams(avWidth, avHeight);
                 listItem.getBadgeCount().setLayoutParams(layoutParams);
             }
         }
         if (configuration instanceof MessageReceiptConfiguration) {
             MessageReceiptConfiguration receiptConfiguration =
                     (MessageReceiptConfiguration) configuration;
-            if (receiptConfiguration.getReadIcon()!=null)
+            if (receiptConfiguration.getReadIcon() != null)
                 listItem.getMessageReceipt().messageReadIcon(receiptConfiguration.getReadIcon());
-            if (receiptConfiguration.getDeliveredIcon()!=null)
+            if (receiptConfiguration.getDeliveredIcon() != null)
                 listItem.getMessageReceipt().messageDeliveredIcon(receiptConfiguration.getDeliveredIcon());
-            if (receiptConfiguration.getSentIcon()!=null)
+            if (receiptConfiguration.getSentIcon() != null)
                 listItem.getMessageReceipt().messageSentIcon(receiptConfiguration.getSentIcon());
-            if (receiptConfiguration.getInProgressIcon()!=null)
+            if (receiptConfiguration.getInProgressIcon() != null)
                 listItem.getMessageReceipt().messageProgressIcon(receiptConfiguration.getInProgressIcon());
         }
 
@@ -274,22 +320,23 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      */
     public void updateList(List<Conversation> conversations) {
 
-        for (int i = 0; i <conversations.size() ; i++) {
-           if (filterConversationList.contains(conversations.get(i))){
-               int index=filterConversationList.indexOf(conversations.get(i));
-               filterConversationList.remove(conversations.get(i));
-               filterConversationList.add(index,conversations.get(i));
-            }else {
-               filterConversationList.add(conversations.get(i));
-           }
+        for (int i = 0; i < conversations.size(); i++) {
+            if (filterConversationList.contains(conversations.get(i))) {
+                int index = filterConversationList.indexOf(conversations.get(i));
+                filterConversationList.remove(conversations.get(i));
+                filterConversationList.add(index, conversations.get(i));
+            } else {
+                filterConversationList.add(conversations.get(i));
+            }
         }
         notifyDataSetChanged();
     }
-    public void setReadReceipts(MessageReceipt readReceipts){
-        for (int i =0; i<filterConversationList.size()-1; i++) {
+
+    public void setReadReceipts(MessageReceipt readReceipts) {
+        for (int i = 0; i < filterConversationList.size() - 1; i++) {
             Conversation conversation = filterConversationList.get(i);
-            if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)&&
-                    readReceipts.getSender().getUid().equals(((User)conversation.getConversationWith()).getUid())) {
+            if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER) &&
+                    readReceipts.getSender().getUid().equals(((User) conversation.getConversationWith()).getUid())) {
                 BaseMessage baseMessage = filterConversationList.get(i).getLastMessage();
                 if (baseMessage != null && baseMessage.getReadAt() == 0) {
                     baseMessage.setReadAt(readReceipts.getReadAt());
@@ -304,11 +351,11 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
         notifyDataSetChanged();
     }
 
-    public void setDeliveredReceipts(MessageReceipt deliveryReceipts){
-        for (int i =0; i<filterConversationList.size()-1; i++) {
+    public void setDeliveredReceipts(MessageReceipt deliveryReceipts) {
+        for (int i = 0; i < filterConversationList.size() - 1; i++) {
             Conversation conversation = filterConversationList.get(i);
-            if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)&&
-                    deliveryReceipts.getSender().getUid().equals(((User)conversation.getConversationWith()).getUid())) {
+            if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER) &&
+                    deliveryReceipts.getSender().getUid().equals(((User) conversation.getConversationWith()).getUid())) {
 
                 BaseMessage baseMessage = filterConversationList.get(i).getLastMessage();
                 if (baseMessage != null && baseMessage.getDeliveredAt() == 0) {
@@ -329,9 +376,7 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      * This method is used to remove the conversation from filterConversationList
      *
      * @param conversation is a object of conversation.
-     *
      * @see Conversation
-     *
      */
     public void remove(Conversation conversation) {
         int position = filterConversationList.indexOf(conversation);
@@ -347,7 +392,7 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      *                     in list
      * @see Conversation
      */
-    public void update(Conversation conversation,boolean isActionMessage) {
+    public void update(Conversation conversation, boolean isActionMessage) {
 
         if (filterConversationList.contains(conversation)) {
             Conversation oldConversation = filterConversationList.get(filterConversationList.indexOf(conversation));
@@ -379,7 +424,6 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      * This method is used to add conversation in list.
      *
      * @param conversation is an object of Conversation. It will be added to filterConversationList.
-     *
      * @see Conversation
      */
     public void add(Conversation conversation) {
@@ -399,7 +443,7 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
      * It is used to perform search operation in filterConversationList. It will check
      * whether searchKeyword is similar to username or group name and modify filterConversationList
      * accordingly. In case if searchKeyword is empty it will set filterConversationList = conversationList
-
+     *
      * @return
      */
     @Override
@@ -421,26 +465,26 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
                         } else if (conversation.getConversationType().equals(CometChatConstants.CONVERSATION_TYPE_GROUP) &&
                                 ((Group) conversation.getConversationWith()).getName().toLowerCase().contains(searchKeyword)) {
                             tempFilter.add(conversation);
-                        } else if (conversation.getLastMessage()!=null &&
+                        } else if (conversation.getLastMessage() != null &&
                                 conversation.getLastMessage().getCategory().equals(CometChatConstants.CATEGORY_MESSAGE) &&
                                 conversation.getLastMessage().getType().equals(CometChatConstants.MESSAGE_TYPE_TEXT)
-                                && ((TextMessage)conversation.getLastMessage()).getText()!=null
-                                && ((TextMessage)conversation.getLastMessage()).getText().contains(searchKeyword)) {
+                                && ((TextMessage) conversation.getLastMessage()).getText() != null
+                                && ((TextMessage) conversation.getLastMessage()).getText().contains(searchKeyword)) {
                             tempFilter.add(conversation);
                         }
                     }
-                    filterConversationList=tempFilter;
+                    filterConversationList = tempFilter;
 
                 }
-                FilterResults filterResults=new FilterResults();
-                filterResults.values=filterConversationList;
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filterConversationList;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-             filterConversationList= (List<Conversation>) filterResults.values;
-              notifyDataSetChanged();
+                filterConversationList = (List<Conversation>) filterResults.values;
+                notifyDataSetChanged();
             }
         };
     }
@@ -452,12 +496,22 @@ public class CometChatConversationListAdapter extends RecyclerView.Adapter<Comet
 
     public void setTypingIndicator(TypingIndicator typingIndicator, boolean b) {
         for(Conversation conversation : filterConversationList) {
-            if (conversation.getConversationId().contains(typingIndicator.getReceiverId()) &&
-                    conversation.getConversationId().contains(typingIndicator.getSender().getUid())) {
-                this.typingIndicator = typingIndicator;
-                isTypingVisible = !b;
-                int index= filterConversationList.indexOf(conversation);
-                notifyItemChanged(index);
+            if (typingIndicator.getReceiverType().equalsIgnoreCase(CometChatConstants.RECEIVER_TYPE_USER)) {
+                if (conversation.getConversationId()
+                        .contains(typingIndicator.getSender().getUid())) {
+                    this.typingIndicator = typingIndicator;
+                    isTypingVisible = b;
+                    int index = filterConversationList.indexOf(conversation);
+                    notifyItemChanged(index);
+                }
+            } else {
+                if (conversation.getConversationId()
+                        .contains(typingIndicator.getReceiverId())) {
+                    this.typingIndicator = typingIndicator;
+                    isTypingVisible = b;
+                    int index = filterConversationList.indexOf(conversation);
+                    notifyItemChanged(index);
+                }
             }
         }
     }

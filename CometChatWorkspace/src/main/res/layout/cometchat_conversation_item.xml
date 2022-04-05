@@ -1,159 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data>
+    android:id="@+id/view_foreground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:clickable="true"
+    android:focusable="true">
 
-        <variable
-            name="conversation"
-            type="com.cometchat.pro.models.Conversation" />
-
-    </data>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/view_foreground"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/avatar_section"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="0dp"
-        tools:ignore="DuplicateClickableBoundsCheck">
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:minWidth="1dp"
+        android:minHeight="1dp">
 
-        <RelativeLayout
-            android:id="@+id/conversationView"
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
+            android:id="@+id/conversationListItem_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:corner_radius="18dp" />
+
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator
+            android:id="@+id/conversationListItem_userPresence"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignEnd="@+id/conversationListItem_avatar"
+            android:layout_alignBottom="@id/conversationListItem_avatar"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="8dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/avatar_section"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toStartOf="@+id/conversationListItem_time"
+        android:layout_toEndOf="@id/avatar_section"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/conversationListItem_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true">
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textDirection="locale"
+            android:textSize="@dimen/name"
+            android:textStyle="bold"
+            tools:text="@tools:sample/full_names" />
 
-            <RelativeLayout
-                android:id="@+id/avatar_section"
+        <TextView
+            android:id="@+id/conversationListItem_helperText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:text="@string/in_thread"
+            android:textSize="@dimen/eleven"
+            android:visibility="gone"
+            app:drawableEndCompat="@drawable/ic_baseline_in_thread_24"
+            app:drawableTint="@color/grey"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/conversationListItem_typingIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/is_typing"
+            android:textSize="@dimen/fourteen"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt
+                android:id="@+id/conversationListItem_receipt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:minWidth="1dp"
-                android:minHeight="1dp">
-
-                <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
-                    android:id="@+id/conversationListItem_avatar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    app:corner_radius="18dp" />
-
-                <com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator
-                    android:id="@+id/conversationListItem_userPresence"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_alignEnd="@+id/conversationListItem_avatar"
-                    android:layout_alignBottom="@id/conversationListItem_avatar"
-                    app:cardCornerRadius="6dp"
-                    app:cardElevation="8dp" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/avatar_section"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_toStartOf="@+id/conversationListItem_time"
-                android:layout_toEndOf="@id/avatar_section"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/conversationListItem_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textDirection="locale"
-                    android:textSize="@dimen/name"
-                    android:textStyle="bold"
-                    tools:text="@tools:sample/full_names" />
-
-                <TextView
-                    android:id="@+id/conversationListItem_helperText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:drawablePadding="4dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/in_thread"
-                    android:textSize="@dimen/eleven"
-                    android:visibility="gone"
-                    app:drawableTint="@color/grey"
-                    tools:visibility="gone"
-                    app:drawableEndCompat="@drawable/ic_baseline_in_thread_24" />
-
-                <TextView
-                    android:id="@+id/conversationListItem_typingIndicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="@string/is_typing"
-                    android:textSize="@dimen/fourteen"
-                    android:visibility="gone" />
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                <com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt
-                    android:id="@+id/conversationListItem_receipt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/conversationListItem_subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:textSize="@dimen/fourteen"
-                    android:visibility="visible"
-                    tools:text="@tools:sample/lorem/random" />
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/tvSeprator"
+                android:id="@+id/conversationListItem_subtitle"
                 android:layout_width="match_parent"
-                android:layout_height="0.8dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="16dp"
-                android:background="@color/light_grey" />
-
-            <TextView
-                android:id="@+id/conversationListItem_time"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/avatar_section"
-                android:layout_alignParentEnd="true"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:background="@android:color/transparent"
-                android:textSize="12sp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textSize="@dimen/fourteen"
                 android:visibility="visible"
-                tools:text="11:50"
-                tools:visibility="visible" />
+                tools:text="@tools:sample/lorem/random" />
+        </LinearLayout>
+    </LinearLayout>
 
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatBadgeCount.CometChatBadgeCount
-                android:id="@+id/conversationListItem_unreadcount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/conversationListItem_time"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/textColorWhite" />
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    <TextView
+        android:id="@+id/tvSeprator"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:background="@color/light_grey" />
+
+    <TextView
+        android:id="@+id/conversationListItem_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/avatar_section"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:textSize="12sp"
+        android:visibility="visible"
+        tools:text="11:50"
+        tools:visibility="visible" />
+
+    <com.cometchatworkspace.components.shared.secondaryComponents.cometchatBadgeCount.CometChatBadgeCount
+        android:id="@+id/conversationListItem_unreadcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/conversationListItem_time"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/textColorWhite" />
+</RelativeLayout>

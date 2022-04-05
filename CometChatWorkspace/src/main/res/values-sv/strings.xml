@@ -9,7 +9,7 @@
     <string name = "edit_message"> Redigera meddelande </string>
 
     <!--. Blockera användare -->
-    <string name = "unblock"> Avblockera </string>
+    <string name = "unblock">" Tillåt bakgrundsplatsbehörighet"</string>
     <string name = "you_wont_be_able_send_or_receive_messages"> Du kan inte skicka eller ta emot meddelanden </string>
 
     <!-- Grupp -->
@@ -198,5 +198,21 @@
     <string name="votes">Röster</string>
     <string name="replies">Svar</string>
     <string name="reply_message_privately">Svara privat</string>
+    <string name="started">" satte igång"</string>
+    <string name="reply_in_thread">svara_i_tråden</string>
+    <string name="add_to_chat">" Lägg till i Chat"</string>
+    <string name="no_user">" Inga användare"</string>
+    <string name="no_groups">Inga grupper</string>
+    <string name="background_location_permission_title">" tillåt platsbehörighet i bakgrunden"</string>
+    <string name="channel_description">Kanalbeskrivning</string>
+    <string name="tags">Taggar</string>
+    <string name="in_thread">" I en tråd"</string>
+    <string name="member">Medlem</string>
+    <string name="error_cant_load_user">Kan inte ladda användare. Var god försök igen</string>
+    <string name="try_again">FÖRSÖK IGEN</string>
+    <string name="create_group">skapa grupp</string>
+    <string name="error_cant_load_conversation">Det går inte att ladda konversation. Var god försök igen</string>
+    <string name="error_cant_load_group">Det går inte att ladda gruppen. Var god försök igen</string>
+    <string name="no_chats">Te ts</string>
 
 </resources>

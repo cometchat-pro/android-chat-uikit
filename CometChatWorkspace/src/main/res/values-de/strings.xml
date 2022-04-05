@@ -169,5 +169,21 @@
     <string name="votes">Stimmen</string>
     <string name="replies">Antworten</string>
     <string name="reply_message_privately">Privat antworten</string>
+    <string name="started">" gestartet"</string>
+    <string name="reply_in_thread">" antwort_im_thread"</string>
+    <string name="background_location_permission_title">Standortberechtigung im Hintergrund zulassen</string>
+    <string name="add_to_chat">" Zum Chat hinzufügen"</string>
+    <string name="no_user">Keine Benutzer</string>
+    <string name="no_groups">" Keine Gruppen"</string>
+    <string name="channel_description">" Kanal Beschreibung"</string>
+    <string name="tags">Stichworte</string>
+    <string name="in_thread">In einem Faden</string>
+    <string name="member">" Mitglied"</string>
+    <string name="error_cant_load_user">Benutzer können nicht geladen werden. Bitte versuche es erneut</string>
+    <string name="try_again">VERSUCHEN SIE ES NOCHMAL</string>
+    <string name="create_group">Gruppe erstellen</string>
+    <string name="error_cant_load_conversation">Konversation kann nicht geladen werden. Bitte versuche es erneut</string>
+    <string name="error_cant_load_group">Gruppe kann nicht geladen werden. Bitte versuche es erneut</string>
+    <string name="no_chats">" Tee"</string>
 
 </resources>

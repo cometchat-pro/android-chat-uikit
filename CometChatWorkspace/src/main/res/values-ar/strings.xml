@@ -171,4 +171,20 @@
     <string name="votes">الأصوات</string>
     <string name="replies">الردود</string>
     <string name="reply_message_privately">الرد بشكل خاص</string>
+    <string name="started">بدأت</string>
+    <string name="reply_in_thread">" reply_in_thread"</string>
+    <string name="background_location_permission_title">السماح بإذن موقع الخلفية</string>
+    <string name="add_to_chat">أضف إلى الدردشة</string>
+    <string name="no_user">لا مستخدمين</string>
+    <string name="no_groups">لا مجموعات</string>
+    <string name="channel_description">قناة صفا</string>
+    <string name="tags">العلامات</string>
+    <string name="in_thread">في موضوع</string>
+    <string name="member">عضو 成员</string>
+    <string name="error_cant_load_user">"لا يمكن تحميل المستخدمين. حاول مرة اخرى "</string>
+    <string name="try_again">حاول مجددا</string>
+    <string name="create_group">إنشاء مجموعة</string>
+    <string name="error_cant_load_conversation">لا يمكن تحميل المحادثة. حاول مرة اخرى</string>
+    <string name="error_cant_load_group">لا يمكن تحميل المجموعة. حاول مرة اخرى</string>
+    <string name="no_chats">ts الشاي</string>
 </resources>

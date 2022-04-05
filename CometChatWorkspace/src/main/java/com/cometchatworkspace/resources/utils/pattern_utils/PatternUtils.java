@@ -8,11 +8,12 @@ import android.util.Patterns;
 import android.widget.TextView;
 
 
+import com.cometchatworkspace.R;
+
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 
 public class PatternUtils {
     public static void setHyperLinkSupport(Context context, TextView txtMessage) {
@@ -20,7 +21,8 @@ public class PatternUtils {
                 addPattern(Pattern.compile("(^|[\\s.:;?\\-\\]<\\(])" +
                                 "((https?://|www\\.|pic\\.)[-\\w;/?:@&=+$\\|\\_.!~*\\|'()\\[\\]%#,☺]+[\\w/#](\\(\\))?)" +
                                 "(?=$|[\\s',\\|\\(\\).:;?\\-\\[\\]>\\)])"),
-                        context.getResources().getColor(CometChatTheme.urlColor),
+//                        context.getResources().getColor(CometChatTheme.urlColor),
+                        context.getResources().getColor(R.color.dark_blue),
                         new PatternBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {
@@ -33,7 +35,7 @@ public class PatternUtils {
                             }
                         }).into(txtMessage);
         new PatternBuilder().
-                addPattern(Patterns.PHONE, context.getResources().getColor(CometChatTheme.phoneNumberColor),
+                addPattern(Patterns.PHONE, context.getResources().getColor(R.color.dark_blue),
                         new PatternBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {
@@ -44,7 +46,7 @@ public class PatternUtils {
                         }).into(txtMessage);
         new PatternBuilder().
                 addPattern(Pattern.compile("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"),
-                        context.getResources().getColor(CometChatTheme.emailColor),
+                        context.getResources().getColor(R.color.dark_blue),
                         new PatternBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {

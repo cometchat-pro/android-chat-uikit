@@ -169,4 +169,20 @@
     <string name="votes">投票</string>
     <string name="replies">回复</string>
     <string name="reply_message_privately">私下回复</string>
+    <string name="started">" 开始"</string>
+    <string name="reply_in_thread">" 回复线程"</string>
+    <string name="background_location_permission_title">允许后台位置权限</string>
+    <string name="add_to_chat">" 添加到聊天"</string>
+    <string name="no_user">" 没有用户"</string>
+    <string name="no_groups">" 没有组"</string>
+    <string name="channel_description">قناة صفا</string>
+    <string name="tags">标签</string>
+    <string name="in_thread">在一个线程中</string>
+    <string name="member">" 成员"</string>
+    <string name="error_cant_load_user">无法加载用户。请再试一次</string>
+    <string name="try_again">再试一次</string>
+    <string name="create_group">创建组</string>
+    <string name="error_cant_load_conversation">无法加载对话。请再试一次</string>
+    <string name="error_cant_load_group">无法加载组。请再试一次</string>
+    <string name="no_chats">茶点</string>
 </resources>

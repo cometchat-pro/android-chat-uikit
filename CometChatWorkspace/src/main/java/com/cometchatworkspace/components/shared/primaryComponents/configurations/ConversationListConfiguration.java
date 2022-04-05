@@ -2,18 +2,18 @@ package com.cometchatworkspace.components.shared.primaryComponents.configuration
 
 import android.content.Context;
 
-public class ConversationsConfiguration extends CometChatConfigurations {
+public class ConversationListConfiguration extends CometChatConfigurations {
 
     private boolean hideDeleteConversation;
     private boolean hideStartConversation;
     private boolean hideSearchConversation;
     private final Context context;
 
-    public ConversationsConfiguration(Context context) {
+    public ConversationListConfiguration(Context context) {
         this.context = context;
     }
 
-    public ConversationsConfiguration hideDeleteConversation(boolean isHidden) {
+    public ConversationListConfiguration hideDeleteConversation(boolean isHidden) {
         this.hideDeleteConversation = isHidden;
         return this;
     }
@@ -22,7 +22,7 @@ public class ConversationsConfiguration extends CometChatConfigurations {
         return hideDeleteConversation;
     }
 
-    public ConversationsConfiguration hideStartConversation(boolean isHidden) {
+    public ConversationListConfiguration hideStartConversation(boolean isHidden) {
         this.hideStartConversation = isHidden;
         return this;
     }
@@ -31,7 +31,7 @@ public class ConversationsConfiguration extends CometChatConfigurations {
         return hideStartConversation;
     }
 
-    public ConversationsConfiguration hideSearchConversation(boolean isHidden) {
+    public ConversationListConfiguration hideSearchConversation(boolean isHidden) {
         this.hideSearchConversation = isHidden;
         return this;
     }

@@ -170,5 +170,21 @@
     <string name="votes">Votos</string>
     <string name="replies">Respostas</string>
     <string name="reply_message_privately">Responder em particular</string>
+    <string name="started">iniciada</string>
+    <string name="reply_in_thread">" reply_in_thread"</string>
+    <string name="background_location_permission_title">Permitir permissão de localização em segundo plano</string>
+    <string name="add_to_chat">" Adicionar ao bate-papo"</string>
+    <string name="no_user">" Nenhum usuário"</string>
+    <string name="no_groups">Nenhum grupo</string>
+    <string name="channel_description">Descrição do canal</string>
+    <string name="tags">" Tag"</string>
+    <string name="in_thread">Em um fio</string>
+    <string name="member">" Membro"</string>
+    <string name="error_cant_load_user">Não é possível carregar usuários. Por favor, tente novamente</string>
+    <string name="try_again">TENTE NOVAMENTE</string>
+    <string name="create_group">criar grupo</string>
+    <string name="error_cant_load_conversation">Não é possível carregar a conversa. Por favor, tente novamente</string>
+    <string name="error_cant_load_group">Não é possível carregar o grupo. Por favor, tente novamente</string>
+    <string name="no_chats">" chá ts"</string>
 
 </resources>

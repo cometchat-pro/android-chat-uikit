@@ -13,6 +13,7 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 
 import com.cometchatworkspace.R;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.google.android.material.card.MaterialCardView;
 
@@ -78,8 +79,8 @@ public class CometChatBadgeCount extends MaterialCardView {
                 0, 0);
         count = a.getInt(R.styleable.BadgeCount_count, 0);
         countSize = a.getDimension(R.styleable.BadgeCount_count_size, 12);
-        countColor = a.getColor(R.styleable.BadgeCount_count_color, Color.WHITE);
-        countBackgroundColor=a.getColor(R.styleable.BadgeCount_count_background_color,getResources().getColor(R.color.colorPrimary));
+        countColor = a.getColor(R.styleable.BadgeCount_count_color,0);
+        countBackgroundColor=a.getColor(R.styleable.BadgeCount_count_background_color,0);
 
 
         addView(view);

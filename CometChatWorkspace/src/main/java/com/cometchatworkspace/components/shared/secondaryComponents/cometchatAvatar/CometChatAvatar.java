@@ -20,7 +20,6 @@ import com.cometchat.pro.models.AppEntity;
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.User;
 
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.R;
 import com.google.android.material.card.MaterialCardView;
 
@@ -29,12 +28,11 @@ import com.google.android.material.card.MaterialCardView;
  * to display the avatar of their user or icon of the group. This class contains various methods which
  * are used to change shape of image as circle or rectangle, border with of image, border color of image.
  * and set default drawable if there is no image.
- *
+ * <p>
  * Created on - 20th December 2019
- *
+ * <p>
  * Modified on  - 20th January 2020
- *
-*/
+ */
 
 public class CometChatAvatar extends MaterialCardView {
 
@@ -101,23 +99,22 @@ public class CometChatAvatar extends MaterialCardView {
     }
 
     private void getAttributes(AttributeSet attrs) {
-        View view =View.inflate(context, R.layout.cometchat_avatar,null);
+        View view = View.inflate(context, R.layout.cometchat_avatar, null);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.Avatar,
                 0, 0);
-            /*
-             * Get the shape and set shape field accordingly
-             * */
+        /*
+         * Get the shape and set shape field accordingly
+         * */
         drawable = a.getDrawable(R.styleable.Avatar_image);
-        radius = a.getDimension(R.styleable.Avatar_corner_radius, CometChatTheme.Avatar.cornerRadius);
-        backgroundColor = a.getColor(R.styleable.Avatar_background_color,
-                0);
+        radius = a.getDimension(R.styleable.Avatar_corner_radius, 18);
+        backgroundColor = a.getColor(R.styleable.Avatar_background_color, 0);
         avatarUrl = a.getString(R.styleable.Avatar_avatar);
 //            borderRadius = a.getInteger(R.styleable.Avatar_cornerRadius,8);
-        borderColor = a.getColor(R.styleable.Avatar_borderColor,0);
-  //          backgroundColor = a.getColor(R.styleable.Avatar_backgroundColor,getResources().getColor(R.color.colorPrimary));
-        borderWidth = a.getDimension(R.styleable.Avatar_borderWidth,CometChatTheme.Avatar.borderWidth);
+        borderColor = a.getColor(R.styleable.Avatar_borderColor, 0);
+        //          backgroundColor = a.getColor(R.styleable.Avatar_backgroundColor,getResources().getColor(R.color.colorPrimary));
+        borderWidth = a.getDimension(R.styleable.Avatar_borderWidth, 0);
 
 
         addView(view);
@@ -125,43 +122,41 @@ public class CometChatAvatar extends MaterialCardView {
         outerCardView = view.findViewById(R.id.outerView);
         innerCardView = view.findViewById(R.id.cardView);
         setRadius(radius);
-        if (color==0) {
-            setBorderColor(getResources().getColor(CometChatTheme.Avatar.borderColor));
+        if (color == 0) {
+            setBorderColor(getResources().getColor(R.color.primary));
         } else {
             setBorderColor(color);
         }
-        if (backgroundColor!=0)
-            innerCardView.setCardBackgroundColor(backgroundColor);
-        else
-            innerCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        innerCardView.setCardBackgroundColor(backgroundColor);
         imageView = view.findViewById(R.id.image);
         textView = view.findViewById(R.id.text);
-        if (drawable!=null)
+        if (drawable != null)
             imageView.setImageDrawable(drawable);
     }
 
     public void setAvatar(@NonNull User user) {
 
-         if (user!=null) {
-             if (user.getAvatar() != null) {
-                 avatarUrl = user.getAvatar();
-                 if (isValidContextForGlide(context)) {
-                     setValues();
-                 }
-             } else {
-                  if (user.getName()!=null&&!user.getName().isEmpty()) {
-                      if (user.getName().length() > 2) {
-                          text = user.getName().substring(0, 2);
-                      } else {
-                          text = user.getName();
-                      }
-                  }else {
-                      text="??";
-                  }
-                  imageView.setVisibility(View.GONE);
-                  textView.setText(text);
-             }
-         }
+        if (user != null) {
+            if (user.getAvatar() != null) {
+                avatarUrl = user.getAvatar();
+                if (isValidContextForGlide(context)) {
+                    setValues();
+                }
+            } else {
+                if (user.getName() != null && !user.getName().isEmpty()) {
+                    if (user.getName().length() > 2) {
+                        text = user.getName().substring(0, 2);
+                    } else {
+                        text = user.getName();
+                    }
+                } else {
+                    text = "??";
+                }
+                imageView.setVisibility(View.GONE);
+                textView.setText(text);
+                textView.setBackgroundColor(getResources().getColor(R.color.primary));
+            }
+        }
 
     }
 
@@ -174,29 +169,29 @@ public class CometChatAvatar extends MaterialCardView {
      */
     public void setAvatar(@NonNull Group group) {
 
-         if (group!=null) {
+        if (group != null) {
 
-             if (group.getIcon() != null) {
-                 avatarUrl = group.getIcon();
-                 if (isValidContextForGlide(context))
-                 setValues();
-             } else {
-                 if (group.getName().length() > 2)
-                     text = group.getName().substring(0, 2);
-                 else {
-                     text = group.getName();
-                 }
-                 imageView.setVisibility(View.GONE);
-                 textView.setText(text);
-             }
-         }
+            if (group.getIcon() != null) {
+                avatarUrl = group.getIcon();
+                if (isValidContextForGlide(context))
+                    setValues();
+            } else {
+                if (group.getName().length() > 2)
+                    text = group.getName().substring(0, 2);
+                else {
+                    text = group.getName();
+                }
+                imageView.setVisibility(View.GONE);
+                textView.setText(text);
+            }
+        }
     }
 
     private void setAvatar(AppEntity appEntity) {
         if (appEntity instanceof User) {
-            setAvatar((User)appEntity);
+            setAvatar((User) appEntity);
         } else if (appEntity instanceof Group) {
-            setAvatar((Group)appEntity);
+            setAvatar((Group) appEntity);
         }
     }
 
@@ -204,7 +199,6 @@ public class CometChatAvatar extends MaterialCardView {
      * This method is used to set image by using url passed in parameter..
      *
      * @param avatarUrl is an object of String.class which is used to set avatar.
-     *
      */
     public void setAvatar(@NonNull String avatarUrl) {
 
@@ -227,8 +221,9 @@ public class CometChatAvatar extends MaterialCardView {
     }
 
     public String getAvatarUrl() {
-        return  this.avatarUrl;
+        return this.avatarUrl;
     }
+
     /**
      * This method is used to set first two character as image. It is used when user, group or url
      * is null.
@@ -239,24 +234,35 @@ public class CometChatAvatar extends MaterialCardView {
 
         if (name.length() >= 2) {
             text = name.substring(0, 2);
-        }else {
-            text=name;
+        } else {
+            text = name;
         }
         imageView.setVisibility(View.GONE);
         textView.setText(text);
         textView.setVisibility(View.VISIBLE);
     }
 
-    public void setAvatar(@NonNull String url,@NonNull String name) {
-       setAvatar(url);
-        if (url==null)
+    public void setTextColor(int color) {
+        if (color != 0)
+            textView.setTextColor(color);
+    }
+
+    public void setTextAppearance(int appearance) {
+        if (appearance != 0)
+            textView.setTextAppearance(context, appearance);
+    }
+
+    public void setAvatar(@NonNull String url, @NonNull String name) {
+        setAvatar(url);
+        if (url == null)
             setInitials(name);
     }
+
     public float getBorderWidth() {
         return borderWidth;
     }
-    public Drawable getDrawable()
-    {
+
+    public Drawable getDrawable() {
         return drawable;
     }
 
@@ -265,6 +271,7 @@ public class CometChatAvatar extends MaterialCardView {
         imageView.setVisibility(View.VISIBLE);
         textView.setVisibility(View.GONE);
     }
+
     /*
      * Set user specific fields in here
      * */
@@ -281,7 +288,7 @@ public class CometChatAvatar extends MaterialCardView {
                 textView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
         invalidate();
     }
@@ -300,10 +307,11 @@ public class CometChatAvatar extends MaterialCardView {
 
     /**
      * This method is used to set border color of avatar.
+     *
      * @param color
      */
     public void setBorderColor(@ColorInt int color) {
-        if (color!=0) {
+        if (color != 0) {
             this.borderColor = color;
             innerCardView.setStrokeColor(color);
         }
@@ -311,11 +319,12 @@ public class CometChatAvatar extends MaterialCardView {
 
     /**
      * This method is used to set border width of avatar
+     *
      * @param borderWidth
      */
     public void setBorderWidth(int borderWidth) {
         this.borderWidth = borderWidth;
-       innerCardView.setStrokeWidth(borderWidth);
+        innerCardView.setStrokeWidth(borderWidth);
     }
 
     public void setCornerRadius(int radius) {
@@ -330,7 +339,7 @@ public class CometChatAvatar extends MaterialCardView {
     }
 
     public void setBackgroundColor(int[] colorArray, GradientDrawable.Orientation orientation) {
-        if (innerCardView !=null) {
+        if (innerCardView != null) {
             GradientDrawable gd = new GradientDrawable(
                     orientation,
                     colorArray);
@@ -340,11 +349,11 @@ public class CometChatAvatar extends MaterialCardView {
     }
 
     public void setOuterViewColor(@ColorInt int color) {
-        if (color!=0)
-           outerCardView.setCardBackgroundColor(color);
+        if (color != 0)
+            outerCardView.setCardBackgroundColor(color);
     }
 
     public void setOuterViewSpacing(int padding) {
-        outerCardView.setContentPadding(padding,padding,padding,padding);
+        outerCardView.setContentPadding(padding, padding, padding, padding);
     }
 }

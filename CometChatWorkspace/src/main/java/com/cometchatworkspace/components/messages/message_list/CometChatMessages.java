@@ -59,6 +59,7 @@ import com.cometchatworkspace.components.messages.header.CometChatMessagesHeader
 import com.cometchatworkspace.components.messages.message_list.utils.LocationUtils;
 import com.cometchatworkspace.components.messages.message_list.utils.PollsUtils;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
@@ -363,7 +364,7 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
         cometchatMessageHeader.title(name);
         cometchatMessageHeader.subTitle(status);
         cometchatMessageHeader.setAvatar(avatarUrl,name);
-        cometchatMessageHeader.titleFont(FontUtils.robotoMedium);
+        cometchatMessageHeader.titleFont(CometChatTheme.Typography.robotoMedium);
         cometchatMessageHeader.addListener("CometChatMessage",new CometChatMessagesHeader.OnEventListener() {
             @Override
             public void onBackPressed() {
