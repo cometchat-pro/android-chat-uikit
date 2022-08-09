@@ -70,12 +70,12 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:pro-android-chat-sdk:3.0.1'
+  implementation 'com.cometchat:pro-android-chat-sdk:3.0.9'
   
     /** From v2.4+ onwards, Voice & Video Calling functionality has been 
     moved to a separate library. In case you plan to use the calling 
     feature, please add the Calling dependency.**/
-    implementation 'com.cometchat:pro-android-calls-sdk:2.1.0'
+    implementation 'com.cometchat:pro-android-calls-sdk:2.2.0'
 }
 ```
 
@@ -253,6 +253,17 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 	</td></table>
 
 	</li>
+   <li> Open the gradle.properties and check if the below stated line is present or not, if not then simply add it.
+
+   <table><td>
+
+   ```groovy
+   android.enableJetifier=true
+   ```
+
+   </td></table>
+
+   </li>
 	</ul>
 
 <hr/>
@@ -302,6 +313,7 @@ Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-ch
 
 Thanks to the following people who have contributed to this project:
 
+[👨‍💻 @vivekprajapati 💻](https://github.com/vivekCometChat) <br>
 [👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali) <br>
 [👨‍💻 @yadavmangesh 💻](https://github.com/yadavmangesh)
 
