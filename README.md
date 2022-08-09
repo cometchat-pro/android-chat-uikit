@@ -14,9 +14,9 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](#)
 [![Platform](https://img.shields.io/badge/Language-Java-yellowgreen.svg)](#)
-<img src="https://img.shields.io/badge/Repo%20Size-9.26%20MB-blue" />
+![GitHub repo size](https://img.shields.io/github/repo-size/cometchat-pro/android-java-chat-ui-kit)
 ![GitHub contributors](https://img.shields.io/github/contributors/cometchat-pro/android-java-chat-ui-kit)
-![Version](https://shields.io/badge/version-v3.0.7--1-orange)
+![Version](https://shields.io/badge/version-v3.0.1--1-orange)
 ![GitHub stars](https://img.shields.io/github/stars/cometchat-pro/android-java-chat-ui-kit?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/cometchat?style=social)
 
@@ -28,7 +28,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 Before you begin, ensure you have met the following requirements:<br/>
  ✅ &nbsp; You have `Android Studio` installed in your machine.<br/>
  ✅ &nbsp; You have a `Android Device or Emulator` with Android Version 6.0 or above.<br/>
- ✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/v2.1/docs/concepts).<br/>
+ ✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/docs/concepts).<br/>
 
 <hr/>
 
@@ -41,7 +41,6 @@ To setup Android Chat UI Kit, you  need to first register on CometChat Dashboard
 
 1. Create a new app: Click **Add App** option available  →  Enter App Name & other information  → Create App
 2. You will find `APP_ID`, `AUTH_KEY` and `REGION` key at top in **QuickStart** section or else go to "API & Auth Keys" section and copy the `APP_ID`, `AUTH_KEY` and `REGION` key from the "Auth Only API Key" tab.
-[Credentials Sample](Screenshot/qs.jpg)
 <img align="center" src="https://files.readme.io/4b771c5-qs_copy.jpg"/>
 
 
@@ -71,12 +70,12 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'com.cometchat:pro-android-chat-sdk:3.0.7'
-    
+  implementation 'com.cometchat:pro-android-chat-sdk:3.0.9'
+  
     /** From v2.4+ onwards, Voice & Video Calling functionality has been 
     moved to a separate library. In case you plan to use the calling 
     feature, please add the Calling dependency.**/
-    implementation 'com.cometchat:pro-android-calls-sdk:2.1.1'
+    implementation 'com.cometchat:pro-android-calls-sdk:2.2.0'
 }
 ```
 
@@ -98,7 +97,7 @@ android {
 </td></table>
 
  You can refer to the below link for instructions on how to do so:<br/>
-[📝 Add CometChat Dependency](https://prodocs.cometchat.com/v2.1/docs/android-quick-start#section-add-the-cometchat-dependency)
+[📝 Add CometChat Dependency](https://prodocs.cometchat.com/docs/android-quick-start#section-add-the-cometchat-dependency)
 
 <hr/>
 
@@ -173,15 +172,15 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 <hr/>
 
-📝  &nbsp; Please refer to our [Developer Documentation](https://prodocs.cometchat.com/v2.1/docs/android-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
+📝  &nbsp; Please refer to our [Developer Documentation](https://prodocs.cometchat.com/docs/android-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
 
 <hr/>
 
 ## Add UI Kit Library
 
-1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro-samples/android-java-chat-uikit/) repository.
+1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro/android-java-chat-ui-kit/tree/v3) repository.
 
-2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/v2.1/docs/android-ui-kit-setup) )
+2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/docs/android-ui-kit-setup) )
 
 3. If the Library is added successfully, it will look like mentioned in the below image.
 <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
@@ -254,6 +253,17 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 	</td></table>
 
 	</li>
+   <li> Open the gradle.properties and check if the below stated line is present or not, if not then simply add it.
+
+   <table><td>
+
+   ```groovy
+   android.enableJetifier=true
+   ```
+
+   </td></table>
+
+   </li>
 	</ul>
 
 <hr/>
@@ -283,18 +293,18 @@ import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI;
 ## Checkout our sample apps
 
 ### Java: 
-Visit our [Java sample app](https://github.com/cometchat-pro/android-java-chat-app) repo to run the java sample app.
+Visit our [Java sample app](https://github.com/cometchat-pro/android-java-chat-app/tree/v3) repo to run the java sample app.
 
 ### Kotlin: 
-Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-chat-app) repo to run the kotlin sample app.
+Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-chat-app/tree/v3) repo to run the kotlin sample app.
 
 <hr/>
 
 ## Troubleshooting
 
-- To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/v2.1/docs/android-ui-kit)  .
+- To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/docs/android-ui-kit)  .
 
-- Facing any issues while integrating or installing the UI Kit please <a href="https://app.cometchat.io/"> connect with us via real time support present in CometChat Dashboard.</a>.
+- Facing any issues while integrating or installing the UI Kit please <a href="https://app.cometchat.com/"> connect with us via real time support present in CometChat Dashboard.</a>.
 
 ---
 
@@ -303,6 +313,7 @@ Visit our [Kotlin sample app](https://github.com/cometchat-pro/android-kotlin-ch
 
 Thanks to the following people who have contributed to this project:
 
+[👨‍💻 @vivekprajapati 💻](https://github.com/vivekCometChat) <br>
 [👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali) <br>
 [👨‍💻 @yadavmangesh 💻](https://github.com/yadavmangesh)
 
@@ -312,7 +323,7 @@ Thanks to the following people who have contributed to this project:
 
 ## :mailbox: Contact
 
-Contact us via real time support present in [CometChat Dashboard.](https://app.cometchat.io/)
+Contact us via real time support present in [CometChat Dashboard.](https://app.cometchat.com/)
 
 ---
 
