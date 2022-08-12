@@ -289,8 +289,8 @@ public class CometChatMessageInfoActivity extends AppCompatActivity {
                         TextView textViewOption = new TextView(this);
                         textViewPercentage.setPadding(16, 4, 0, 4);
                         textViewOption.setPadding(16, 4, 0, 4);
-                        textViewOption.setTextAppearance(this, R.style.TextAppearance_AppCompat_Medium);
-                        textViewPercentage.setTextAppearance(this, R.style.TextAppearance_AppCompat_Medium);
+                        textViewOption.setTextAppearance(this, androidx.appcompat.R.style.TextAppearance_AppCompat_Medium);
+                        textViewPercentage.setTextAppearance(this, androidx.appcompat.R.style.TextAppearance_AppCompat_Medium);
                         textViewPercentage.setTextColor(getResources().getColor(R.color.primaryTextColor));
                         textViewOption.setTextColor(getResources().getColor(R.color.primaryTextColor));
                         String optionStr = options.getString(String.valueOf(i + 1));

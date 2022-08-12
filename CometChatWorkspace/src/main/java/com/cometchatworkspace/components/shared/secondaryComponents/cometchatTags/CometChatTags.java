@@ -137,7 +137,7 @@ public class CometChatTags extends BottomSheetDialogFragment {
             parentLayout.setOrientation(LinearLayout.VERTICAL);
 
             TextView category = new TextView(requireContext());
-            category.setTextAppearance(R.style.TextAppearance_AppCompat_Title);
+            category.setTextAppearance(androidx.appcompat.R.style.TextAppearance_AppCompat_Title);
             category.setText(key);
             parentLayout.addView(category);
 
