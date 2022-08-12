@@ -58,11 +58,14 @@ public class Extensions {
             HashMap<String, JSONObject> extensionList = extensionCheck(baseMessage);
             if (extensionList != null && extensionList.containsKey("imageModeration")) {
                 JSONObject imageModeration = extensionList.get("imageModeration");
-                String unsafe = imageModeration.getString("unsafe");
-                result = unsafe == "yes";
+                if (imageModeration.has(Extensions.imageModeration)) {
+                    JSONObject imageModeration_ = imageModeration.getJSONObject(Extensions.imageModeration);
+                    String unsafe = imageModeration_.getString("unsafe");
+                    result = unsafe.equals("yes");
+                }
             }
         }catch (Exception e) {
-            Log.e("Error:",e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -86,7 +89,7 @@ public class Extensions {
                 resultUrl = thumbnailGeneration.getString("url_small");
             }
         }catch (Exception e) {
-            Log.e(TAG, "getThumbnailGeneration: "+e.getMessage());
+            e.printStackTrace();
         }
         return resultUrl;
     }
@@ -102,7 +105,7 @@ public class Extensions {
                 replyList.add(replyObject.getString("reply_neutral"));
                 replyList.add(replyObject.getString("reply_negative"));
             } catch (Exception e) {
-                Log.e(TAG, "onSuccess: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return replyList;
@@ -166,7 +169,7 @@ public class Extensions {
             else
                 return null;
         }  catch (Exception e) {
-            Log.e(TAG, "extensionCheckError: "+e.getMessage() );
+            e.printStackTrace();
         }
         return null;
     }
@@ -181,7 +184,7 @@ public class Extensions {
                 result = str.equals("negative");
             }
         }catch (Exception e) {
-            Log.e(TAG, "checkSentimentError: "+e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -209,7 +212,7 @@ public class Extensions {
                     result = ((TextMessage)baseMessage).getText().trim();
                 }
             } catch (Exception e) {
-                Log.e(TAG, "checkProfanityMessage:Error: "+e.getMessage() );
+                e.printStackTrace();
             }
         }
         return result;
@@ -264,7 +267,7 @@ public class Extensions {
                 }
             }
         }catch (Exception e) {
-            Log.e(TAG, "userVotedOnError: "+e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -277,7 +280,7 @@ public class Extensions {
                 voteCount = result.getInt("total");
             }
         }catch (Exception e) {
-            Log.e(TAG, "getVoteCountError: "+e.getMessage());
+            e.printStackTrace();
         }
         return voteCount;
     }
@@ -293,7 +296,7 @@ public class Extensions {
                     }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "getPollsResultError: "+e.getMessage());
+                e.printStackTrace();
             }
         }
         return result;
@@ -310,7 +313,7 @@ public class Extensions {
                 }
             }
         } catch (Exception e) {
-                Log.e(TAG, "checkProfanityMessage:Error: "+e.getMessage() );
+            e.printStackTrace();
         }
         return votes;
     }
@@ -354,7 +357,7 @@ public class Extensions {
                 }
                 if (dataObject.has("customStickers")) {
                     JSONArray customSticker = dataObject.getJSONArray("customStickers");
-                    Log.d(TAG, "getStickersList: customStickersArray " + customSticker.toString() );
+                    Log.d(TAG, "getStickersList: customStickersArray " + customSticker);
                     for (int i = 0; i < customSticker.length(); i++) {
                         JSONObject stickerObject = customSticker.getJSONObject(i);
                         String stickerOrder = stickerObject.getString("stickerOrder");
@@ -409,7 +412,6 @@ public class Extensions {
                         JSONObject react = data.getJSONObject(keyValue);
                         String reactCount = react.length()+"";
                         result.put(keyValue,reactCount);
-                        Log.e(TAG, "getReactionsOnMessage: "+keyValue+"="+reactCount);
                     }
                 }
             }catch (Exception e) { e.printStackTrace(); }
@@ -436,7 +438,6 @@ public class Extensions {
                                 String uid = (String) uids.next();
                                 JSONObject user = react.getJSONObject(uid);
                                 reactionUser.add(user.getString("name"));
-                                Log.e(TAG, "getReactionsOnMessage: " + keyValue + "=" + user.getString("name"));
                             }
                             result.put(keyValue, reactionUser);
                         }
@@ -531,7 +532,6 @@ public class Extensions {
                     boardUrl = whiteBoardData.getString("board_url");
                     String userName = CometChat.getLoggedInUser().getName().replace("//s+","_");
                     boardUrl = boardUrl+"&username="+userName;
-                    Log.e(TAG, "openWhiteBoard: after "+boardUrl);
                     Intent intent = new Intent(context, CometChatWebViewActivity.class);
                     intent.putExtra(UIKitConstants.IntentStrings.URL, boardUrl);
                     context.startActivity(intent);
@@ -567,7 +567,7 @@ public class Extensions {
             if (baseMessage.getMetadata() != null) {
                 JSONObject metadataObject = baseMessage.getMetadata();
                 if (metadataObject.has("values")) {
-                    JSONObject valueObject = metadataObject.getJSONObject("values");
+                    JSONObject valueObject = metadataObject.getJSONArray("values").getJSONObject(0);
                     if (valueObject.has("data")) {
                         JSONObject dataObject = valueObject.getJSONObject("data");
                         if (dataObject.has("translations")) {
@@ -581,7 +581,7 @@ public class Extensions {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "getTranslatedMessageError: "+e.getMessage());
+            e.printStackTrace();
         }
         return translatedMessage;
     }
@@ -605,7 +605,7 @@ public class Extensions {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "isMessageTranslatedError: "+e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -633,7 +633,7 @@ public class Extensions {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "isMessageTranslatedError: "+e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -666,21 +666,17 @@ public class Extensions {
                                             .getTextFromTranslatedMessage(jsonObject,
                                                     str);
                                     resultList.add(translatedMessage);
-                                } else {
-                                    Log.e(TAG, "onSuccess: No Translation available" );
                                 }
                             }
 
                             @Override
                             public void onError(CometChatException e) {
-                                Log.e(TAG, "onError: "+e.getMessage()+"\n"+e.getCode());
                             }
                         });
             }
             extensionResponseListener.OnResponseSuccess(resultList);
         } catch (Exception e) {
             extensionResponseListener.OnResponseFailed(new CometChatException("ERR_TRANSLATION_FAILED","Not able to translate smart reply"));
-            Log.e(TAG, "translateSmartReplyMessage: "+e.getMessage());
         }
         return resultList;
     }

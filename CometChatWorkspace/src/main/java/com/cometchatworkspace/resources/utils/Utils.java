@@ -2,6 +2,7 @@ package com.cometchatworkspace.resources.utils;
 
 import static android.os.Environment.DIRECTORY_DOCUMENTS;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentUris;
@@ -55,6 +56,7 @@ import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 import com.google.android.material.appbar.MaterialToolbar;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
@@ -73,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.cometchatworkspace.resources.constants.UIKitConstants;
+
 import kotlin.ranges.RangesKt;
 
 public class Utils {
@@ -88,8 +91,7 @@ public class Utils {
         return Color.argb(alpha, red, green, blue);
     }
 
-    public static boolean isDarkMode(Context context)
-    {
+    public static boolean isDarkMode(Context context) {
         int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightMode == Configuration.UI_MODE_NIGHT_YES;
     }
@@ -110,6 +112,7 @@ public class Utils {
         }
 
     }
+
     public static final float softTransition(float $this$softTransition, float compareWith, float allowedDiff, float scaleFactor) {
         if (scaleFactor == 0.0F) {
             return $this$softTransition;
@@ -131,7 +134,7 @@ public class Utils {
     }
 
     public static AudioManager getAudioManager(Context context) {
-        return (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+        return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     public static float dpToPixel(float dp, Resources resources) {
@@ -160,9 +163,9 @@ public class Utils {
         return DateFormat.format("dd MMM yy", var2).toString();
     }
 
-    public static String getDate(Context context,long var0) {
+    public static String getDate(Context context, long var0) {
         Calendar var2 = Calendar.getInstance(Locale.ENGLISH);
-        var2.setTimeInMillis(var0*1000L);
+        var2.setTimeInMillis(var0 * 1000L);
 
         long currentTimeStamp = System.currentTimeMillis();
 
@@ -205,7 +208,7 @@ public class Utils {
     }
 
 
-    public static String getLastMessage(Context context,BaseMessage lastMessage) {
+    public static String getLastMessage(Context context, BaseMessage lastMessage) {
 
         String message = null;
 
@@ -216,14 +219,14 @@ public class Utils {
                 if (lastMessage instanceof TextMessage) {
 
                     if (isLoggedInUser(lastMessage.getSender()))
-                        message = context.getString(R.string.you) +": "+ (((TextMessage) lastMessage).getText()==null
-                                ?context.getString(R.string.this_message_deleted):((TextMessage) lastMessage).getText());
+                        message = context.getString(R.string.you) + ": " + (((TextMessage) lastMessage).getText() == null
+                                ? context.getString(R.string.this_message_deleted) : ((TextMessage) lastMessage).getText());
                     else
-                        message = lastMessage.getSender().getName() + ": " + (((TextMessage) lastMessage).getText()==null
-                                ?context.getString(R.string.this_message_deleted):((TextMessage) lastMessage).getText());
+                        message = lastMessage.getSender().getName() + ": " + (((TextMessage) lastMessage).getText() == null
+                                ? context.getString(R.string.this_message_deleted) : ((TextMessage) lastMessage).getText());
 
                 } else if (lastMessage instanceof MediaMessage) {
-                    if (lastMessage.getDeletedAt()==0) {
+                    if (lastMessage.getDeletedAt() == 0) {
                         if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_IMAGE))
                             message = context.getString(R.string.message_image);
                         else if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_VIDEO))
@@ -243,9 +246,9 @@ public class Utils {
 //                        message = String.format(context.getString(R.string.you_received), lastMessage.getType());
 //                    }
                 }
-            break;
+                break;
             case CometChatConstants.CATEGORY_CUSTOM:
-                if (lastMessage.getDeletedAt()==0) {
+                if (lastMessage.getDeletedAt() == 0) {
                     if (lastMessage.getType().equals(UIKitConstants.IntentStrings.LOCATION))
                         message = context.getString(R.string.custom_message_location);
                     else if (lastMessage.getType().equals(UIKitConstants.IntentStrings.POLLS))
@@ -258,8 +261,17 @@ public class Utils {
                         message = context.getString(R.string.custom_message_document);
                     else if (lastMessage.getType().equalsIgnoreCase(UIKitConstants.IntentStrings.GROUP_CALL))
                         message = context.getString(R.string.custom_message_meeting);
-                    else
-                        message = String.format(context.getString(R.string.you_received), lastMessage.getType());
+                    else {
+                        if(lastMessage.getMetadata()!=null && lastMessage.getMetadata().has("pushNotification")){
+                            try {
+                                message = lastMessage.getMetadata().getString("pushNotification");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            message = String.format(context.getString(R.string.you_received), lastMessage.getType());
+                        }
+                    }
                 } else
                     message = context.getString(R.string.this_message_deleted);
 
@@ -269,13 +281,13 @@ public class Utils {
                 break;
 
             case CometChatConstants.CATEGORY_CALL:
-                if (((Call)lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_ENDED) ||
+                if (((Call) lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_ENDED) ||
                         ((Call) lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_CANCELLED)) {
                     if (lastMessage.getType().equalsIgnoreCase(CometChatConstants.CALL_TYPE_AUDIO))
                         message = context.getString(R.string.incoming_audio_call);
                     else
                         message = context.getString(R.string.incoming_video_call);
-                } else if (((Call)lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_ONGOING)) {
+                } else if (((Call) lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_ONGOING)) {
                     message = context.getString(R.string.ongoing_call);
                 } else if (((Call) lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_CANCELLED) ||
                         ((Call) lastMessage).getCallStatus().equalsIgnoreCase(CometChatConstants.CALL_STATUS_UNANSWERED) ||
@@ -285,7 +297,7 @@ public class Utils {
                     else
                         message = context.getString(R.string.missed_video_call);
                 } else
-                    message = ((Call) lastMessage).getCallStatus()+" "+lastMessage.getType()+" Call";
+                    message = ((Call) lastMessage).getCallStatus() + " " + lastMessage.getType() + " Call";
                 break;
             default:
                 message = context.getString(R.string.tap_to_start_conversation);
@@ -300,11 +312,11 @@ public class Utils {
     /**
      * This method is used to convert user to group member. This method is used when we tries to add
      * user in a group or update group member scope.
-     * @param user is object of User
-     * @param isScopeUpdate is boolean which help us to check if scope is updated or not.
-     * @param newScope is a String which contains newScope. If it is empty then user is added as participant.
-     * @return GroupMember
      *
+     * @param user          is object of User
+     * @param isScopeUpdate is boolean which help us to check if scope is updated or not.
+     * @param newScope      is a String which contains newScope. If it is empty then user is added as participant.
+     * @return GroupMember
      * @see User
      * @see GroupMember
      */
@@ -332,7 +344,7 @@ public class Utils {
 //        }
     }
 
-    public static String getLastMessageDate(Context context,long timestamp) {
+    public static String getLastMessageDate(Context context, long timestamp) {
         String lastMessageTime = new SimpleDateFormat("h:mm a").format(new Date(timestamp * 1000));
         String lastMessageDate = new SimpleDateFormat("dd MMM yyyy").format(new Date(timestamp * 1000));
         String lastMessageWeek = new SimpleDateFormat("EEE").format(new Date(timestamp * 1000));
@@ -340,7 +352,6 @@ public class Utils {
 
         long diffTimeStamp = currentTimeStamp - timestamp * 1000;
 
-        Log.e(TAG, "getLastMessageDate: " + 24 * 60 * 60 * 1000);
         if (diffTimeStamp < 24 * 60 * 60 * 1000) {
             return lastMessageTime;
 
@@ -360,7 +371,6 @@ public class Utils {
      * This method is used to create group when called from layout. It uses <code>Random.nextInt()</code>
      * to generate random number to use with group id and group icon. Any Random number between 10 to
      * 1000 are choosen.
-     *
      */
 
     public static String generateRandomString(int length) {
@@ -382,7 +392,7 @@ public class Utils {
         return sb.toString();
     }
 
-    public static String getReceiptDate(Context context,long timestamp) {
+    public static String getReceiptDate(Context context, long timestamp) {
         String lastMessageTime = new SimpleDateFormat("h:mm a").format(new Date(timestamp * 1000));
         String lastMessageDate = new SimpleDateFormat("dd MMMM h:mm a").format(new Date(timestamp * 1000));
         String lastMessageWeek = new SimpleDateFormat("EEE h:mm a").format(new Date(timestamp * 1000));
@@ -390,7 +400,6 @@ public class Utils {
 
         long diffTimeStamp = currentTimeStamp - timestamp * 1000;
 
-        Log.e(TAG, "getLastMessageDate: " + 24 * 60 * 60 * 1000);
         if (diffTimeStamp < 24 * 60 * 60 * 1000) {
             return lastMessageTime;
 
@@ -405,22 +414,23 @@ public class Utils {
 
     }
 
-    public static Boolean checkDirExistence(Context context,String type) {
+    public static Boolean checkDirExistence(Context context, String type) {
 
-        File  audioDir = new File(Environment.getExternalStorageDirectory().toString() + "/" +
+        File audioDir = new File(Environment.getExternalStorageDirectory().toString() + "/" +
                 context.getResources().getString(R.string.app_name) + "/" + type + "/");
 
         return audioDir.isDirectory();
 
     }
 
-    public static void  makeDirectory(Context context,String type) {
+    public static void makeDirectory(Context context, String type) {
 
-        String  audioDir = Environment.getExternalStorageDirectory().toString() + "/" +
+        String audioDir = Environment.getExternalStorageDirectory().toString() + "/" +
                 context.getResources().getString(R.string.app_name) + "/" + type + "/";
 
         createDirectory(audioDir);
     }
+
     public static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null
                 && permissions != null) {
@@ -478,7 +488,7 @@ public class Utils {
                 return cursor.getString(column_index);
             }
         } catch (Exception e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -676,22 +686,20 @@ public class Utils {
         File var0 = new File(Environment.getExternalStorageDirectory(), context.getResources().getString(R.string.app_name));
         String dir;
         if (Build.VERSION_CODES.R > Build.VERSION.SDK_INT) {
-            dir = Environment.getExternalStorageDirectory()+"/"+context.getResources().getString(R.string.app_name) + "/"
-                        + "audio/";
+            dir = Environment.getExternalStorageDirectory() + "/" + context.getResources().getString(R.string.app_name) + "/"
+                    + "audio/";
         } else {
             if (Environment.isExternalStorageManager()) {
                 dir = Environment.getExternalStorageState() + "/" + context.getResources().getString(R.string.app_name) + "/"
-                            + "audio/";
+                        + "audio/";
             } else {
                 dir = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS).getPath() + "/" + context.getResources().getString(R.string.app_name) + "/"
                         + "audio/";
             }
         }
-//            String var1 = Environment.getExternalStorageDirectory() + "/" + context.getResources().getString(R.string.app_name) + "/"
-//                    + "audio/";
         createDirectory(dir);
         return dir + (new SimpleDateFormat("yyyyMMddHHmmss")).format(new Date()) + ".mp3";
-        
+
     }
 
     public static void createDirectory(String var0) {
@@ -720,7 +728,7 @@ public class Utils {
     public static float dpToPx(Context context, float valueInDp) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = valueInDp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        float px = valueInDp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
     }
 
@@ -739,10 +747,10 @@ public class Utils {
         }
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
 
         if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable)drawable).getBitmap();
+            return ((BitmapDrawable) drawable).getBitmap();
         }
 
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -752,11 +760,12 @@ public class Utils {
 
         return bitmap;
     }
+
     public static String getAddress(Context context, double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && addresses.size() > 0){
+            if (addresses != null && addresses.size() > 0) {
                 String address = addresses.get(0).getAddressLine(0);
                 return address;
             }
@@ -766,13 +775,14 @@ public class Utils {
         return null;
     }
 
-    public static void hideKeyBoard(Context context,View mainLayout) {
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    public static void hideKeyBoard(Context context, View mainLayout) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
-    public static void showKeyBoard(Context context,View mainLayout) {
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInputFromWindow(mainLayout.getWindowToken(),InputMethodManager.SHOW_FORCED, 0);
+
+    public static void showKeyBoard(Context context, View mainLayout) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInputFromWindow(mainLayout.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
     }
 
 
@@ -780,8 +790,8 @@ public class Utils {
         Call call = null;
         String callType = CometChatConstants.CALL_TYPE_VIDEO;
         try {
-            if (((CustomMessage)baseMessage).getCustomData() != null) {
-                JSONObject customObject = ((CustomMessage)baseMessage).getCustomData();
+            if (((CustomMessage) baseMessage).getCustomData() != null) {
+                JSONObject customObject = ((CustomMessage) baseMessage).getCustomData();
                 String receiverID = baseMessage.getReceiverUid();
                 String receiverType = baseMessage.getReceiverType();
                 if (customObject.has("callType")) {
@@ -791,14 +801,31 @@ public class Utils {
                 if (customObject.has("sessionID")) {
                     String sessionID = customObject.getString("sessionID");
                     call.setSessionId(sessionID);
-                    Log.e(TAG, "startDirectCallData: "+call.toString());
                 } else {
                     call.setSessionId(receiverID);
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "startDirectCallData: "+e.getMessage());
+            e.printStackTrace();
         }
         return call;
     }
+
+    public static int convertDpToPx(Context context, int dp) {
+        int px = Math.round(dp * context.getResources().getDisplayMetrics().density);
+        return px;
+    }
+
+    public static void setStatusBarColor(Context context,@ColorInt int color) {
+        if (color != 0)
+            ((Activity) context).getWindow().setStatusBarColor(color);
+
+        if (!isDarkMode(context)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+        }
+
+    }
+
 }

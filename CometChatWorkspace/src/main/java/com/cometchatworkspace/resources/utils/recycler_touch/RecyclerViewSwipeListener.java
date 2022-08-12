@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -170,7 +171,6 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
     private void drawButtons(Canvas c, View itemView, List<UnderlayButton> buffer, int pos, float dX) {
         float right = itemView.getRight();
         float dButtonWidth = (-1) * dX / buffer.size();
-
         for (UnderlayButton button : buffer) {
             float left = right - dButtonWidth;
             button.onDraw(
@@ -181,7 +181,7 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
                             right,
                             itemView.getBottom()
                     ),
-                    pos
+                    pos, dButtonWidth
             );
 
             right = left;
@@ -227,7 +227,7 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
             return false;
         }
 
-        public void onDraw(Canvas c, RectF rect, int pos) {
+        public void onDraw(Canvas c, RectF rect, int pos, float dButtonWidth) {
             Paint p = new Paint();
 
             // Draw background
@@ -242,14 +242,24 @@ public abstract class RecyclerViewSwipeListener extends ItemTouchHelper.SimpleCa
             Rect r = new Rect();
             float cHeight = rect.height();
             float cWidth = rect.width();
-            p.setTextAlign(Paint.Align.LEFT);
-            p.getTextBounds(text, 0, text.length(), r);
             float x = cWidth / 2f - r.width() / 2f - r.left;
             float y = cHeight / 2f + r.height() / 2f - r.bottom;
-            if (!text.isEmpty())
-                c.drawText(text, rect.left + x, rect.top + y / 0.72f, p);
-            if (imageBitmap != null) {
-                c.drawBitmap(imageBitmap, rect.left + x / 0.9f, rect.top + y / 3f, p);
+            if (text != null) {
+                p.setTextAlign(Paint.Align.CENTER);
+                p.getTextBounds(text, 0, text.length(), r);
+                if (!text.isEmpty())
+                    c.drawText(text, rect.left + x, rect.top + y / 0.67f, p);
+                if (imageBitmap != null) {
+                    float imageWidthCenter = c.getWidth() - ((cWidth / 2) + (imageBitmap.getWidth() / 2));
+                    float imageHeightCenter = rect.top - (y / 2) + imageBitmap.getHeight();
+                    c.drawBitmap(imageBitmap, imageWidthCenter, imageHeightCenter, p);
+                }
+            } else {
+                if (imageBitmap != null) {
+                    float imageWidthCenter = c.getWidth() - ((cWidth / 2) + (imageBitmap.getWidth() / 2));
+                    float imageHeightCenter = rect.top + y / 2.8f;
+                    c.drawBitmap(imageBitmap, imageWidthCenter, imageHeightCenter, p);
+                }
             }
 
             clickRegion = rect;

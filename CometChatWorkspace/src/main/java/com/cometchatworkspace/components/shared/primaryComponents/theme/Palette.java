@@ -2,6 +2,8 @@ package com.cometchatworkspace.components.shared.primaryComponents.theme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 
 import androidx.annotation.ColorInt;
 
@@ -11,9 +13,11 @@ public class Palette {
 
     private int background = 0;
 
-    private int searchBackground = 0;
+    private Drawable gradient = null;
 
     private int primary = 0;
+
+    private int secondary = 0;
 
     private int error = 0;
 
@@ -45,7 +49,7 @@ public class Palette {
     private String mode = CometChatTheme.MODE.LIGHT;
 
     //create an object of SingletonObject
-    private static Palette instance = new Palette();
+    private static final Palette instance = new Palette();
 
     //private constructor so that we cannot instantiate the class
     private Palette() {
@@ -65,8 +69,22 @@ public class Palette {
         background = color;
     }
 
+    public void gradientBackground(Drawable drawable) {
+        gradient = drawable;
+    }
+
+    public void gradientBackground(int[] colorArray, GradientDrawable.Orientation orientation) {
+        if (colorArray != null && colorArray.length > 1 && orientation != null) {
+            gradient = new GradientDrawable(orientation, colorArray);
+        }
+    }
+
     public void primary(@ColorInt int color) {
         primary = color;
+    }
+
+    public void secondary(@ColorInt int color) {
+        secondary = color;
     }
 
     public void error(@ColorInt int color) {
@@ -128,12 +146,6 @@ public class Palette {
 
     }
 
-    public void searchBackground(@ColorInt int color) {
-        searchBackground = color;
-
-    }
-
-
     public @ColorInt
     int getBackground() {
         if (mode.equalsIgnoreCase(CometChatTheme.MODE.LIGHT))
@@ -143,6 +155,10 @@ public class Palette {
 
     }
 
+    public Drawable getGradientBackground() {
+        return gradient;
+    }
+
     public @ColorInt
     int getPrimary() {
         if (mode.equalsIgnoreCase(CometChatTheme.MODE.LIGHT))
@@ -150,6 +166,13 @@ public class Palette {
         else
             return primary != 0 ? primary : conxt.getResources().getColor(R.color.primary_dark);
 
+    }
+    public @ColorInt
+    int getSecondary() {
+        if (mode.equalsIgnoreCase(CometChatTheme.MODE.LIGHT))
+            return secondary != 0 ? secondary : conxt.getResources().getColor(R.color.secondary);
+        else
+            return secondary!=0 ? secondary : conxt.getResources().getColor(R.color.secondary_dark);
     }
 
     public @ColorInt
@@ -249,14 +272,6 @@ public class Palette {
             return accent900 != 0 ? accent900 : conxt.getResources().getColor(R.color.accent900);
         else
             return accent900 != 0 ? accent900 : conxt.getResources().getColor(R.color.accent900_dark);
-    }
-
-    public @ColorInt
-    int getSearchBackground() {
-        if (mode.equalsIgnoreCase(CometChatTheme.MODE.LIGHT))
-            return searchBackground != 0 ? searchBackground : conxt.getResources().getColor(R.color.searchBackground);
-        else
-            return searchBackground != 0 ? searchBackground : conxt.getResources().getColor(R.color.searchBackground_dark);
     }
 
     public String getMode() {

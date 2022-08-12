@@ -1,14 +1,13 @@
 package com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatUsers;
 
 import android.content.Context;
-import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,14 +16,16 @@ import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.cometchatworkspace.components.shared.primaryComponents.InputData;
-import com.cometchatworkspace.components.shared.primaryComponents.Style;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.AvatarConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.UserListItemConfigurations;
-import com.cometchatworkspace.databinding.CometchatUserListRowBinding;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.DataItemConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.CometChatConversationListItem;
+import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatDataItem.CometChatDataItem;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
+import com.cometchatworkspace.databinding.CometchatDataitemListRowBinding;
 import com.cometchatworkspace.resources.utils.sticker_header.StickyHeaderAdapter;
 import com.cometchatworkspace.resources.utils.FontUtils;
 
@@ -50,11 +51,11 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
 
     private int headerColor = 0;
     private int headerAppearance = 0;
-    private boolean isAvatarHidden, isHideUserPresenceListItem, isTitleHidden, isSubtitleHidden;
-    private int titleColor, subTitleColor, backgroundColor;
-    private float cornerRadius;
     private CometChatConfigurations configuration;
-    List<CometChatConfigurations> configurations = new ArrayList<>();
+    private List<CometChatConfigurations> configurations = new ArrayList<>();
+    private final List<String> uids = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
+    private Palette palette;
 
     /**
      * It is a contructor which is used to initialize wherever we needed.
@@ -84,8 +85,8 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
-        CometchatUserListRowBinding userListRowBinding = DataBindingUtil.inflate(layoutInflater,
-                R.layout.cometchat_user_list_row, parent, false);
+        CometchatDataitemListRowBinding userListRowBinding = DataBindingUtil.inflate(layoutInflater,
+                R.layout.cometchat_dataitem_list_row, parent, false);
 
         return new UserViewHolder(userListRowBinding);
     }
@@ -101,31 +102,44 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
      */
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder userViewHolder, int i) {
-
+        userViewHolder.setIsRecyclable(false);
         final User user = userArrayList.get(i);
-        User user1 = i + 1 < userArrayList.size() ? userArrayList.get(i + 1) : null;
+//        User user1 = i + 1 < userArrayList.size() ? userArrayList.get(i + 1) : null;
 
-        userViewHolder.userListRowBinding.userListItem.hideSeperator(user1 != null && user.getName().toLowerCase().substring(0, 1).toCharArray()[0] == user1.getName().substring(0, 1).toLowerCase().toCharArray()[0]);
+//        userViewHolder.userListRowBinding.dataItem.hideSeparator(user1 != null && user.getName().toLowerCase().substring(0, 1).toCharArray()[0] == user1.getName().substring(0, 1).toLowerCase().toCharArray()[0]);
+        userViewHolder.userListRowBinding.dataItem.user(user);
         userViewHolder.userListRowBinding.executePendingBindings();
-        userViewHolder.userListRowBinding.userListItem.setTag(R.string.user, user);
+        checkWithConfigurations(userViewHolder.userListRowBinding.dataItem);
+        userViewHolder.userListRowBinding.dataItem.setTag(R.string.user, user);
 
-        userViewHolder.userListRowBinding.userListItem.setUser(user);
+    }
 
-        /**
-         * @InputData is a class which is helpful to set data into the view and control visibility
-         * as per value passed in constructor .
-         * i.e we can control the visibility of the component inside the CometChatUserListItem,
-         * and also decide what value i need to show in that particular view
-         */
-//        InputData inputData=new InputData(user.getUid(),user.getAvatar(),user.getName(),user.getStatus(),user.getStatus());
-
-//        userViewHolder.userListRowBinding.userListItem.inputData(inputData);
-
-
-        if (configuration instanceof UserListItemConfigurations) {
-            userViewHolder.userListRowBinding.userListItem.inputData(((UserListItemConfigurations) configuration).get());
+    private void checkWithConfigurations(CometChatDataItem listItem) {
+        if (configurations != null && !configurations.isEmpty()) {
+            for (CometChatConfigurations cometChatConfigurations : configurations) {
+                configuration = cometChatConfigurations;
+                setConfiguration(listItem);
+            }
+        } else if (configuration != null) {
+            setConfiguration(listItem);
         }
+    }
 
+    private void setConfiguration(CometChatDataItem listItem) {
+        if (configuration instanceof DataItemConfiguration) {
+            listItem.inputData(((DataItemConfiguration) configuration).getInputData());
+        }else {
+            listItem.setConfiguration(configuration);
+        }
+    }
+
+    private User checkSelected(User user) {
+        if (users.size() > 0) {
+            if (users.contains(user)) {
+                user.setStatus(CometChatStatusIndicator.STATUS.SELECTED);
+            }
+        }
+        return user;
     }
 
     @Override
@@ -141,12 +155,13 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
      */
     public void updateList(List<User> users) {
         for (int i = 0; i < users.size(); i++) {
-            if (userArrayList.contains(users.get(i))) {
-                int index = userArrayList.indexOf(users.get(i));
+            User user = checkSelected(users.get(i));
+            if (userArrayList.contains(user)) {
+                int index = userArrayList.indexOf(user);
                 userArrayList.remove(index);
-                userArrayList.add(index, users.get(i));
+                userArrayList.add(index, user);
             } else {
-                userArrayList.add(users.get(i));
+                userArrayList.add(user);
             }
         }
         notifyDataSetChanged();
@@ -161,14 +176,17 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
      */
     public void updateUser(User user) {
         if (userArrayList.contains(user)) {
-            int index = userArrayList.indexOf(user);
-            userArrayList.remove(index);
-            userArrayList.add(index, user);
-            notifyItemChanged(index);
-        } else {
-            userArrayList.add(user);
-            notifyItemInserted(getItemCount() - 1);
+            userArrayList.set(userArrayList.indexOf(user), user);
+//            int index = userArrayList.indexOf(user);
+//            userArrayList.remove(index);
+//            userArrayList.add(index, user);
+//            notifyItemChanged(userArrayList.indexOf(user));
+            notifyDataSetChanged();
         }
+//        else {
+//            userArrayList.add(user);
+//            notifyItemInserted(getItemCount() - 1);
+//        }
     }
 
     /**
@@ -204,6 +222,8 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
     public void onBindHeaderViewHolder(InitialHolder var1, int var2, long var3) {
         User user = userArrayList.get(var2);
         char name = user.getName() != null && !user.getName().isEmpty() ? user.getName().substring(0, 1).toCharArray()[0] : '#';
+        palette=Palette.getInstance(context);
+        var1.separator.setBackgroundColor(palette.getAccent100());
         if (headerColor != 0)
             var1.textView.setTextColor(headerColor);
         if (headerAppearance != 0)
@@ -271,6 +291,29 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
         }
     }
 
+
+    public void setSelectedUser(User user) {
+        if (user != null) {
+            if (!uids.contains(user.getUid())) {
+                uids.add(user.getUid());
+                users.add(user);
+                user.setStatus(CometChatStatusIndicator.STATUS.SELECTED);
+                userArrayList.set(userArrayList.indexOf(user), user);
+            } else {
+                uids.remove(user.getUid());
+                users.remove(user);
+                if (userArrayList.contains(user)) {
+                    user.setStatus(CometChatConstants.USER_STATUS_OFFLINE);
+                    userArrayList.set(userArrayList.indexOf(user), user);
+                }
+            }
+            notifyDataSetChanged();
+
+        }
+
+
+    }
+
     public void clear() {
         userArrayList.clear();
         notifyDataSetChanged();
@@ -290,19 +333,6 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
         return userArrayList.get(position);
     }
 
-    public void setUserListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem, boolean hideTitleListItem, int titleColorListItem, boolean hideSubtitleListItem, int subTitleColorListItem, int backgroundColorListItem, float cornerRadiusListItem) {
-        isAvatarHidden = hideAvatar;
-        isHideUserPresenceListItem = hideUserPresenceListItem;
-        isTitleHidden = hideTitleListItem;
-        titleColor = titleColorListItem;
-        isSubtitleHidden = hideSubtitleListItem;
-        subTitleColor = subTitleColorListItem;
-        backgroundColor = backgroundColorListItem;
-        cornerRadius = cornerRadiusListItem;
-        notifyDataSetChanged();
-
-    }
-
 
     public void setConfiguration(CometChatConfigurations configuration) {
         this.configuration = configuration;
@@ -313,9 +343,9 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-        CometchatUserListRowBinding userListRowBinding;
+        CometchatDataitemListRowBinding userListRowBinding;
 
-        UserViewHolder(CometchatUserListRowBinding userListRowBinding) {
+        UserViewHolder(CometchatDataitemListRowBinding userListRowBinding) {
             super(userListRowBinding.getRoot());
             this.userListRowBinding = userListRowBinding;
 
@@ -326,10 +356,11 @@ public class CometChatUsersAdapter extends RecyclerView.Adapter<CometChatUsersAd
     class InitialHolder extends RecyclerView.ViewHolder {
 
         private final TextView textView;
-
+        private final View separator;
         InitialHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.text_char);
+            separator=itemView.findViewById(R.id.list_item_separator);
         }
     }
 }

@@ -1,0 +1,11 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scope_title"
+    android:layout_width="110dp"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20dp"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:paddingTop="5dp"
+    android:paddingRight="25dp"
+    android:text="dfdfsd"
+    android:paddingBottom="5dp"
+    android:textAlignment="textEnd" />

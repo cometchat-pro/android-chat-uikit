@@ -1,16 +1,22 @@
 package com.cometchatworkspace.components.messages.template;
 
+import android.app.Activity;
 import android.view.View;
 
 import androidx.annotation.StringDef;
-import androidx.databinding.ViewDataBinding;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.models.AppEntity;
 import com.cometchat.pro.models.BaseMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionItem;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.OnOptionClick;
+import com.cometchatworkspace.resources.constants.UIKitConstants;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 
 public class CometChatMessageTemplate {
@@ -20,11 +26,12 @@ public class CometChatMessageTemplate {
     private String description;
     private String name;
     private int view; //In Progress
-    private OnItemClickListener clickListener;
+    private OnOptionClick<Object> clickListener;
     private BaseMessage baseMessage;
-    private List<ActionItem> options;
+    private List<CometChatOptions> options;
     private String receiverId;
     private String receiverType;
+    public AppCompatActivity activity;
 
     public CometChatMessageTemplate setBaseMessage(BaseMessage baseMessage) {
         this.baseMessage = baseMessage;
@@ -36,25 +43,26 @@ public class CometChatMessageTemplate {
     }
 
 
-    @StringDef({DefaultList.text,DefaultList.image,DefaultList.audio,DefaultList.video,
-            DefaultList.file,DefaultList.location,DefaultList.whiteboard,DefaultList.document,
-            DefaultList.sticker,DefaultList.poll,DefaultList.groupAction,DefaultList.groupCall,
+    @StringDef({DefaultList.text, DefaultList.image, DefaultList.audio, DefaultList.video,
+            DefaultList.file, DefaultList.location, DefaultList.whiteboard, DefaultList.document,
+            DefaultList.sticker, DefaultList.poll, DefaultList.groupAction, DefaultList.groupCall,
             DefaultList.callAction})
 
     public @interface DefaultList {
-        String text  = "text";
-        String image = "image";
-        String video = "video";
-        String audio = "audio";
-        String file = "file";
-        String location = "location";
-        String whiteboard = "extension_whiteboard";
-        String document = "extension_document";
-        String sticker = "extension_sticker";
-        String poll = "extension_poll";
-        String groupAction = "groupAction";
+        String text = UIKitConstants.MessageTypeConstants.TEXT;
+        String image = UIKitConstants.MessageTypeConstants.IMAGE;
+        String video = UIKitConstants.MessageTypeConstants.VIDEO;
+        String audio = UIKitConstants.MessageTypeConstants.AUDIO;
+        String file = UIKitConstants.MessageTypeConstants.FILE;
+        String location = UIKitConstants.MessageTypeConstants.EXTENSION_LOCATION;
+        String whiteboard = UIKitConstants.MessageTypeConstants.EXTENSION_WHITEBOARD;
+        String document = UIKitConstants.MessageTypeConstants.EXTENSION_DOCUMENT;
+        String sticker = UIKitConstants.MessageTypeConstants.EXTENSION_STICKER;
+        String poll = UIKitConstants.MessageTypeConstants.EXTENSION_POLL;
+        String groupAction = CometChatConstants.ActionKeys.ACTION_TYPE_GROUP_MEMBER;
         String groupCall = "groupCall";
         String callAction = "callAction";
+        String meeting = "meeting";
     }
 
     /**
@@ -90,12 +98,12 @@ public class CometChatMessageTemplate {
         return this;
     }
 
-    public List<ActionItem> getOptions() {
+    public List<CometChatOptions> getOptions() {
         return options;
     }
 
-    public CometChatMessageTemplate setOptions(List<ActionItem> options) {
-        this.options = options;
+    public CometChatMessageTemplate setOptions(HashMap<String, CometChatOptions> options) {
+        this.options = new ArrayList<>(options.values());
         return this;
     }
 
@@ -120,17 +128,26 @@ public class CometChatMessageTemplate {
         return view;
     }
 
+    public CometChatMessageTemplate setActivity(AppCompatActivity activity) {
+        this.activity = activity;
+        return this;
+    }
+
+    public AppCompatActivity getActivity() {
+        return this.activity;
+    }
+
     public CometChatMessageTemplate setView(int view) {
         this.view = view;
         return this;
     }
 
-    public OnItemClickListener getClickListener() {
+    public OnOptionClick getClickListener() {
         return clickListener;
     }
 
-    public CometChatMessageTemplate setActionCallBack(
-            OnItemClickListener<CometChatMessageTemplate> clickListener) {
+    public CometChatMessageTemplate setActionClick(
+            OnOptionClick<Object> clickListener) {
         this.clickListener = clickListener;
         return this;
     }

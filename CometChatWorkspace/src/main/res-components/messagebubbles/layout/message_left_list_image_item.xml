@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-    <com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatImageBubble
+    <com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatMessageBubble
         android:layout_width="wrap_content"
-        android:id="@+id/image_message_bubble"
+        android:id="@+id/cometchatBubble"
         app:messageAlignment="left"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatImageBubble
+            android:layout_width="wrap_content"
+            android:id="@+id/image_message_bubble"
+            android:layout_height="wrap_content"/>
+    </com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatMessageBubble>
 
 
 </LinearLayout>

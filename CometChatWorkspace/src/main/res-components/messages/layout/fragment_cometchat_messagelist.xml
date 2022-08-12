@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
+    android:id="@+id/message_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -26,7 +27,6 @@
         android:layout_width="match_parent"
         android:id="@+id/message_list"
         android:layout_below="@+id/chatList_toolbar"
-        app:alignment="leftAligned"
         app:actionSheetMode="gridMode"
         android:layout_above="@id/bottom_layout"
         android:layout_height="match_parent"/>
@@ -40,7 +40,6 @@
 
         <com.cometchatworkspace.components.messages.composer.CometChatComposer
             android:id="@+id/message_box"
-            app:composerBackground="@color/light_grey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>

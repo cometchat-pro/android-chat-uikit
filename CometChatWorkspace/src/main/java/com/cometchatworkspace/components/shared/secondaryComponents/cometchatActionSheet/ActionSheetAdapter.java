@@ -42,8 +42,8 @@ public class ActionSheetAdapter extends RecyclerView.Adapter<ActionSheetAdapter.
     @Override
     public void onBindViewHolder(@NonNull ActionItemViewHolder holder, int position) {
         ActionItem item = actionItems.get(position);
-        holder.actionText.setText(item.name);
-        holder.actionIcons.setImageResource(item.icon);
+        holder.actionText.setText(item.text);
+        holder.actionIcons.setImageResource(item.startIcon);
         if (hideText)
             holder.actionText.setVisibility(View.GONE);
         else
@@ -70,8 +70,8 @@ public class ActionSheetAdapter extends RecyclerView.Adapter<ActionSheetAdapter.
     public void updateActionItem(ActionItem actionItem) {
         for (ActionItem item : actionItems) {
             if (item.id.equals(actionItem.id)) {
-                item.icon = actionItem.icon;
-                item.name = actionItem.name;
+                item.startIcon = actionItem.startIcon;
+                item.text = actionItem.text;
             }
         }
     }

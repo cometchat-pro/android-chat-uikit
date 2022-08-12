@@ -1,17 +1,9 @@
 package com.cometchatworkspace.components.calls.callManager;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActivityManager;
-import android.app.PictureInPictureParams;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Rational;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -106,17 +98,34 @@ public class CometChatStartCallActivity extends AppCompatActivity {
         }
 
         CometChatError.init(this);
-        Log.e( "startCallActivity: ",sessionID+" "+type);
         CometChat.startCall(callSettings, new CometChat.OngoingCallListener() {
 
             @Override
+            public void onRecordingStarted(User user) {
+
+            }
+
+            @Override
+            public void onRecordingStopped(User user) {
+
+            }
+
+            @Override
+            public void onUserMuted(User user, User user1) {
+
+            }
+
+            @Override
+            public void onCallSwitchedToVideo(String s, User user, User user1) {
+
+            }
+
+            @Override
             public void onUserListUpdated(List<User> list) {
-                Log.e( "onUserListUpdated: ",list.toString() );
             }
 
             @Override
             public void onAudioModesUpdated(List<AudioMode> list) {
-                Log.e("onAudioModesUpdated: ",list.toString() );
             }
 
             @Override
@@ -125,7 +134,6 @@ public class CometChatStartCallActivity extends AppCompatActivity {
                 CometChatSnackBar.show(CometChatStartCallActivity.this,
                         mainView, getString(R.string.user_joined)+":"+ user.getName(),
                         CometChatSnackBar.INFO);
-                Log.e("onUserJoined: ", user.getUid());
             }
 
             @Override
@@ -134,25 +142,21 @@ public class CometChatStartCallActivity extends AppCompatActivity {
                     CometChatSnackBar.show(CometChatStartCallActivity.this,
                             mainView, getString(R.string.user_left)+":"+ user.getName(),
                             CometChatSnackBar.INFO);
-                    Log.e("onUserLeft: ", user.getUid());
                     if (callSettings.getMode().equals(CallSettings.CALL_MODE_DEFAULT)) {
                         endCall();
                     }
                 } else {
-                    Log.e( "onUserLeft: ","triggered" );
                 }
             }
 
             @Override
             public void onError(CometChatException e) {
-                Log.e("onstartcallError: ", e.getMessage());
                 CometChatSnackBar.show(CometChatStartCallActivity.this,
                         mainView,CometChatError.localized(e), CometChatSnackBar.ERROR);
             }
 
             @Override
             public void onCallEnded(Call call) {
-                Log.e("TAG", "onCallEnded: ");
                 finish();
             }
         });

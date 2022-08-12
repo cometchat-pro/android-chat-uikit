@@ -25,15 +25,11 @@ import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
-import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.TimeAlignment;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
@@ -48,28 +44,18 @@ public class CometChatFileBubble extends RelativeLayout {
 
     private MaterialCardView cvMessageBubble;
     private RelativeLayout cvMessageBubbleLayout;
-    private TextView fileName;
-    private LinearLayout fileTypeLayout;
-    private TextView fileExt;
-    private ImageView ivFileExt;
-    private TextView fileSize;
-    private TextView tvUser;
-    private CometChatAvatar ivUser;
-    private CometChatDate txtTime;
-    private CometChatMessageReceipt messageReceipt;
-    private TextView tvThreadReplyCount;
-
-    private CometChatMessageReaction reactionLayout;
-
-    private View receiptLayout;
-
+    private TextView title;
+    private TextView subtitle;
+    private ImageView downloadButton;
     private String alignment = Alignment.RIGHT;
 
     private final String TAG = "fileMessageBubble";
 
     private MessageBubbleListener messageBubbleListener;
 
-    private int reactionStrokeColor = Color.parseColor(CometChatTheme.primaryColor);
+    private int reactionStrokeColor;
+    private Palette palette;
+    private Typography typography;
 
     private int borderWidth = 0;
 
@@ -101,6 +87,9 @@ public class CometChatFileBubble extends RelativeLayout {
 
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
+        palette = Palette.getInstance(context);
+        typography= Typography.getInstance();
+        reactionStrokeColor = palette.getPrimary();
         fontUtils=FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
@@ -128,20 +117,13 @@ public class CometChatFileBubble extends RelativeLayout {
         int borderWidth = a.getInt(R.styleable.FileMessageBubble_borderWidth,0);
         int borderColor = a.getColor(R.styleable.FileMessageBubble_borderColor,0);
 
-        if (alignment.equalsIgnoreCase(Alignment.LEFT))
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_file_bubble,null);
-        else
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_file_bubble,null);
+        view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_file_bubble_,null);
 
         initView(view);
 
         cornerRadius(cornerRadius);
         backgroundColor(backgroundColor);
-        avatar(fileMessageAvatar);
-        avatarVisibility(avatarVisibility);
-        userName(userName);
-        userNameVisibility(userNameVisibility);
-        userNameColor(color);
+
         title(title);
         titleColor(titleColor);
         subtitle(subtitle);
@@ -150,7 +132,6 @@ public class CometChatFileBubble extends RelativeLayout {
         typeColor(typeColor);
         icon(icon);
         iconTint(iconColor);
-        secondaryBackgroundColor(secondaryBackgroundColor);
         borderColor(borderColor);
         borderWidth(borderWidth);
 
@@ -165,85 +146,62 @@ public class CometChatFileBubble extends RelativeLayout {
 
     private void initView(View view) {
         addView(view);
-        tvUser = view.findViewById(R.id.tv_user);
-        txtTime = view.findViewById(R.id.time);
-        messageReceipt = view.findViewById(R.id.receiptsIcon);
-        ivUser = view.findViewById(R.id.iv_user);
-
-        fileTypeLayout = view.findViewById(R.id.file_type_layout);
-        fileSize = view.findViewById(R.id.tvFileSize);
-        fileExt = view.findViewById(R.id.tvFileExtension);
-        ivFileExt = view.findViewById(R.id.ivFileExtension);
-        fileName = view.findViewById(R.id.tvFileName);
+        subtitle = view.findViewById(R.id.tvSubtitle);
+        title = view.findViewById(R.id.tvTitle);
+        downloadButton = view.findViewById(R.id.ivDownload);
         cvMessageBubble = view.findViewById(R.id.cv_message_container);
         cvMessageBubbleLayout = view.findViewById(R.id.cv_message_container_layout);
-        receiptLayout = view.findViewById(R.id.receipt_layout);
-        tvThreadReplyCount = view.findViewById(R.id.thread_reply_count);
-
-        reactionLayout = view.findViewById(R.id.reactions_group);
-        reactionLayout.setReactionEventListener(new CometChatMessageReaction.OnReactionClickListener() {
-            @Override
-            public void onReactionClick(Reaction reaction, int baseMessageID) {
-                messageBubbleListener.onReactionClick(reaction,baseMessageID);
-            }
-        });
 
         //CustomView
-        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
-                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.file);
-        if(messageTemplate!=null)
-            layoutId = messageTemplate.getView();
-//        dataView = messageTemplate.getDataView();
-        if (layoutId != 0) {
-            View customView = LayoutInflater.from(context).inflate(layoutId, null);
-            cvMessageBubbleLayout.setVisibility(View.GONE);
-            if (customView.getParent() != null)
-                ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
-            cvMessageBubble.addView(customView);
-            fileSize = customView.findViewById(R.id.tvFileSize);
-            fileExt = customView.findViewById(R.id.tvFileExtension);
-            ivFileExt = customView.findViewById(R.id.ivFileExtension);
-            fileName = customView.findViewById(R.id.tvFileName);
-            customView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    messageBubbleListener.onLongCLick(baseMessage);
-                    return true;
-                }
-            });
-            customView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    messageBubbleListener.onClick(baseMessage);
-                }
-            });
-        }
+//        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
+//                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.file);
+//        if(messageTemplate!=null)
+//            layoutId = messageTemplate.getView();
+////        dataView = messageTemplate.getDataView();
+//        if (layoutId != 0) {
+//            View customView = LayoutInflater.from(context).inflate(layoutId, null);
+//            cvMessageBubbleLayout.setVisibility(View.GONE);
+//            if (customView.getParent() != null)
+//                ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
+//            cvMessageBubble.addView(customView);
+//            subtitle = customView.findViewById(R.id.tvSubtitle);
+//            downloadButton = customView.findViewById(R.id.ivDownload);
+//            title = customView.findViewById(R.id.tvTitle);
+//            customView.setOnLongClickListener(new OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View view) {
+//                    messageBubbleListener.onLongCLick(baseMessage);
+//                    return true;
+//                }
+//            });
+//            customView.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    messageBubbleListener.onClick(baseMessage);
+//                }
+//            });
+//        }
     }
 
     public void type(String secondaryText) {
-        if (fileExt!=null && secondaryText!=null && !secondaryText.isEmpty())
-            fileExt.setText(secondaryText);
+        if (subtitle !=null && secondaryText!=null && !secondaryText.isEmpty())
+            subtitle.setText(secondaryText);
     }
 
     public void typeColor(@ColorInt int color) {
-        if (fileExt!=null && color!=0)
-            fileExt.setTextColor(color);
+        if (subtitle !=null && color!=0)
+            subtitle.setTextColor(color);
     }
 
     public void icon(Drawable icon) {
-        if (ivFileExt!=null && icon!=null)
-            ivFileExt.setImageDrawable(icon);
+        if (downloadButton!=null && icon!=null)
+            downloadButton.setImageDrawable(icon);
     }
 
     public void iconTint(@ColorInt int color) {
-        if (ivFileExt!=null && color!=0) {
-            ivFileExt.setImageTintList(ColorStateList.valueOf(color));
+        if (downloadButton!=null && color!=0) {
+            downloadButton.setImageTintList(ColorStateList.valueOf(color));
         }
-    }
-
-    public void secondaryBackgroundColor(@ColorInt int color) {
-        if (fileTypeLayout!=null && color !=0)
-            fileTypeLayout.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 
     public void cornerRadius(float topLeft, float topRight, float bottomLeft, float bottomRight) {
@@ -294,77 +252,24 @@ public class CometChatFileBubble extends RelativeLayout {
         }
     }
 
-    public void avatar(Drawable avatarDrawable) {
-        if (ivUser!=null)
-            ivUser.setDrawable(avatarDrawable);
-    }
-
-    public void avatar(String url,String initials) {
-        if (ivUser!=null) {
-            ivUser.setInitials(initials);
-            if (url != null)
-                ivUser.setAvatar(url);
-        }
-    }
-
-    public void avatarVisibility(int visibility) {
-        if (ivUser!=null) {
-            ivUser.setVisibility(visibility);
-        }
-    }
-
-    public void userName(String username) {
-        if (tvUser!=null)
-            tvUser.setText(username);
-    }
-    public void userNameFont(String font) {
-        if (tvUser!=null)
-            tvUser.setTypeface(fontUtils.getTypeFace(font));
-    }
-
-    public void userNameColor(@ColorInt int color){
-        if (tvUser!=null && color!=0)
-            tvUser.setTextColor(color);
-    }
-
-    public void userNameVisibility(int visibility) {
-        if (tvUser!=null) {
-            tvUser.setVisibility(visibility);
-        }
-    }
-
     public void title(String title) {
-        if (fileName!=null && title!=null && !title.isEmpty())
-            fileName.setText(title);
+        if (this.title !=null && title!=null && !title.isEmpty())
+            this.title.setText(title);
     }
 
     public void titleColor(@ColorInt int color) {
-        if (color!=0 && fileName!=null)
-            fileName.setTextColor(color);
+        if (color!=0 && title !=null)
+            title.setTextColor(color);
     }
 
     public void subtitle(String title) {
-        if (fileSize!=null)
-            fileSize.setText(title);
+        if (subtitle!=null)
+            subtitle.setText(title);
     }
 
     public void subtitleColor(@ColorInt int color) {
-        if (color!=0 && fileSize!=null)
-            fileSize.setTextColor(color);
-    }
-
-    public void setReactionBorderColor(@ColorInt int strokeColor) {
-        this.reactionStrokeColor = strokeColor;
-        reactionLayout.setBorderColor(strokeColor);
-    }
-    public void messageAlignment(@Alignment.MessageAlignment String mAlignment) {
-        if (alignment!=null && alignment== Alignment.LEFT)
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_file_bubble,null);
-        else
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_file_bubble,null);
-
-        removeAllViewsInLayout();
-        initView(view);
+        if (color!=0 && subtitle!=null)
+            subtitle.setTextColor(color);
     }
 
     public void fileURL(String url) {
@@ -372,14 +277,14 @@ public class CometChatFileBubble extends RelativeLayout {
             this.url = url;
             baseMessage = new BaseMessage();
             Attachment attachment = new Attachment();
-            if (fileName.getText().toString().isEmpty())
+            if (title.getText().toString().isEmpty())
                 attachment.setFileName("File");
             else
-                attachment.setFileName(fileName.getText().toString());
-            if (fileExt.getText().toString().isEmpty())
+                attachment.setFileName(title.getText().toString());
+            if (subtitle.getText().toString().isEmpty())
                 attachment.setFileExtension("file");
             else
-                attachment.setFileExtension(fileExt.getText().toString());
+                attachment.setFileExtension(subtitle.getText().toString());
             attachment.setFileMimeType("application/*");
             attachment.setFileSize(0);
             attachment.setFileUrl(url);
@@ -393,83 +298,36 @@ public class CometChatFileBubble extends RelativeLayout {
         }
     }
 
-
-    public void messageReceiptIcon(CometChatMessageReceipt messageReceipt) {
-        if (messageReceipt!=null) {
-            messageReceipt.messageDeliveredIcon(messageReceipt.getDeliveredIcon());
-            messageReceipt.messageReadIcon(messageReceipt.getReadIcon());
-            messageReceipt.messageSentIcon(messageReceipt.getSentIcon());
-            messageReceipt.messageErrorIcon(messageReceipt.getErrorIcon());
-            messageReceipt.messageProgressIcon(messageReceipt.getProgressIcon());
-        }
-    }
-
-    public void replyCount(int count) {
-        if (count!=0) {
-            tvThreadReplyCount.setVisibility(View.VISIBLE);
-            tvThreadReplyCount.setText(baseMessage.getReplyCount()+" "+context.getResources().getString(R.string.replies));
-        } else {
-            tvThreadReplyCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void setReplyCountColor(@ColorInt int color) {
-        if (tvThreadReplyCount!=null)
-            tvThreadReplyCount.setTextColor(color);
-    }
-
-    public void messageTimeAlignment(TimeAlignment timeAlignment) {
-        if (timeAlignment == TimeAlignment.TOP) {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.END_OF, R.id.tv_user);
-            params.addRule(RelativeLayout.ALIGN_START,0);
-            params.addRule(RelativeLayout.BELOW, 0);
-            params.topMargin = 0;
-            params.leftMargin = 8;
-
-            LayoutParams messageBubbleParam = (LayoutParams)cvMessageBubble.getLayoutParams();
-            messageBubbleParam.topMargin = 8;
-            messageBubbleParam.bottomMargin = 8;
-//            receiptLayout.setLayoutParams(params);
-        } else {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.BELOW, R.id.thread_reply_count);
-//            receiptLayout.setLayoutParams(params);
-        }
-    }
     public void messageObject(BaseMessage baseMessage) {
         this.baseMessage = baseMessage;
-        messageReceipt.messageObject(baseMessage);
-        txtTime.setDate(baseMessage.getSentAt(),"hh:mm a");
-        txtTime.setTransparentBackground(true);
-
-        if (tvUser!=null)
-            tvUser.setText(baseMessage.getSender().getName());
-        if (ivUser!=null)
-            ivUser.setAvatar(baseMessage.getSender().getAvatar());
-
-        reactionLayout.setMessage(baseMessage);
 
         if (((MediaMessage)baseMessage).getAttachment()!=null) {
-            fileName.setText(((MediaMessage) baseMessage).getAttachment().getFileName());
-            fileExt.setText(((MediaMessage) baseMessage).getAttachment().getFileExtension());
+            title(((MediaMessage) baseMessage).getAttachment().getFileName());
+//            fileExt.setText(((MediaMessage) baseMessage).getAttachment().getFileExtension());
             int size = ((MediaMessage) baseMessage).getAttachment().getFileSize();
-            fileSize.setText(Utils.getFileSize(size));
+            subtitle(Utils.getFileSize(size));
         } else {
-            fileName.setText(context.getString(R.string.uploading));
-            fileExt.setText("-");
-            fileSize.setText("-");
+            title(context.getString(R.string.uploading));
+            subtitle("-");
         }
-
-        cvMessageBubble.setOnClickListener(new OnClickListener() {
+        cvMessageBubble.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (messageBubbleListener!=null)
+                    messageBubbleListener.onLongCLick(baseMessage);
+                return true;
+            }
+        });
+        downloadButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageBubbleListener.onClick(baseMessage);
+                if (messageBubbleListener!=null)
+                    messageBubbleListener.onClick(baseMessage);
             }
         });
     }
 
-    public void setMessageBubbleListener(MessageBubbleListener listener) {
+    public void setEventListener(MessageBubbleListener listener) {
         messageBubbleListener = listener;
     }
 }

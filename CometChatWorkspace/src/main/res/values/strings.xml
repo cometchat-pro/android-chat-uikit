@@ -13,7 +13,6 @@
 
 
     <!--BottomBar-->
-    <string name="chats">Chats</string>
 
 
     <!--ComposeBox-->
@@ -78,10 +77,14 @@
     <string name="no_conversations">You have no conversations.</string>
     <!---->
 
+<!--    titles-->
+
+    <string name="chats">Chats</string>
+
     <!--Message section-->
     <string name="you">You</string>
-    <string name="this_message_deleted">⚠️ This message was deleted</string>
-    <string name="view_on_youtube">View on Youtube</string>
+    <string name="this_message_deleted">Message is deleted</string>
+    <string name="view_on_youtube">View on YoutubeA</string>
     <string name="visit">Visit</string>
     <string name="cancel">Cancel</string>
     <string name="text_copied">Text Copied to clipboard</string>
@@ -97,14 +100,14 @@
     <string name="create_poll">Create Poll</string>
     <string name="photo_video_library">Photo &amp; Video Library</string>
     <string name="share_location">Share location</string>
-    <string name="create_a_poll">Create a Poll</string>
+    <string name="create_a_poll">Create Poll</string>
     <string name="take_a_photo">Take a Photo</string>
     <string name="send_sticker">Send Stickers</string>
-    <string name="you_created_whiteboard">You’ve created a new collaborative whiteboard.</string>
+    <string name="you_created_whiteboard">Open whiteboard to edit content together.</string>
     <string name="has_shared_whiteboard">has shared a collaborative whiteboard.</string>
-    <string name="you_created_document">You’ve created a new collaborative document.</string>
+    <string name="you_created_document">Open document to edit content together.</string>
     <string name="has_shared_document">has shared a collaborative document.</string>
-    <string name="launch">Launch</string>
+    <string name="launch">Open</string>
 
     <string name="yes">Yes</string>
     <string name="fill_this_field">Fill this Field</string>
@@ -131,15 +134,15 @@
     <string name="no">No</string>
     <string name="turn_on_gps">Turn On GPS</string>
     <string name="on">ON</string>
-    <string name="option">Option</string>
-    <string name="enter_your_option">Enter your option</string>
+    <string name="option">Set the Answers</string>
+    <string name="enter_your_option">Answer</string>
     <string name="enter_your_question">Enter your Question</string>
     <string name="question">Question</string>
-    <string name="add_a_new_option">Add a New Option</string>
+    <string name="add_a_new_option">Add Another Answer</string>
     <string name="unable_to_get_location">Unable to get your location</string>
-    <string name="share_whiteboard">Share Whiteboard</string>
+    <string name="share_whiteboard">Collaborative Whiteboard</string>
     <string name="shared_a_whiteboard">Shared a Whiteboard</string>
-    <string name="share_writeboard">Share Document</string>
+    <string name="share_writeboard">Collaborative Document</string>
     <string name="shared_a_writeboard">Shared a Document</string>
     <string name="you_received">You received a %1$s</string>
     <string name="yesterday">Yesterday</string>
@@ -165,7 +168,7 @@
     <string name="made">made</string>
     <string name="participant">Participant</string>
     <string name="translate_message">Translate Message</string>
-    <string name="no_translation_available">No translation available</string>
+    <string name="translation_error">Selected language for translation is similar to the language of original message</string>
     <string name="has_shared_group_call">has initiated a group call.</string>
     <string name="you_created_group_call">You\'ve initiated a group call.</string>
     <string name="custom_message_meeting">"📹 Group Call "</string>
@@ -212,8 +215,8 @@
     <string name="vote"> Vote</string>
     <string name="read">Read</string>
     <string name="delivered">Delivered</string>
-    <string name="new_message"> New Message</string>
-    <string name="new_messages">" New Messages"</string>
+    <string name="new_message">new message</string>
+    <string name="new_messages">" new messages"</string>
     <string name="offline">offline</string>
     <string name="err_internet_unavailable">No Internet Available</string>
     <string name="background_location_permission_title">Allow Background Location Permission</string>
@@ -229,5 +232,43 @@
     <string name="try_again">TRY AGAIN</string>
     <string name="create_group">create group</string>
     <string name="no_chats">No Chats</string>
+    <string name="error_cant_load_group_members">Can\'t load Group Members. Please try again</string>
+    <string name="users">Users</string>
+    <string name="groups">Groups</string>
+    <string name="details">Details</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="more_option">more</string>
+    <string name="shared_media">SHARED MEDIA</string>
+    <string name="transfer_ownership">You are the group owner, please transfer ownership to a member before leaving the group.</string>
+    <string name="transfer_ownership_text">Transfer Ownership</string>
+    <string name="view_members">View Members</string>
+    <string name="banned_members">Banned Members</string>
+    <string name="add_members">Add Members</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="leave_group_text">Are you sure you want to leave the group?</string>
+    <string name="delete_group_text">Are you sure you want to delete the group?</string>
+    <string name="delete_and_exit">Delete and Exit</string>
+    <string name="unblock_user">Unblock User</string>
+    <string name="block_user">Block User</string>
+    <string name="no_members">No Members</string>
+    <string name="extra_space">\"      \"</string>
+    <string name="owner">Owner</string>
+    <string name="selected">selected</string>
+    <string name="view_profile">View profile</string>
+    <string name="group_password">Group Password</string>
+    <string name="join_group_text">"Enter password to access %1$s group. "</string>
+    <string name="protected_group">"Protected Group"</string>
+    <string name="type_public">Public</string>
+    <string name="type_private">Private</string>
+    <string name="type_protected">Protected</string>
+    <string name="name">Name</string>
+    <string name="new_group">New Group</string>
+    <string name="please_try_another_password">Please try another password</string>
+    <string name="incorrect_password">Incorrect Password</string>
+    <string name="sdk_incorrect_password_error">The password for the group is incorrect.</string>
+    <string name="okay">Okay</string>
+    <string name="blocked_user">Blocked Users</string>
+    <string name="open_document">Open Document</string>
+    <string name="translated_message">Translated Message</string>
 
 </resources>

@@ -17,9 +17,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.cometchatworkspace.R;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStickers.listener.StickerClickListener;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStickers.model.Sticker;
+import com.facebook.react.fabric.mounting.mountitems.PreAllocateViewMountItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -44,7 +46,8 @@ public class StickerView extends RelativeLayout implements StickerClickListener 
     private AttributeSet attrs;
 
     private StickerTabAdapter adapter;
-
+    private Palette palette;
+    private Typography typography;
     private HashMap<String,List<Sticker>> stickerMap = new HashMap<>();
 
     private StickerClickListener stickerClickListener;
@@ -71,7 +74,8 @@ public class StickerView extends RelativeLayout implements StickerClickListener 
 
 
     private void initViewComponent(Context context,AttributeSet attributeSet,int defStyleAttr,int defStyleRes){
-
+        palette=Palette.getInstance(context);
+        typography=Typography.getInstance();
         View view =View.inflate(context, R.layout.cometchat_sticker_view,null);
 
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.SharedMediaView, 0, 0);
@@ -98,28 +102,28 @@ public class StickerView extends RelativeLayout implements StickerClickListener 
             for (int i=0;i<tabLayout.getTabCount();i++) {
                 tabLayout.getTabAt(i).setCustomView(createTabItemView(adapter.getPageIcon(i)));
             }
-            if (CometChatTheme.primaryColor !=null) {
+            if (palette.getPrimary() != 0) {
                 Drawable wrappedDrawable = DrawableCompat.wrap(getResources().
                         getDrawable(R.drawable.tab_layout_background_active));
-                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(CometChatTheme.primaryColor));
+                DrawableCompat.setTint(wrappedDrawable, palette.getPrimary());
                 tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).view.setBackground(wrappedDrawable);
-                tabLayout.setSelectedTabIndicatorColor(Color.parseColor(CometChatTheme.primaryColor));
+                tabLayout.setSelectedTabIndicatorColor(palette.getPrimary());
             } else {
                 tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).
-                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorPrimary));
+                        view.setBackgroundColor(palette.getPrimary());
+                tabLayout.setSelectedTabIndicatorColor(palette.getPrimary());
             }
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    if (CometChatTheme.primaryColor!=null) {
+                    if (palette.getPrimary() != 0) {
                         Drawable wrappedDrawable = DrawableCompat.wrap(getResources().
                                 getDrawable(R.drawable.tab_layout_background_active));
-                        DrawableCompat.setTint(wrappedDrawable, Color.parseColor(CometChatTheme.primaryColor));
+                        DrawableCompat.setTint(wrappedDrawable, palette.getPrimary());
                         tab.view.setBackground(wrappedDrawable);
                     }
                     else
-                        tab.view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        tab.view.setBackgroundColor(palette.getPrimary());
                 }
 
                 @Override

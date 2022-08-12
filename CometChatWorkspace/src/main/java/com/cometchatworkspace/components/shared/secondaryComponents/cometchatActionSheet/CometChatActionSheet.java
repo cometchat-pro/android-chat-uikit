@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
@@ -49,13 +47,11 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     private CometChatActionSheetListener cometChatActionSheetListener;
 
-    private CometChatMessageActionListener cometChatMessageActionListener;
-
     private String type;
 
     private View view;
 
-    private int columnCount = CometChatTheme.ActionSheetLayout.columnCount;
+    private int columnCount = 2;
 
     private BottomSheetBehavior behavior;
 
@@ -73,8 +69,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     private ActionSheetAdapter adapter;
 
-    private @ActionSheet.LayoutMode
-    String mode;
+    private int initialReactions = 6;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,10 +78,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             reactionVisible = getArguments().getBoolean("reactionVisible");
             String layoutMode = getArguments().getString("layoutMode");
-            if (layoutMode.equalsIgnoreCase(ActionSheet.LayoutMode.gridMode))
-                isGridLayout = true;
-            else
-                isGridLayout = false;
+            isGridLayout = layoutMode.equalsIgnoreCase(ActionSheet.LayoutMode.gridMode);
             listOfItems = getArguments().getParcelableArrayList("listOfItems");
             columnCount = getArguments().getInt("columnCount", columnCount);
         }
@@ -151,7 +143,8 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             @Override
             public void onClick(View var1, int var2) {
                 ActionItem item = (ActionItem) var1.getTag(R.string.action_item);
-                cometChatActionSheetListener.onActionItemClick(item);
+                if (cometChatActionSheetListener!=null)
+                    cometChatActionSheetListener.onActionItemClick(item);
             }
         }));
 
@@ -178,7 +171,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
     }
 
     private void setupReactions() {
-        List<Reaction> reactions = Extensions.getInitialReactions(CometChatTheme.ActionSheetLayout.reactionCount);
+        List<Reaction> reactions = Extensions.getInitialReactions(initialReactions);
         for (Reaction reaction : reactions) {
             View vw = LayoutInflater.from(getContext()).inflate(R.layout.reaction_list_row, null);
             TextView textView = vw.findViewById(R.id.reaction);
@@ -194,8 +187,8 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (cometChatMessageActionListener != null)
-                        cometChatMessageActionListener.onReactionClick(reaction);
+                    if (cometChatActionSheetListener != null)
+                        cometChatActionSheetListener.onReactionClick(reaction);
                     dismiss();
                 }
             });
@@ -211,8 +204,8 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         addEmojiView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cometChatMessageActionListener != null)
-                    cometChatMessageActionListener.onReactionClick(new Reaction("add_emoji", 0));
+                if (cometChatActionSheetListener != null)
+                    cometChatActionSheetListener.onReactionClick(new Reaction("add_emoji", 0));
                 dismiss();
             }
         });
@@ -314,15 +307,14 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         bundle.putBoolean("reactionVisible", isVisible);
         setArguments(bundle);
     }
+    public void initialReaction(int count) {
+        initialReactions = count;
+    }
 
 
     public void setEventListener(CometChatActionSheetListener actionSheetListener) {
         this.cometChatActionSheetListener = actionSheetListener;
 
-    }
-
-    public void setCometChatMessageActionListener(CometChatMessageActionListener cometChatMessageActionListener) {
-        this.cometChatMessageActionListener = cometChatMessageActionListener;
     }
 
     @Override
@@ -335,35 +327,4 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         super.onCancel(dialog);
     }
 
-    public interface CometChatActionSheetListener {
-        void onActionItemClick(ActionItem actionItem);
-    }
-
-    public interface CometChatMessageActionListener {
-        void onThreadMessageClick();
-
-        void onEditMessageClick();
-
-        void onReplyMessageClick();
-
-        void onForwardMessageClick();
-
-        void onDeleteMessageClick();
-
-        void onCopyMessageClick();
-
-        void onShareMessageClick();
-
-        void onMessageInfoClick();
-
-        void onReactionClick(Reaction reaction);
-
-        void onTranslateMessageClick();
-
-        void onRetryClick();
-
-        void onSendMessagePrivately();
-
-        void onReplyMessagePrivately();
-    }
 }

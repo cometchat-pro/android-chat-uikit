@@ -51,7 +51,6 @@ public class StickerFragment extends Fragment {
         type = this.getArguments().getString("type");
         List<Sticker> list = this.getArguments().getParcelableArrayList("stickerList");
         stickers = list;
-        Log.e("onStickerView: ",stickers.get(0).getSetName());
         adapter = new StickersAdapter(getContext(),stickers);
         rvStickers.setAdapter(adapter);
 

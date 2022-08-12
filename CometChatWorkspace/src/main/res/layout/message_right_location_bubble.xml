@@ -2,26 +2,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:gravity="end"
     android:layoutDirection="ltr"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rl_message">
         <com.google.android.material.card.MaterialCardView
-            android:layout_alignParentRight="true"
             android:id="@+id/cv_message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="10dp"
-            app:cardBackgroundColor="@color/colorPrimary">
+            app:cardElevation="0dp">
             <RelativeLayout
                 android:id="@+id/cv_message_container_layout"
                 android:layout_width="match_parent"
@@ -32,68 +26,37 @@
                     android:layout_width="250dp"
                     android:layout_height="150dp"
                     android:id="@+id/iv_map"/>
+
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/iv_map">
+                    android:layout_below="@+id/iv_map"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:textColor="@color/textColorWhite"
+                        android:id="@+id/tvTitle"
+                        style="@style/Name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_place_name"
                         android:layout_marginLeft="20dp"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:padding="4dp"
                         android:maxWidth="240dp"
-                        tools:text="Address"/>
+                        android:padding="4dp"
+                        android:textStyle="bold"
+                        tools:text="Address" />
+
                     <TextView
-                        android:id="@+id/sender_location_txt"
-                        android:textColor="@color/textColorWhite"
+                        android:id="@+id/tvSubtitle"
+                        style="@style/Subtitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="italic"
+                        android:layout_below="@+id/tvTitle"
                         android:layout_marginLeft="20dp"
-                        android:text="Shared Location"
-                        android:layout_below="@+id/tv_place_name"
                         android:paddingLeft="4dp"
-                        android:paddingBottom="4dp"/>
+                        android:paddingBottom="4dp"
+                        android:text="Shared Location"
+                        android:textStyle="italic" />
                 </LinearLayout>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            android:layout_alignEnd="@id/cv_message_container"
-            android:layout_below="@+id/cv_message_container"
-            android:layout_width="wrap_content"
-            android:gravity="end"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:visibility="gone"
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

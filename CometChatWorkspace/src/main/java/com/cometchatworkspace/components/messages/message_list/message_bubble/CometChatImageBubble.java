@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,10 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.BindingMethod;
+import androidx.databinding.BindingMethods;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -29,14 +34,16 @@ import com.cometchat.pro.models.Attachment;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.MediaMessage;
 import com.cometchat.pro.models.User;
+import com.cometchatworkspace.BR;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.TimeAlignment;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
@@ -49,6 +56,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import org.json.JSONException;
 
+@BindingMethods(value = {@BindingMethod(type = CometChatImageBubble.class, attribute = "url", method = "setImageUrl")})
 public class CometChatImageBubble extends RelativeLayout {
 
     FontUtils fontUtils;
@@ -62,19 +70,10 @@ public class CometChatImageBubble extends RelativeLayout {
     private RelativeLayout cvMessageBubbleLayout;
     private ProgressBar progressBar;
 
-    private CometChatAvatar ivUser;
-    private TextView tvUser;
-
-    private CometChatDate txtTime;
-    private CometChatMessageReceipt messageReceipt;
-    private View receiptLayout;
 
     private RelativeLayout rlMessageBubble;
-    private TextView tvThreadReplyCount;
 
     private RelativeLayout sensitiveLayout;
-
-    private CometChatMessageReaction reactionLayout;
 
     private String alignment = Alignment.RIGHT;
 
@@ -82,15 +81,16 @@ public class CometChatImageBubble extends RelativeLayout {
 
     private MessageBubbleListener messageBubbleListener;
 
-    private int reactionStrokeColor = Color.parseColor(CometChatTheme.primaryColor);
+    private int reactionStrokeColor;
+    private Palette palette;
+    private Typography typography;
+
 
     private boolean isImageNotSafe;
 
     private int borderColor = 0;
 
     private int borderWidth = 0;
-
-    private String url;
 
     private int layoutId;
 
@@ -116,11 +116,15 @@ public class CometChatImageBubble extends RelativeLayout {
 
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
+        palette = Palette.getInstance(context);
+        typography= Typography.getInstance();
+        reactionStrokeColor = palette.getPrimary();
         fontUtils=FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
                 R.styleable.ImageMessageBubble,
                 0, 0);
+
         float cornerRadius  = a.getFloat(R.styleable.ImageMessageBubble_corner_radius,12);
         int backgroundColor = a.getColor(R.styleable.ImageMessageBubble_backgroundColor,0);
         Drawable messageAvatar = a.getDrawable(R.styleable.ImageMessageBubble_avatar);
@@ -132,20 +136,12 @@ public class CometChatImageBubble extends RelativeLayout {
 
         Drawable imageDrawable = a.getDrawable(R.styleable.ImageMessageBubble_drawable);
 
-        if (alignment== Alignment.LEFT)
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_image_bubble,null);
-        else
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_image_bubble,null);
+        view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_image_bubble,null);
 
         initView(view);
 
         cornerRadius(cornerRadius);
         backgroundColor(backgroundColor);
-        avatar(messageAvatar);
-        avatarVisibility(hideAvatar);
-        userName(userName);
-        userNameVisibility(hideUserName);
-        userNameColor(color);
 
         //set message
         if(imageDrawable!=null)
@@ -154,7 +150,8 @@ public class CometChatImageBubble extends RelativeLayout {
         cvMessageBubble.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                messageBubbleListener.onLongCLick(baseMessage);
+                if (messageBubbleListener!=null)
+                    messageBubbleListener.onLongCLick(baseMessage);
                 return true;
             }
         });
@@ -166,52 +163,11 @@ public class CometChatImageBubble extends RelativeLayout {
     private void initView(View view) {
         addView(view);
         imageMessage = view.findViewById(R.id.image_message);
-        tvUser= view.findViewById(R.id.tv_user);
         cvMessageBubble = view.findViewById(R.id.cv_image_message_container);
         cvMessageBubbleLayout = view.findViewById(R.id.cv_message_container_layout);
         progressBar = view.findViewById(R.id.progress_bar);
-        txtTime = view.findViewById(R.id.time);
-        messageReceipt = view.findViewById(R.id.receiptsIcon);
-        receiptLayout = view.findViewById(R.id.receipt_layout);
-        ivUser = view.findViewById(R.id.iv_user);
         rlMessageBubble = view.findViewById(R.id.rl_message);
-        tvThreadReplyCount = view.findViewById(R.id.thread_reply_count);
         sensitiveLayout = view.findViewById(R.id.sensitive_layout);
-        reactionLayout = view.findViewById(R.id.reactions_group);
-        reactionLayout.setReactionEventListener(new CometChatMessageReaction.OnReactionClickListener() {
-            @Override
-            public void onReactionClick(Reaction reaction, int baseMessageID) {
-                messageBubbleListener.onReactionClick(reaction,baseMessageID);
-            }
-        });
-
-        //CustomView
-        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
-                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.image);
-        if(messageTemplate!=null)
-            layoutId = messageTemplate.getView();
-//        dataView = messageTemplate.getDataView();
-        if (layoutId != 0) {
-            View customView = LayoutInflater.from(context).inflate(layoutId, null);
-            cvMessageBubbleLayout.removeAllViewsInLayout();
-            if (customView.getParent() != null)
-                ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
-            cvMessageBubbleLayout.addView(customView);
-            imageMessage = customView.findViewById(R.id.image_message);
-            customView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    messageBubbleListener.onLongCLick(baseMessage);
-                    return true;
-                }
-            });
-            customView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    messageBubbleListener.onClick(baseMessage);
-                }
-            });
-        }
     }
 
     private void checkForExtensions(BaseMessage baseMessage) {
@@ -242,8 +198,8 @@ public class CometChatImageBubble extends RelativeLayout {
     }
     private void setImageDrawable(String url, boolean gif, boolean isImageNotSafe) {
         if (gif) {
-            Glide.with(context).asGif().diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true).load(url).into(imageMessage);
+            Glide.with(context).asGif().diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .skipMemoryCache(false).load(url).into(imageMessage);
         } else {
             Glide.with(context).asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true).load(url).into(new CustomTarget<Bitmap>() {
@@ -314,59 +270,6 @@ public class CometChatImageBubble extends RelativeLayout {
         }
     }
 
-    public void avatar(Drawable avatarDrawable) {
-        if (ivUser!=null)
-            ivUser.setDrawable(avatarDrawable);
-    }
-
-    public void avatar(String url,String initials) {
-        if (ivUser!=null) {
-            ivUser.setInitials(initials);
-            if (url != null)
-                ivUser.setAvatar(url);
-        }
-    }
-
-    public void avatarVisibility(int visibility) {
-        if (ivUser!=null) {
-            ivUser.setVisibility(visibility);
-        }
-    }
-
-    public void userName(String username) {
-        if (tvUser!=null)
-            tvUser.setText(username);
-    }
-    public void userNameFont(String font) {
-        if (tvUser!=null)
-            tvUser.setTypeface(fontUtils.getTypeFace(font));
-    }
-
-    public void userNameColor(@ColorInt int color){
-        if (tvUser!=null && color!=0)
-            tvUser.setTextColor(color);
-    }
-
-    public void userNameVisibility(int visibility) {
-        if (tvUser!=null) {
-            tvUser.setVisibility(visibility);
-        }
-    }
-
-    public void setReactionBorderColor(@ColorInt int strokeColor) {
-        this.reactionStrokeColor = strokeColor;
-        reactionLayout.setBorderColor(strokeColor);
-    }
-    public void messageAlignment(@Alignment.MessageAlignment String  mAlignment) {
-        if (alignment!=null && alignment== Alignment.LEFT)
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_image_bubble,null);
-        else
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_image_bubble,null);
-
-        removeAllViewsInLayout();
-        initView(view);
-    }
-
     public void setDrawable(Drawable drawable) {
         if (imageMessage !=null)
             imageMessage.setImageDrawable(drawable);
@@ -413,72 +316,43 @@ public class CometChatImageBubble extends RelativeLayout {
         }
     }
 
-    public void replyCount(int count) {
-        if (count!=0) {
-            tvThreadReplyCount.setVisibility(View.VISIBLE);
-            tvThreadReplyCount.setText(baseMessage.getReplyCount()+" "+context.getResources().getString(R.string.replies));
-        } else {
-            tvThreadReplyCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void setReplyCountColor(@ColorInt int color) {
-        if (tvThreadReplyCount!=null)
-            tvThreadReplyCount.setTextColor(color);
-    }
-
-    public void messageTimeAlignment(TimeAlignment timeAlignment) {
-        if (timeAlignment == TimeAlignment.TOP) {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.END_OF, R.id.tv_user);
-            params.addRule(RelativeLayout.ALIGN_START,0);
-            params.addRule(RelativeLayout.BELOW, 0);
-            params.topMargin = 0;
-            params.leftMargin = 8;
-
-            LayoutParams messageBubbleParam = (LayoutParams)cvMessageBubble.getLayoutParams();
-            messageBubbleParam.topMargin = 8;
-            messageBubbleParam.bottomMargin = 8;
-//            receiptLayout.setLayoutParams(params);
-        } else {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.BELOW, R.id.thread_reply_count);
-//            receiptLayout.setLayoutParams(params);
-        }
-    }
-
-    public void imageUrl(String url) {
-        if (url!=null && !url.isEmpty()) {
-            this.url = url;
-            baseMessage = new BaseMessage();
-            Attachment attachment = new Attachment();
-            attachment.setFileName("Image");
-            attachment.setFileExtension("jpeg");
-            attachment.setFileMimeType("image/jpeg");
-            attachment.setFileSize(0);
-            attachment.setFileUrl(url);
-            ((MediaMessage) baseMessage).setAttachment(attachment);
-            cvMessageBubble.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    messageBubbleListener.onClick(baseMessage);
-                }
-            });
-        }
-    }
-
 
     public void messageObject(BaseMessage baseMessage) {
         this.baseMessage = baseMessage;
-        messageReceipt.messageObject(baseMessage);
-        txtTime.setDate(baseMessage.getSentAt(),"hh:mm a");
-        txtTime.setTransparentBackground(true);
 
-        if (tvUser!=null)
-            tvUser.setText(baseMessage.getSender().getName());
-        if (ivUser!=null)
-            ivUser.setAvatar(baseMessage.getSender().getAvatar());
-        reactionLayout.setMessage(baseMessage);
+        //CustomView
+//        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
+//                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.image);
+//        if(messageTemplate!=null)
+//            layoutId = messageTemplate.getView();
+////        dataView = messageTemplate.getDataView();
+//        if (layoutId != 0) {
+//            LayoutInflater inflater = LayoutInflater.from(context);
+//            ViewDataBinding binding = DataBindingUtil.inflate(inflater,layoutId,null,false);
+//            binding.setVariable(BR.message,(MediaMessage)baseMessage);
+//            binding.executePendingBindings();
+//            View customView = binding.getRoot();
+////            View customView = LayoutInflater.from(context).inflate(layoutId, null);
+//            cvMessageBubbleLayout.removeAllViewsInLayout();
+//            if (customView.getParent() != null)
+//                ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
+//            cvMessageBubbleLayout.addView(customView);
+//            imageMessage = customView.findViewById(R.id.image_message);
+//            customView.setOnLongClickListener(new OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View view) {
+//                    messageBubbleListener.onLongCLick(baseMessage);
+//                    return true;
+//                }
+//            });
+//            customView.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    messageBubbleListener.onClick(baseMessage);
+//                }
+//            });
+//        }
+
         checkForExtensions(baseMessage);
 
         if (baseMessage.getMetadata()!=null) {
@@ -486,7 +360,7 @@ public class CometChatImageBubble extends RelativeLayout {
                 String filePath = baseMessage.getMetadata().getString("path");
                 if (imageMessage!=null && filePath!=null)
                     Glide.with(context).load(filePath).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageMessage);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -519,7 +393,7 @@ public class CometChatImageBubble extends RelativeLayout {
 
     }
 
-    public void setMessageBubbleListener(MessageBubbleListener listener) {
+    public void setEventListener(MessageBubbleListener listener) {
         messageBubbleListener = listener;
     }
 }

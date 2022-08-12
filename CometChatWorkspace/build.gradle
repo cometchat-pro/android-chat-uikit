@@ -7,7 +7,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "3.0.4-pluto.beta2"
+        versionName "3.0.9-pluto.beta1"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         renderscriptSupportModeEnabled true
@@ -91,7 +91,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     //cometchat
-    compileOnly 'com.cometchat:pro-android-chat-sdk:3.0.4'
+    implementation 'com.cometchat:pro-android-chat-sdk:3.0.9'
+    implementation 'com.cometchat:pro-android-calls-sdk:2.2.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.0'
-    compileOnly 'com.cometchat:pro-android-calls-sdk:2.1.2-beta2'
+
 }

@@ -3,13 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:gravity="end"
-    android:paddingRight="8dp"
-    android:layout_marginTop="8dp"
     android:layoutDirection="ltr"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -17,8 +13,8 @@
         android:id="@+id/rl_message">
         <com.google.android.material.card.MaterialCardView
             app:cardBackgroundColor="@color/colorPrimary"
-            android:layout_alignParentRight="true"
             android:id="@+id/cv_message_container"
+            app:cardElevation="0dp"
             android:layout_width="250dp"
             android:layout_height="wrap_content">
             <RelativeLayout
@@ -31,73 +27,59 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <TextView
+                        style="@style/Title1"
+                        android:text="@string/share_whiteboard"
+                        android:textStyle="bold"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                     <ImageView
                         android:id="@+id/icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/title"
                         android:padding="8dp"
-                        android:src="@drawable/ic_collaborative_whiteboard"
-                        app:tint="@color/textColorWhite" />
+                        android:src="@drawable/ic_collaborative_whiteboard"/>
 
                     <TextView
-                        android:id="@+id/title"
+                        android:id="@+id/subtitle"
+                        android:layout_below="@id/title"
+                        android:layout_toStartOf="@+id/icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:layout_toRightOf="@+id/icon"
                         android:padding="10dp"
-                        android:textColor="@color/textColorWhite"
                         tools:text="Someone has shared whiteboard. Click below join button to check whiteboard" />
                 </RelativeLayout>
 
-                <com.google.android.material.button.MaterialButton
+                <View
+                    android:id="@+id/seperator"
+                    android:layout_below="@+id/top_message_layout"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/accent100"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <TextView
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    style="@style/Text1"
                     android:id="@+id/join_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/top_message_layout"
+                    android:layout_below="@id/seperator"
+                    android:layout_marginTop="16dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="16dp"
                     android:text="@string/launch"
-                    android:textColor="@color/primaryTextColor"
-                    app:backgroundTint="@color/textColorWhite"
                     app:cornerRadius="8dp" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            android:layout_alignEnd="@id/cv_message_container"
-            android:layout_below="@+id/cv_message_container"
-            android:layout_width="wrap_content"
-            android:gravity="end"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:visibility="gone"
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

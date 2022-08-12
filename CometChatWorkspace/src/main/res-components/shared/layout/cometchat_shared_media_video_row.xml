@@ -14,7 +14,7 @@
         android:adjustViewBounds="true" />
     <ImageView
         android:layout_gravity="center"
-        android:src="@drawable/ic_play_button"
+        android:src="@drawable/ic_play_2x"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 </com.google.android.material.card.MaterialCardView>

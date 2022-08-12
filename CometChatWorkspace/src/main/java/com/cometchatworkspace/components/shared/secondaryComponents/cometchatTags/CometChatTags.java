@@ -39,11 +39,11 @@ public class CometChatTags extends BottomSheetDialogFragment {
     private BottomSheetBehavior behavior;
     private FontUtils fontUtils;
     private List<String> listOfTags = new ArrayList<>();
-    private HashMap<String,List<String>> listOfTagsWithCategory = new HashMap();
+    private final HashMap<String,List<String>> listOfTagsWithCategory = new HashMap();
     private LinearLayout parentView;
     private ImageView checkButton;
     private TextView titleTv;
-    private List<String> finalTags = new ArrayList<>();
+    private final List<String> finalTags = new ArrayList<>();
     private String title;
     private Drawable checkIcon;
     private int checkIconTint;

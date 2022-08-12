@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layoutDirection="ltr"
-    android:paddingRight="8dp"
-    android:gravity="end"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp">
 
@@ -15,9 +13,8 @@
         android:id="@+id/rl_message">
         <com.google.android.material.card.MaterialCardView
             android:layout_width="250dp"
-            android:layout_alignParentRight="true"
+            app:cardElevation="0dp"
             android:id="@+id/cv_message_container"
-            app:cardBackgroundColor="@color/colorPrimary"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:id="@+id/cv_message_container_layout"
@@ -33,12 +30,11 @@
                     android:layout_marginRight="2dp"
                     android:maxWidth="240dp"
                     android:layout_marginLeft="2dp"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/textColorWhite"
+                    style="@style/Name"
+                    android:textColor="@color/primaryTextColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_question"
-                    android:textStyle="bold"
                     tools:text="What color is rose ?"/>
                 <ProgressBar
                     android:visibility="gone"
@@ -61,44 +57,10 @@
                     android:id="@+id/total_votes"
                     android:layout_marginLeft="16dp"
                     android:layout_marginBottom="16dp"
-                    android:textStyle="italic"
-                    android:textColor="@color/textColorWhite"
                     tools:text="2 Votes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-            android:orientation="vertical"
-            android:gravity="start"
-            android:layout_marginBottom="16dp"
-            android:layout_alignEnd="@id/cv_message_container"
-            android:layout_below="@+id/cv_message_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

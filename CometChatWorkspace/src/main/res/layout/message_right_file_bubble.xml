@@ -22,6 +22,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             app:cardCornerRadius="16dp"
+            tools:background="@color/primary"
             app:cardBackgroundColor="@color/colorPrimary"
             android:padding="8dp"
             android:layout_marginLeft="8dp">
@@ -71,6 +72,7 @@
                         android:src="@drawable/ic_file_upload"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        tools:tint="@color/textColorWhite"
                         app:tint="@color/textColorWhite" />
                     <TextView
                         android:id="@+id/tvFileExtension"

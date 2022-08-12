@@ -53,6 +53,13 @@ public class CometChatGroupsViewModel {
         return group;
     }
 
+    public Group getGroup(Group group) {
+        if (getAdapter() != null)
+            return getAdapter().getGroup(group);
+        else
+            return null;
+    }
+
     public void remove(Group group) {
         if (getAdapter() != null)
             getAdapter().removeGroup(group);
@@ -97,12 +104,5 @@ public class CometChatGroupsViewModel {
 
     }
 
-    public void setConversationListItemProperty(boolean hideAvatar, boolean hideTitleListItem, int titleColorListItem, boolean hideSubtitleListItem, int subTitleColorListItem, int backgroundColorListItem, float cornerRadiusListItem) {
-        if (groupListAdapter!=null)
-            groupListAdapter.setConversationListItemProperty(hideAvatar,
-                    hideTitleListItem,titleColorListItem,
-                    hideSubtitleListItem,subTitleColorListItem,
-                    backgroundColorListItem,cornerRadiusListItem);
 
-    }
 }

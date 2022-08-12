@@ -70,12 +70,12 @@ public class CometChatMessageReaction extends RelativeLayout {
             activeColor = a.getColor(R.styleable.CometChatMessageReaction_messageReaction_activeColor,
                     getContext().getColor(R.color.colorPrimary));
             borderColor = a.getColor(R.styleable.CometChatMessageReaction_borderColor,
-                    getContext().getColor(R.color.grey));
+                    getContext().getColor(R.color.textColorWhite));
         }
         borderRadius  = a.getFloat(R.styleable.CometChatMessageReaction_borderRadius,
-                12);
+                64);
         borderWidth = a.getInt(R.styleable.CometChatMessageReaction_borderWidth,
-                1);
+                2);
         textColor = a.getColor(R.styleable.CometChatMessageReaction_messageReaction_textColor,
                 0);
         backgroundColor = a.getColor(R.styleable.CometChatMessageReaction_messageReaction_backgroundColor,0);
@@ -103,10 +103,13 @@ public class CometChatMessageReaction extends RelativeLayout {
                 chip.setChipStrokeWidth(borderWidth);
                 chip.setChipBackgroundColor(ColorStateList.valueOf(passiveColor));
                 chip.setChipStrokeColor(ColorStateList.valueOf(borderColor));
+                chip.setChipStartPadding(0);
+                chip.setChipEndPadding(0);
                 chip.setText(str + " " + reactionOnMessage.get(str));
                 if (Extensions.isReactedByLoggedInUser(baseMessage.getMetadata(),str)) {
+                    chip.setTextColor(context.getColor(R.color.textColorWhite));
                     chip.setChipBackgroundColor(
-                            ColorStateList.valueOf(Utils.adjustAlpha(activeColor,0.4f)));
+                            ColorStateList.valueOf(Utils.adjustAlpha(activeColor,1f)));
                 }
 
                 reactionLayout.addView(chip);

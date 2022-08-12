@@ -25,8 +25,9 @@ import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
@@ -69,7 +70,9 @@ public class CometChatCallActionBubble extends RelativeLayout {
 
     private MessageBubbleListener messageBubbleListener;
 
-    private final int reactionStrokeColor = Color.parseColor(CometChatTheme.primaryColor);
+    private int reactionStrokeColor;
+    private Palette palette;
+    private Typography typography;
 
     private int layoutId;
 
@@ -95,6 +98,9 @@ public class CometChatCallActionBubble extends RelativeLayout {
 
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
+        palette = Palette.getInstance(context);
+        typography=Typography.getInstance();
+        reactionStrokeColor = palette.getPrimary();
         fontUtils=FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,

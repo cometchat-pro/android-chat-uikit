@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.models.BaseMessage;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ import com.cometchatworkspace.components.messages.message_list.message_bubble.Co
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionItem;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 import com.cometchatworkspace.resources.utils.Utils;
 
@@ -163,37 +163,37 @@ public class CometChatHoverDialog {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("text");
             textBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                textBubble.messageAlignment(Alignment.RIGHT);
+//                textBubble.messageAlignment(Alignment.RIGHT);
             textBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_IMAGE)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("image");
             imageBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                imageBubble.messageAlignment(Alignment.RIGHT);
+//                imageBubble.messageAlignment(Alignment.RIGHT);
             imageBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_VIDEO)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("video");
             videoBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                videoBubble.messageAlignment(Alignment.RIGHT);
+//                videoBubble.messageAlignment(Alignment.RIGHT);
             videoBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_AUDIO)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("audio");
             audioBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                audioBubble.messageAlignment(Alignment.RIGHT);
+//                audioBubble.messageAlignment(Alignment.RIGHT);
             audioBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_FILE)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("file");
             fileBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                fileBubble.messageAlignment(Alignment.RIGHT);
+//                fileBubble.messageAlignment(Alignment.RIGHT);
             fileBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.whiteboard)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("whiteboard");
             whiteboardBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                whiteboardBubble.messageAlignment(Alignment.RIGHT);
+//                whiteboardBubble.messageAlignment(Alignment.RIGHT);
             whiteboardBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.document)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("document");
@@ -209,17 +209,17 @@ public class CometChatHoverDialog {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("poll");
             pollBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                pollBubble.messageAlignment(Alignment.RIGHT);
+//                pollBubble.messageAlignment(Alignment.RIGHT);
             pollBubble.messageObject(baseMessage);
         }  else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.location)) {
             messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("location");
             locationBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
-                locationBubble.messageAlignment(Alignment.RIGHT);
+//                locationBubble.messageAlignment(Alignment.RIGHT);
             locationBubble.messageObject(baseMessage);
         }
-        List<ActionItem> options = messageTemplate.getOptions();
-        for (ActionItem item : options) {
+        List<CometChatOptions> options = messageTemplate.getOptions();
+        for (CometChatOptions item : options) {
             RelativeLayout itemLayout = new RelativeLayout(context);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                     600,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -228,7 +228,7 @@ public class CometChatHoverDialog {
 
             ImageView iconView = new ImageView(context);
             iconView.setImageResource(item.getIcon());
-            iconView.setId(1);
+
             RelativeLayout.LayoutParams iconParam = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);

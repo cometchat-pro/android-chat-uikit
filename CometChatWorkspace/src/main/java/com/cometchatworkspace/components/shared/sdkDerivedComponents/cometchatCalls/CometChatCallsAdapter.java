@@ -22,7 +22,7 @@ import com.cometchatworkspace.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.databinding.CometchatCallListRowBinding;
 import com.cometchatworkspace.resources.utils.FontUtils;
 
@@ -41,7 +41,7 @@ public class CometChatCallsAdapter extends RecyclerView.Adapter<CometChatCallLis
     private final Context context;
 
     private List<BaseMessage> callList = new ArrayList<>();
-
+    private final Palette palette;
     private final FontUtils fontUtils;
 
     private final String loggedInUser = CometChat.getLoggedInUser().getUid();
@@ -54,6 +54,7 @@ public class CometChatCallsAdapter extends RecyclerView.Adapter<CometChatCallLis
     public CometChatCallsAdapter(Context context, List<BaseMessage> callList) {
         this.callList = callList;
         this.context = context;
+        palette=Palette.getInstance(context);
         fontUtils=FontUtils.getInstance(context);
     }
 
@@ -64,6 +65,7 @@ public class CometChatCallsAdapter extends RecyclerView.Adapter<CometChatCallLis
      */
     public CometChatCallsAdapter(Context context) {
         this.context = context;
+        palette=Palette.getInstance(context);
         fontUtils=FontUtils.getInstance(context);
 
     }
@@ -203,7 +205,7 @@ public class CometChatCallsAdapter extends RecyclerView.Adapter<CometChatCallLis
         }
 
         cometChatCallListItem.showButtonColor(ColorStateList.valueOf(
-                Color.parseColor(CometChatTheme.primaryColor)));
+                palette.getPrimary()));
 
     }
 

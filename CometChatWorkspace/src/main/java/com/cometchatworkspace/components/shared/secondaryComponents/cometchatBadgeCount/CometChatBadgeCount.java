@@ -13,7 +13,6 @@ import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
 
 import com.cometchatworkspace.R;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.google.android.material.card.MaterialCardView;
 
@@ -164,5 +163,11 @@ public class CometChatBadgeCount extends MaterialCardView {
             tvCount.setText("999+");
     }
 
+    public int getCount() {
+        if (tvCount!=null)
+            return Integer.parseInt(tvCount.getText().toString());
+        else
+            return 0;
+    }
 
 }

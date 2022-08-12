@@ -9,7 +9,7 @@
 
 # Android Java Chat UI Kit
 
-CometChat Java UI Kit is a collection of custom UI Components designed to build text chat and voice/video calling features in your application. 
+CometChat Java UI Kit is a collection of custom UI Components designed to build text chat and voice/video calling features in your application.
 The UI Kit is developed to keep developers in mind and aims to reduce development efforts significantly<br/><br/>
 
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](#)
@@ -26,9 +26,9 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 
 ## Prerequisites :star:
 Before you begin, ensure you have met the following requirements:<br/>
- ✅ &nbsp; You have `Android Studio` installed in your machine.<br/>
- ✅ &nbsp; You have a `Android Device or Emulator` with Android Version 6.0 or above.<br/>
- ✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/docs/concepts).<br/>
+✅ &nbsp; You have `Android Studio` installed in your machine.<br/>
+✅ &nbsp; You have a `Android Device or Emulator` with Android Version 6.0 or above.<br/>
+✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/docs/concepts).<br/>
 
 <hr/>
 
@@ -41,7 +41,7 @@ To setup Android Chat UI Kit, you  need to first register on CometChat Dashboard
 
 1. Create a new app: Click **Add App** option available  →  Enter App Name & other information  → Create App
 2. You will find `APP_ID`, `AUTH_KEY` and `REGION` key at top in **QuickStart** section or else go to "API & Auth Keys" section and copy the `APP_ID`, `AUTH_KEY` and `REGION` key from the "Auth Only API Key" tab.
-<img align="center" src="https://files.readme.io/4b771c5-qs_copy.jpg"/>
+   <img align="center" src="https://files.readme.io/4b771c5-qs_copy.jpg"/>
 
 
 ### ii. Add the CometChat UI Kit Dependency
@@ -70,14 +70,14 @@ allprojects {
 
 ```groovy
 dependencies {
-  implementation 'com.cometchat:android-java-chat-ui-kit:3.0.4-pluto.beta2'
+   implementation 'com.cometchat:pro-android-java-chat-ui-kit:3.0.9-pluto.beta1'
 }
 ```
 
 </td></table>
 
 
- You can refer to the below link for next instructions:<br/>
+You can refer to the below link for next instructions:<br/>
 [📝 Add CometChat Dependency](https://prodocs.cometchat.com/docs/android-quick-start#section-add-the-cometchat-dependency)
 
 <hr/>
@@ -166,77 +166,88 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/docs/android-ui-kit-setup) )
 
 3. If the Library is added successfully, it will look like mentioned in the below image.
-<img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
+   <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
 
 4. Next steps is to adding necessary dependencies inside your app to integrate UI Kit.
-	<ul>
-	<li>To use UI Kit you have to add Material Design Dependency as the UI Kit uses Material Design Components.
-	<table><td>
+   <ul>
+   <li>To use UI Kit you have to add Material Design Dependency as the UI Kit uses Material Design Components.
+   <table><td>
 
-	```groovy
-	implementation 'com.google.android.material:material:<version>'
-	```
+   ```groovy
+   implementation 'com.google.android.material:material:<version>'
+   ```
 
-	</td></table>
+   </td></table>
 
-	Also please make sure that your app's theme should extend `Theme.MaterialComponents`.    Follow the guide on [Getting started Material Components](https://material.io/develop/android/docs/getting-started/)
+   Also please make sure that your app's theme should extend `Theme.MaterialComponents`.    Follow the guide on [Getting started Material Components](https://material.io/develop/android/docs/getting-started/)
 
-	The following is the list of Material Components themes you can use to get the latest component styles and theme-level attributes.
+   The following is the list of Material Components themes you can use to get the latest component styles and theme-level attributes.
 
-	`Theme.MaterialComponents.NoActionBar`  </br>
-	`Theme.MaterialComponents.Light.NoActionBar` </br>
-	`Theme.MaterialComponents.DayNight.NoActionBar` </br>
-	`Theme.MaterialComponents.DayNight.NoActionBar.Bridge` </br>
+   `Theme.MaterialComponents.NoActionBar`  </br>
+   `Theme.MaterialComponents.Light.NoActionBar` </br>
+   `Theme.MaterialComponents.DayNight.NoActionBar` </br>
+   `Theme.MaterialComponents.DayNight.NoActionBar.Bridge` </br>
 
-	Update your app theme to inherit from one of these themes, e.g.:
-	
-	<table><td>
+   Update your app theme to inherit from one of these themes, e.g.:
 
-	```xml
-	<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+   <table><td>
 
-	    <!-- Customize your theme here. -->
+   ```xml
+   <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
 
-	    </style>
-	```
+       <!-- Customize your theme here. -->
 
-	</td></table>
+       </style>
+   ```
 
-	</li>
-	<li> Replace **YOUR_PACKAGE_NAME** with your application package name:
+   </td></table>
 
-	<table><td>
+   </li>
+   <li> Replace **YOUR_PACKAGE_NAME** with your application package name:
 
-	```groovy
-	android {
-		defaultConfig {
-			manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"] 
-			//add your application package.
-		}
-	}
-	```
+   <table><td>
 
-	</td></table>
+   ```groovy
+   android {
+       defaultConfig {
+           manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"] 
+           //add your application package.
+       }
+   }
+   ```
 
-	</li>
-	<li>
-	As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
+   </td></table>
 
-	<table><td>
+   </li>
+   <li>
+   As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
 
-	```groovy
-	android {
-	    ...
-	    dataBinding {
-		enabled = true
-	    }
-	}
-	```
+   <table><td>
 
-	</td></table>
+   ```groovy
+   android {
+       ...
+       dataBinding {
+       enabled = true
+       }
+   }
+   ```
 
-	</li>
-	</ul>
+   </td></table>
+
+   </li>
+    <li> Open the gradle.properties and check if the below stated line is present or not, if not then simply add it.
+
+   <table><td>
+
+   ```groovy
+   android.enableJetifier=true
+   ```
+
+   </td></table>
+
+   </li>
+   </ul>
 
 <hr/>
 
@@ -253,7 +264,8 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 Thanks to the following people who have contributed to this project:
 
-[👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali) 
+[👨‍💻 @vivekprajapati 💻](https://github.com/vivekCometChat) <br>
+[👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali)
 
 [Contribution guidelines for this project]()
 

@@ -2,6 +2,7 @@ package com.cometchatworkspace.components.shared.primaryComponents;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -68,11 +69,12 @@ public class CometChatListBase extends MaterialCardView {
 
     }
 
-    public void initView(Context context, AttributeSet attributeSet) {
+    private void initView(Context context, AttributeSet attributeSet) {
         // Inflate the layout for this fragment
         fontUtils = FontUtils.getInstance(context);
         this.context = context;
 
+        setCardBackgroundColor(Color.TRANSPARENT);
         baseView = View.inflate(context, R.layout.cometchat_list_base, null);
         addView(baseView);
         parentView = baseView.findViewById(R.id.parent_View);
@@ -81,9 +83,7 @@ public class CometChatListBase extends MaterialCardView {
         searchEdit = baseView.findViewById(R.id.search_bar);
         optionIconsList = baseView.findViewById(R.id.icons_layout);
         backIcon = baseView.findViewById(R.id.back_icon);
-
-        tvTitle.setTypeface(FontUtils.getInstance(context).getTypeFace(CometChatTheme.Typography.robotoMedium));
-
+        setTitleAppearance(Typography.getInstance().getHeading());
         searchEdit.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEARCH) {
                 if (!textView.getText().toString().isEmpty()) {
@@ -128,7 +128,7 @@ public class CometChatListBase extends MaterialCardView {
         }
     }
 
-    public void setBaseBackGroundColor(@ColorInt int color) {
+    public void setBackground(@ColorInt int color) {
         parentView.setBackgroundColor(color);
     }
 
@@ -156,6 +156,13 @@ public class CometChatListBase extends MaterialCardView {
 
             optionIconsList.addView(view);
         }
+    }
+
+    public void hideMenuIcon(boolean value) {
+        if (value)
+            optionIconsList.setVisibility(GONE);
+        else
+            optionIconsList.setVisibility(VISIBLE);
     }
 
     public void addSearchViewPlaceHolder(String placeholder) {
@@ -206,8 +213,8 @@ public class CometChatListBase extends MaterialCardView {
         }
     }
 
-    public void hideSearch(boolean IsSearchBoxVisible) {
-        if (IsSearchBoxVisible)
+    public void hideSearch(boolean hideSearch) {
+        if (hideSearch)
             rlSearchBox.setVisibility(View.GONE);
         else
             rlSearchBox.setVisibility(View.VISIBLE);
@@ -219,6 +226,11 @@ public class CometChatListBase extends MaterialCardView {
         }
     }
 
+    public void setSearchText(String text) {
+        if (searchEdit != null && text != null) {
+            searchEdit.setText(text);
+        }
+    }
 
     public void setSearchPlaceHolderColor(@ColorInt int color) {
         if (color != 0 && searchEdit != null) {

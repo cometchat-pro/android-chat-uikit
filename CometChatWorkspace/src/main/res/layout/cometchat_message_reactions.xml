@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <HorizontalScrollView
-        android:id="@+id/reaction_group"
-        android:scrollbars="none"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:maxWidth="250dp"
+    android:layout_weight="1"
+    xmlns:tools="http://schemas.android.com/tools">
+<!--    <HorizontalScrollView-->
+<!--        android:id="@+id/reaction_group"-->
+<!--        android:scrollbars="none"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content">-->
         <com.google.android.material.chip.ChipGroup
             android:visibility="gone"
-            app:singleLine="true"
+            tools:visibility="visible"
             android:orientation="horizontal"
             android:id="@+id/reactions_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-    </HorizontalScrollView>
+<!--    </HorizontalScrollView>-->
 
 </RelativeLayout>

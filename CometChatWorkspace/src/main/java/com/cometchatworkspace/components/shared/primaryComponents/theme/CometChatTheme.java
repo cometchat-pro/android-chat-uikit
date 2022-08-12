@@ -26,11 +26,11 @@ public class CometChatTheme {
 //    }
 
     public CometChatTheme(Context context, @MODE String mode) {
-        if (mode.equalsIgnoreCase(MODE.LIGHT)) {
-            PaletteUtils.lightPalette(context);
-        } else {
-            PaletteUtils.darkPalette(context);
-        }
+//        if (mode.equalsIgnoreCase(MODE.LIGHT)) {
+//            PaletteUtils.lightPalette(context);
+//        } else {
+//            PaletteUtils.darkPalette(context);
+//        }
     }
 
     public CometChatTheme(Context context, Palette palette,Typography typography) {

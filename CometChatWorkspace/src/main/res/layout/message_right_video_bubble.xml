@@ -15,7 +15,6 @@
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="200dp"
-            android:layout_alignParentEnd="true"
             android:layout_margin="8dp"
             android:id="@+id/cv_image_message_container"
             android:layout_height="200dp">
@@ -26,20 +25,25 @@
                 android:id="@+id/cv_message_container_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/video_message"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:src="@drawable/ic_defaulf_image"
+                    android:adjustViewBounds="true"
                     android:background="@color/textColorWhite"
                     android:scaleType="centerCrop"
-                    android:adjustViewBounds="true" />
+                    android:src="@drawable/ic_defaulf_image" />
                 <ImageView
                     android:id="@+id/playBtn"
+                    android:padding="16dp"
+                    android:background="@drawable/ic_circle_grey_32dp"
+                    android:backgroundTint="@color/colorPrimary"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_play_button"
+                    android:src="@drawable/ic_play_2x"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:tint="@color/textColorWhite" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -80,38 +84,5 @@
 
         </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            android:layout_alignEnd="@id/cv_image_message_container"
-            android:layout_below="@+id/cv_image_message_container"
-            android:layout_width="wrap_content"
-            android:gravity="end"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:visibility="gone"
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

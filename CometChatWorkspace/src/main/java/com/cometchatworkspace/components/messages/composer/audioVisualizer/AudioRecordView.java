@@ -162,14 +162,11 @@ public class AudioRecordView extends View {
                 // double y = (audioData[i*2]<<8 | audioData[i*2+1]) / 32768.0
 //                amplitude += Math.abs(y);
                 amplitude += ((allAmps[i]*1024)/dataSize);
-                Log.e( "loopRMSLevel: ",allAmps[i]+"");
             }
-            Log.e("calculateRMSLevel: ", amplitude+" dataSize:"+dataSize);
             return amplitude;
 //            amplitude = amplitude * chunkMaxHeight / MAX_DB;
         }
         //Add this data to buffer for display
-        Log.e( "calculateRMSLevel: ",amplitude+"="+(int)amplitude);
         return (int)amplitude;
     }
     private final void handleNewFFT(int fft) {

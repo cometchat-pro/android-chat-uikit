@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -153,8 +154,7 @@ public class CometChatAvatar extends MaterialCardView {
                     text = "??";
                 }
                 imageView.setVisibility(View.GONE);
-                textView.setText(text);
-                textView.setBackgroundColor(getResources().getColor(R.color.primary));
+                setInitials(text.toUpperCase());
             }
         }
 
@@ -233,7 +233,7 @@ public class CometChatAvatar extends MaterialCardView {
     public void setInitials(@NonNull String name) {
 
         if (name.length() >= 2) {
-            text = name.substring(0, 2);
+            text = name.trim().substring(0, 2);
         } else {
             text = name;
         }

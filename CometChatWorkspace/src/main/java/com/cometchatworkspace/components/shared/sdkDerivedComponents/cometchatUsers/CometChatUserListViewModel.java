@@ -12,96 +12,97 @@ import com.cometchatworkspace.resources.utils.sticker_header.StickyHeaderDecorat
 
 public class CometChatUserListViewModel {
 
-    private static final String TAG = "UserListViewModel";
 
-    private  Context context;
+    private final Context context;
 
     private CometChatUsersAdapter userListAdapter;
 
-    private CometChatUserList userListView;
+    private final CometChatUserList userListView;
 
 
-
-    public CometChatUserListViewModel(Context context, CometChatUserList cometChatUserList, boolean showHeader){
-        this.userListView=cometChatUserList;
-        this.context=context;
-        setUserListAdapter(cometChatUserList,showHeader);
+    public CometChatUserListViewModel(Context context, CometChatUserList cometChatUserList, boolean showHeader) {
+        this.userListView = cometChatUserList;
+        this.context = context;
+        setUserListAdapter(cometChatUserList, showHeader);
     }
 
     private CometChatUsersAdapter getAdapter() {
-        if (userListAdapter==null){
-            userListAdapter=new CometChatUsersAdapter(context);
+        if (userListAdapter == null) {
+            userListAdapter = new CometChatUsersAdapter(context);
         }
         return userListAdapter;
     }
 
-    public void add(User user){
-        if (userListAdapter!=null)
+    public void add(User user) {
+        if (userListAdapter != null)
             userListAdapter.add(user);
 
     }
-    public void add(int index,User user){
-        if (userListAdapter!=null)
-            userListAdapter.add(index,user);
+
+    public void add(int index, User user) {
+        if (userListAdapter != null)
+            userListAdapter.add(index, user);
 
     }
 
-    public void update(User user){
-        if (userListAdapter!=null)
+    public void update(User user) {
+        if (userListAdapter != null)
             userListAdapter.updateUser(user);
 
     }
 
-    public void remove(User user){
-        if (userListAdapter!=null)
+    public void remove(User user) {
+        if (userListAdapter != null)
             userListAdapter.removeUser(user);
 
     }
-    public void remove(int index){
-        if (userListAdapter!=null)
+
+    public void remove(int index) {
+        if (userListAdapter != null)
             userListAdapter.removeUser(index);
     }
 
-    public void clear()
-    {
-        if (userListAdapter!=null)
+    public void clear() {
+        if (userListAdapter != null)
             userListAdapter.clear();
     }
-    private void setUserListAdapter(CometChatUserList cometChatUserList, boolean showHeader){
-        userListAdapter=new CometChatUsersAdapter(context);
-        if(showHeader) {
+
+    private void setUserListAdapter(CometChatUserList cometChatUserList, boolean showHeader) {
+        userListAdapter = new CometChatUsersAdapter(context);
+        if (showHeader) {
             StickyHeaderDecoration stickyHeaderDecoration = new StickyHeaderDecoration(userListAdapter);
             cometChatUserList.getRecyclerView().addItemDecoration(stickyHeaderDecoration, 0);
         }
         cometChatUserList.getRecyclerView().setAdapter(userListAdapter);
     }
 
-    public void setUsersList(List<User> usersList){
-          getAdapter().updateList(usersList);
+    public void setUsersList(List<User> usersList) {
+        getAdapter().updateList(usersList);
     }
 
     public void update(int index, User user) {
-        if (userListAdapter!=null)
-            userListAdapter.updateUser(index,user);
+        if (userListAdapter != null)
+            userListAdapter.updateUser(index, user);
     }
 
     public void searchUserList(List<User> userList) {
-        if (userListAdapter!=null)
+        if (userListAdapter != null)
             userListAdapter.searchUser(userList);
     }
 
     public void setHeaderColor(int color) {
-        if (userListAdapter!=null && color!=0)
+        if (userListAdapter != null && color != 0)
             userListAdapter.setHeaderColor(color);
 
     }
-    public void setHeaderTextAppearance(int Appearance){
-        if(userListAdapter!=null && Appearance!=0)
+
+    public void setHeaderTextAppearance(int Appearance) {
+        if (userListAdapter != null && Appearance != 0)
             userListAdapter.setHeaderAppearance(Appearance);
     }
 
     public int size() {
-        if (userListAdapter!=null)
+        if (userListAdapter != null)
             return userListAdapter.getItemCount();
         else
             return 0;
@@ -109,21 +110,16 @@ public class CometChatUserListViewModel {
 
     public User getUser(int position) {
         User user = null;
-        if (userListAdapter!=null)
+        if (userListAdapter != null)
             user = userListAdapter.getItemAtPosition(position);
         return user;
     }
 
-    public void setUserListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem,
-                                                boolean hideTitleListItem, int titleColorListItem,
-                                                boolean hideSubtitleListItem, int subTitleColorListItem,
-                                                int backgroundColorListItem, float cornerRadiusListItem) {
-        if (userListAdapter!=null)
-            userListAdapter.setUserListItemProperty(hideAvatar,
-                    hideUserPresenceListItem,hideTitleListItem,titleColorListItem,
-                    hideSubtitleListItem,subTitleColorListItem,
-                    backgroundColorListItem,cornerRadiusListItem);
+    public void setSelectedUser(User user) {
+        if (userListAdapter != null)
+            userListAdapter.setSelectedUser(user);
     }
+
 
     public void setConfiguration(CometChatConfigurations configuration) {
         userListAdapter.setConfiguration(configuration);

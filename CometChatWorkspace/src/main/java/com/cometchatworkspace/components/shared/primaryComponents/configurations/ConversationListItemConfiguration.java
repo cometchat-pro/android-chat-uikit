@@ -2,6 +2,9 @@ package com.cometchatworkspace.components.shared.primaryComponents.configuration
 
 import android.content.Context;
 
+import com.cometchatworkspace.components.shared.primaryComponents.Style;
+import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.ConversationInputData;
+
 public class ConversationListItemConfiguration extends CometChatConfigurations {
 
     //Avatar Variables
@@ -17,6 +20,16 @@ public class ConversationListItemConfiguration extends CometChatConfigurations {
     private boolean isGroupActionMessageHidden;
     private boolean isDeleteMessageHidden;
     private final Context context;
+    private ConversationInputData conversationInputData;
+    private Style style;
+
+    public ConversationInputData getConversationInputData() {
+        return conversationInputData;
+    }
+
+    public void setConversationInputData(ConversationInputData conversationInputData) {
+        this.conversationInputData = conversationInputData;
+    }
 
     public ConversationListItemConfiguration(Context context) {
         this.context = context;
@@ -117,6 +130,14 @@ public class ConversationListItemConfiguration extends CometChatConfigurations {
         return isTypingIndicatorVisible;
     }
 
+    public ConversationListItemConfiguration setStyle(Style style) {
+        this.style = style;
+        return this;
+    }
+
+    public Style getStyle() {
+        return style;
+    }
     public ConversationListItemConfiguration hideThreadIndicator(boolean isHidden) {
         isThreadIndicatorHidden = isHidden;
         return this;

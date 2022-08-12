@@ -28,7 +28,8 @@ import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.TimeAlignment;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
@@ -48,20 +49,9 @@ public class CometChatStickerBubble extends RelativeLayout {
     private Context context;
     private View view;
     private ShapeableImageView imageMessage;
-
-    private CometChatAvatar ivUser;
-    private TextView tvUser;
-
-    private CometChatDate txtTime;
-    private CometChatMessageReceipt messageReceipt;
-    private View receiptLayout;
-
     private RelativeLayout rlMessageBubble;
-    private TextView tvThreadReplyCount;
 
     private RelativeLayout sensitiveLayout;
-
-    private CometChatMessageReaction reactionLayout;
 
     private String alignment = Alignment.RIGHT;
 
@@ -69,7 +59,8 @@ public class CometChatStickerBubble extends RelativeLayout {
 
     private MessageBubbleListener messageBubbleListener;
 
-    private int reactionStrokeColor = Color.parseColor(CometChatTheme.primaryColor);
+    private Palette palette;
+    private Typography typography;
 
     private int layoutId;
 
@@ -95,6 +86,8 @@ public class CometChatStickerBubble extends RelativeLayout {
 
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
+        palette = Palette.getInstance(context);
+        typography= Typography.getInstance();
         fontUtils=FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
@@ -110,54 +103,25 @@ public class CometChatStickerBubble extends RelativeLayout {
         alignment = Alignment.getValue(a.getInt(R.styleable.StickerMessageBubble_messageAlignment,0));
         Drawable imageDrawable = a.getDrawable(R.styleable.StickerMessageBubble_stickerDrawable);
 
-        if (alignment== Alignment.LEFT)
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_sticker_bubble,null);
-        else
-            view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_sticker_bubble,null);
+        view = LayoutInflater.from(getContext()).inflate(R.layout.message_right_sticker_bubble,null);
 
         initView(view);
 
         cornerRadius(cornerRadius);
         backgroundColor(backgroundColor);
-        avatar(messageAvatar);
-        avatarVisibility(hideAvatar);
-        userName(userName);
-        userNameVisibility(hideUserName);
-        userNameColor(color);
 
         //set message
         if(imageDrawable!=null)
             imageMessage.setImageDrawable(imageDrawable);
-
-        imageMessage.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                messageBubbleListener.onLongCLick(baseMessage);
-                return true;
-            }
-        });
     }
 
     private void initView(View view) {
         addView(view);
         imageMessage = view.findViewById(R.id.image_message);
-        tvUser= view.findViewById(R.id.tv_user);
 
-
-        txtTime = view.findViewById(R.id.time);
-        messageReceipt = view.findViewById(R.id.receiptsIcon);
-        receiptLayout = view.findViewById(R.id.receipt_layout);
-        ivUser = view.findViewById(R.id.iv_user);
         rlMessageBubble = view.findViewById(R.id.rl_message);
-        tvThreadReplyCount = view.findViewById(R.id.thread_reply_count);
+
         sensitiveLayout = view.findViewById(R.id.sensitive_layout);
-        reactionLayout = view.findViewById(R.id.reactions_group);
-        reactionLayout.setReactionEventListener(new CometChatMessageReaction.OnReactionClickListener() {
-            @Override
-            public void onReactionClick(Reaction reaction, int baseMessageID) {
-                messageBubbleListener.onReactionClick(reaction,baseMessageID);
-            }
-        });
     }
 
     private void setImageDrawable(String url, boolean gif, boolean isImageNotSafe) {
@@ -224,50 +188,6 @@ public class CometChatStickerBubble extends RelativeLayout {
         }
     }
 
-    public void avatar(Drawable avatarDrawable) {
-        if (ivUser!=null)
-            ivUser.setDrawable(avatarDrawable);
-    }
-
-    public void avatar(String url,String initials) {
-        if (ivUser!=null) {
-            ivUser.setInitials(initials);
-            if (url != null)
-                ivUser.setAvatar(url);
-        }
-    }
-
-    public void avatarVisibility(int visibility) {
-        if (ivUser!=null) {
-            ivUser.setVisibility(visibility);
-        }
-    }
-
-    public void userName(String username) {
-        if (tvUser!=null)
-            tvUser.setText(username);
-    }
-    public void userNameFont(String font) {
-        if (tvUser!=null)
-            tvUser.setTypeface(fontUtils.getTypeFace(font));
-    }
-
-    public void userNameColor(@ColorInt int color){
-        if (tvUser!=null && color!=0)
-            tvUser.setTextColor(color);
-    }
-
-    public void userNameVisibility(int visibility) {
-        if (tvUser!=null) {
-            tvUser.setVisibility(visibility);
-        }
-    }
-
-    public void setReactionBorderColor(@ColorInt int strokeColor) {
-        this.reactionStrokeColor = strokeColor;
-        reactionLayout.setBorderColor(strokeColor);
-    }
-
     public void messageAlignment(@Alignment.MessageAlignment String mAlignment) {
         if (alignment!=null && alignment== Alignment.LEFT)
             view = LayoutInflater.from(getContext()).inflate(R.layout.message_left_sticker_bubble,null);
@@ -309,50 +229,7 @@ public class CometChatStickerBubble extends RelativeLayout {
         }
     }
 
-    public void replyCount(int count) {
-        if (count!=0) {
-            tvThreadReplyCount.setVisibility(View.VISIBLE);
-            tvThreadReplyCount.setText(baseMessage.getReplyCount()+" "+context.getResources().getString(R.string.replies));
-        } else {
-            tvThreadReplyCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void setReplyCountColor(@ColorInt int color) {
-        if (tvThreadReplyCount!=null)
-            tvThreadReplyCount.setTextColor(color);
-    }
-
-    public void messageTimeAlignment(TimeAlignment timeAlignment) {
-        if (timeAlignment == TimeAlignment.TOP) {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.END_OF, R.id.tv_user);
-            params.addRule(RelativeLayout.ALIGN_START,0);
-            params.addRule(RelativeLayout.BELOW, 0);
-            params.topMargin = 0;
-            params.leftMargin = 8;
-
-            LayoutParams messageBubbleParam = (LayoutParams)imageMessage.getLayoutParams();
-            messageBubbleParam.topMargin = 8;
-            messageBubbleParam.bottomMargin = 8;
-//            receiptLayout.setLayoutParams(params);
-        } else {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
-            params.addRule(RelativeLayout.BELOW, R.id.thread_reply_count);
-//            receiptLayout.setLayoutParams(params);
-        }
-    }
     public void messageObject(BaseMessage baseMessage) {
-        this.baseMessage = baseMessage;
-        messageReceipt.messageObject(baseMessage);
-        txtTime.setDate(baseMessage.getSentAt(),"hh:mm a");
-        txtTime.setTransparentBackground(true);
-
-        if (tvUser!=null)
-            tvUser.setText(baseMessage.getSender().getName());
-        if (ivUser!=null)
-            ivUser.setAvatar(baseMessage.getSender().getAvatar());
-        reactionLayout.setMessage(baseMessage);
         try {
             Glide.with(context).load(
                     ((CustomMessage)baseMessage).getCustomData().getString("sticker_url"))
@@ -361,9 +238,18 @@ public class CometChatStickerBubble extends RelativeLayout {
             e.printStackTrace();
         }
 
+        imageMessage.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (messageBubbleListener!=null)
+                    messageBubbleListener.onLongCLick(baseMessage);
+                return true;
+            }
+        });
+
     }
 
-    public void setMessageBubbleListener(MessageBubbleListener listener) {
+    public void setEventListener(MessageBubbleListener listener) {
         messageBubbleListener = listener;
     }
 }

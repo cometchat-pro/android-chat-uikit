@@ -22,7 +22,6 @@ public class PaletteUtils {
     public static void lightPalette(Context context) {
         Palette palette = Palette.getInstance(context);
         palette.background(context.getColor(R.color.background));
-        palette.searchBackground(context.getColor(R.color.searchBackground));
         palette.primary(context.getColor(R.color.primary));
         palette.accent(context.getColor(R.color.accent));
         palette.accent50(context.getColor(R.color.accent50));

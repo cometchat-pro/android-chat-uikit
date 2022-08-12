@@ -21,7 +21,6 @@ import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.InputData;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
@@ -86,80 +85,57 @@ public class CometChatConversationListItem extends MaterialCardView {
      * i.e we can control the visibility of the component inside the CometChatUserListItem,
      * and also decide what value i need to show, in that particular view
      */
-    public void inputData(InputData data) {
-        if (data.getThumbnail() == null || data.getThumbnail().isEmpty()) {
-            hideAvatar(true);
-        } else {
-            setAvatar(data.getThumbnail() + "", null);
-        }
-        if (data.getTitle() != null) {
-            setTitle(data.getTitle());
-            hideTitle(false);
-        } else {
-            hideTitle(true);
-        }
-        if (data.getSubTitle() != null) {
-            setSubTitle(data.getSubTitle());
-            hideSubTitle(false);
-        } else {
-            hideSubTitle(true);
-        }
-        if (data.getStatus() != null) {
-            setStatusIndicator(data.getStatus());
-            hideStatusIndicator(false);
-        } else {
-            hideStatusIndicator(true);
-        }
-        if (data.getTime() > 0) {
-            setTime(data.getTime());
-            hideTime(false);
-        } else {
-            hideTime(true);
-        }
+    public void setConversationInputData(InputData inputData) {
 
-        if (data.getUnreadCount() > 0) {
-            setUnreadCount(data.getUnreadCount());
-            hideUnreadCount(false);
-        } else {
-            hideUnreadCount(true);
+        if (inputData instanceof ConversationInputData) {
+            ConversationInputData conversationInputData=(ConversationInputData) inputData;
+            setSubTitle(conversationInputData.getSubTitle(conversation).toString()+"");
+            hideSubTitle(false);
+            hideTitle(!inputData.isTitle());
+            hideAvatar(!inputData.isThumbnail());
+            hideStatusIndicator(!inputData.isStatus());
+            hideReceipt(!((ConversationInputData) inputData).isReadReceipt());
+            hideTime(!((ConversationInputData) inputData).isTimestamp());
+            hideUnreadCount(conversationInputData.isUnreadCount());
         }
     }
 
     public void setStyle(Style style) {
+        if (style!=null) {
+            if (style.getBorder() > 0) {
+                setStrokeWidth(style.getBorder());
+            }
+            if (style.getCornerRadius() > 0) {
+                setRadius(style.getCornerRadius());
+            }
+            if (style.getTitleColor() != 0) {
+                setTitleColor(style.getTitleColor());
+            }
+            if (style.getSubTitleColor() != 0) {
+                setSubTitleColor(style.getSubTitleColor());
+            }
+            if (style.getTitleFont() != null && !style.getTitleFont().isEmpty()) {
+                setTitleFont(style.getTitleFont());
+            }
+            if (style.getSubTitleFont() != null && !style.getSubTitleFont().isEmpty()) {
+                setSubTitleFont(style.getSubTitleFont());
+            }
+            if (style.getBackground() != 0) {
+                setBackgroundColor(style.getBackground());
+            }
+            if (style.getThreadIndicatorTextColor() != 0) {
+                setThreadIndicatorColor(style.getThreadIndicatorTextColor());
+            }
+            if (style.getTypingIndicatorTextColor() != 0) {
+                setTypingIndicatorColor(style.getTypingIndicatorTextColor());
+            }
 
-        if (style.getBorder() > 0) {
-            setStrokeWidth(style.getBorder());
-        }
-        if (style.getCornerRadius() > 0) {
-            setRadius(style.getCornerRadius());
-        }
-        if (style.getSubTitleColor() != 0) {
-            setTitleColor(style.getTitleColor());
-        }
-        if (style.getSubTitleColor() != 0) {
-            setSubTitleColor(style.getSubTitleColor());
-        }
-        if (style.getTitleFont() != null && !style.getTitleFont().isEmpty()) {
-            setTitleFont(style.getTitleFont());
-        }
-        if (style.getSubTitleFont() != null && !style.getSubTitleFont().isEmpty()) {
-            setSubTitleFont(style.getSubTitleFont());
-        }
-        if (style.getBackground() != 0) {
-            setBackgroundColor(style.getBackground());
-        }
-        if (style.getThreadIndicatorTextColor() != 0) {
-            setThreadIndicatorColor(style.getThreadIndicatorTextColor());
-        }
-        if (style.getTypingIndicatorTextColor() != 0) {
-            setTypingIndicatorColor(style.getTypingIndicatorTextColor());
-        }
-
-        if (style.getThreadIndicatorTextFont() != null && !style.getThreadIndicatorTextFont().isEmpty()) {
-            setThreadIndicatorFont(style.getThreadIndicatorTextFont());
-        }
-        if (style.getTypingIndicatorTextFont() != null && !style.getTypingIndicatorTextFont().isEmpty()) {
-            setTypingIndicatorFont(style.getTypingIndicatorTextFont());
+            if (style.getThreadIndicatorTextFont() != null && !style.getThreadIndicatorTextFont().isEmpty()) {
+                setThreadIndicatorFont(style.getThreadIndicatorTextFont());
+            }
+            if (style.getTypingIndicatorTextFont() != null && !style.getTypingIndicatorTextFont().isEmpty()) {
+                setTypingIndicatorFont(style.getTypingIndicatorTextFont());
+            }
         }
 
     }
@@ -175,14 +151,14 @@ public class CometChatConversationListItem extends MaterialCardView {
             lastMessageText = Utils.getLastMessage(context, baseMessage);
 
             if (conversation.getLastMessage().getParentMessageId() != 0) {
-                setThreadIndicator(context.getString(R.string.in_thread));
+                setThreadIndicatorText(context.getString(R.string.in_thread));
             } else {
                 hideThreadIndicator(true);
             }
 
             if (baseMessage.getDeletedAt() > 0) {
                 hideThreadIndicator(true);
-                lastMessageText = "";
+                lastMessageText = context.getString(R.string.this_message_deleted);
             }
 
         } else {
@@ -201,9 +177,9 @@ public class CometChatConversationListItem extends MaterialCardView {
                 setSubTitle(context.getResources().getString(R.string.sentiment_content));
             }
         }
-        setSubTitleFont(CometChatTheme.Typography.robotoRegular);
-        setTitleFont(CometChatTheme.Typography.robotoMedium);
-        setTimeFont(CometChatTheme.Typography.robotoRegular);
+        setTitleTextAppearance(typography.getName());
+        setSubTitleTextAppearance(typography.getSubtitle1());
+        setTimeAppearance(typography.getSubtitle1());
 
         String name, avatar, status;
         if (conversation.getConversationType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
@@ -211,7 +187,6 @@ public class CometChatConversationListItem extends MaterialCardView {
             name = conversationUser.getName();
             avatar = conversationUser.getAvatar();
             status = conversationUser.getStatus();
-            Log.e("Conversation:", conversation.getConversationWith().toString());
             setStatusIndicator(status);
         } else {
             name = ((Group) conversation.getConversationWith()).getName();
@@ -399,7 +374,7 @@ public class CometChatConversationListItem extends MaterialCardView {
 
     public void hideUnreadCount(boolean isHidden) {
         if (conversationListBadgeCount != null) {
-            if (isHidden)
+            if (isHidden || conversationListBadgeCount.getCount()==0)
                 conversationListBadgeCount.setVisibility(View.GONE);
             else
                 conversationListBadgeCount.setVisibility(View.VISIBLE);
@@ -430,7 +405,7 @@ public class CometChatConversationListItem extends MaterialCardView {
         }
     }
 
-    public void setThreadIndicator(String title) {
+    public void setThreadIndicatorText(String title) {
         conversationListItemHelperText.setText(title);
     }
 
@@ -510,7 +485,7 @@ public class CometChatConversationListItem extends MaterialCardView {
         }
     }
 
-    public void setTypingIndicator(String title) {
+    public void setTypingIndicatorText(String title) {
         conversationListItemTypingIndicator.setText(title);
     }
 
@@ -550,4 +525,7 @@ public class CometChatConversationListItem extends MaterialCardView {
             conversationListItemSubTitle.setText("");
         }
     }
+
+    //TODO
+    // configurations methods
 }

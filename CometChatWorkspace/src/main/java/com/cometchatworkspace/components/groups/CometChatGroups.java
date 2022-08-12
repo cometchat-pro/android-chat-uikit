@@ -10,27 +10,32 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cometchat.pro.core.CometChat;
+import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.models.Group;
+import com.cometchat.pro.models.GroupMember;
+import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
+import com.cometchatworkspace.components.groups.createGroup.CometChatCreateGroup;
 import com.cometchatworkspace.components.shared.primaryComponents.CometChatListBase;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.GroupsListConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatGroups.CometChatGroupList;
 import com.cometchatworkspace.resources.utils.CometChatError;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerViewSwipeListener;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,13 +57,12 @@ public class CometChatGroups extends CometChatListBase {
 
     private FontUtils fontUtils;
     private View view;
-    private static final HashMap<String, Events> events = new HashMap<>();
 
     private Context context;
     /**
      * The Corner radius list item.
      */
-    float cornerRadiusListItem = 16f;
+    private final User loggedInUser = CometChat.getLoggedInUser();
 
     private ImageView icon;
 
@@ -68,66 +72,11 @@ public class CometChatGroups extends CometChatListBase {
     private Typography typography;
     private RecyclerViewSwipeListener swipeHelper;
 
-    /**
-     * The Hide avatar.
-     */
-    boolean hideAvatar,
-    /**
-     * The Hide user presence list item.
-     */
-    hideUserPresenceListItem,
-    /**
-     * The Hide title list item.
-     */
-    hideTitleListItem,
-    /**
-     * The Hide subtitle list item.
-     */
-    hideSubtitleListItem,
-    /**
-     * The Hide helper text list item.
-     */
-    hideHelperTextListItem = true,
-    /**
-     * The Hide time list item.
-     */
-    hideTimeListItem;
-    /**
-     * The Title color list item.
-     */
-    int titleColorListItem = 0,
-    /**
-     * The Sub title color list item.
-     */
-    subTitleColorListItem = 0,
-    /**
-     * The Helper text color list item.
-     */
-    helperTextColorListItem = 0,
-    /**
-     * The Time text color list item.
-     */
-    timeTextColorListItem = 0,
-    /**
-     * The Background color list item.
-     */
-    backgroundColorListItem = 0,
-    /**
-     * The Typing indicator color list item.
-     */
-    typingIndicatorColorListItem,
-    /**
-     * The Background color list item position.
-     */
-    backgroundColorListItemPosition;
-    /**
-     * The Corner radius list item.
-     */
 
     /**
      * Constructor used to initiate a CometChatGroup.
-     * @param context
      *
+     * @param context
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -139,9 +88,9 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * Constructor used to initiate a CometChatGroup.
+     *
      * @param context
      * @param attrs
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -153,10 +102,10 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * Constructor used to initiate a CometChatGroup.
+     *
      * @param context
      * @param attrs
      * @param defStyleAttr
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -179,7 +128,7 @@ public class CometChatGroups extends CometChatListBase {
                 0, 0);
 
         //Start of Handling Attributes
-        String title = a.getString(R.styleable.CometChatGroups_title);
+        String title = a.getString(R.styleable.CometChatGroups_title) != null ? a.getString(R.styleable.CometChatGroups_title) : getResources().getString(R.string.groups);
 
         int titleColor = a.getColor(R.styleable.
                 CometChatGroups_titleColor, palette.getAccent());
@@ -188,7 +137,7 @@ public class CometChatGroups extends CometChatListBase {
         float searchBoxRadius = a.getDimension(R.styleable.
                 CometChatGroups_searchCornerRadius, 0f);
         int searchBoxColor = a.getColor(R.styleable.
-                CometChatGroups_searchBackgroundColor, palette.getSearchBackground());
+                CometChatGroups_searchBackgroundColor, palette.getAccent50());
         Drawable createGroupIcon = a.getDrawable(R.styleable.CometChatGroups_createGroupIcon);
         int searchTextColor = a.getColor(R.styleable.
                 CometChatGroups_searchTextColor, palette.getAccent600());
@@ -203,10 +152,12 @@ public class CometChatGroups extends CometChatListBase {
         int listBackgroundColor = a.getColor(R.styleable.
                 CometChatGroups_listBackgroundColor, getResources().getColor(android.R.color.transparent));
         String searchPlaceholder = a.getString(R.styleable.CometChatGroups_searchPlaceholder);
+        int backgroundColor = a.getColor(R.styleable.CometChatGroups_backgroundColor, palette.getBackground());
+
         //End of Handling Attributes
 
         //Below method will set color of StatusBar.
-        setStatusBarColor();
+        setStatusColor(palette.getBackground());
 
         cometChatGroupList = view.findViewById(R.id.cometchat_group_list);
         super.showBackButton(showBackButton);
@@ -218,7 +169,6 @@ public class CometChatGroups extends CometChatListBase {
         emptyStateTextAppearance(typography.getHeading());
         emptyStateTextColor(palette.getAccent400());
         super.setTitleColor(titleColor);
-        super.setBaseBackGroundColor(palette.getBackground());
         super.setSearchTextColor(searchTextColor);
         super.setSearchBorderColor(searchBorderColor);
         super.setSearchBorderWidth(searchBorderWidth);
@@ -227,6 +177,11 @@ public class CometChatGroups extends CometChatListBase {
         super.setSearchBackground(searchBoxColor);
         super.hideSearch(hideSearchBox);
         super.setSearchCornerRadius(searchBoxRadius);
+        if (palette.getGradientBackground() != null) {
+            setBackground(palette.getGradientBackground());
+        } else {
+            setBackgroundColor(backgroundColor);
+        }
         super.addListView(view);
 
 
@@ -237,9 +192,11 @@ public class CometChatGroups extends CometChatListBase {
             public void onSearch(String state, String text) {
                 if (state.equals(SearchState.Filter)) {
                     cometChatGroupList.searchGroups(text);
+                    cometChatGroupList.setSearchKeyWord(text);
                 } else if (state.equals(SearchState.TextChange)) {
                     if (text.length() == 0) {
 //                    // if searchEdit is empty then fetch all groups.
+                        cometChatGroupList.setSearchKeyWord(text);
                         cometChatGroupList.clearList();
                     } else {
 //                    // Search groups based on text in searchEdit field.
@@ -251,19 +208,6 @@ public class CometChatGroups extends CometChatListBase {
             @Override
             public void onBack() {
                 ((Activity) context).onBackPressed();
-            }
-        });
-
-
-        // Used to trigger event on click of group item in cometChatGroupList (RecyclerView)
-        cometChatGroupList.setItemClickListener(new OnItemClickListener<Group>() {
-            @Override
-            public void OnItemClick(Group group, int position) {
-                if (events != null) {
-                    for (Events e : events.values()) {
-                        e.OnItemClick(group, position);
-                    }
-                }
             }
         });
 
@@ -286,6 +230,7 @@ public class CometChatGroups extends CometChatListBase {
                 ));
             }
 
+
         };
 
         if (!hideCreateGroup) {
@@ -296,20 +241,103 @@ public class CometChatGroups extends CometChatListBase {
             icon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (Events e : events.values()) {
-                        e.onCreateIconClick();
+                    for (CometChatGroupEvents e : CometChatGroupEvents.groupEvents.values()) {
+                        e.onCreateGroupIconClick();
                     }
+                    CometChatGroupActivity.launch(context, CometChatCreateGroup.class);
                 }
             });
             setCreateGroupIcon(createGroupIcon);
             setCreateGroupIconTint(palette.getPrimary());
         }
+
+        CometChatGroupEvents.addGroupListener("COMET_CHAT_GROUPS", new CometChatGroupEvents() {
+            @Override
+            public void onItemClick(Group group, int position) {
+
+            }
+
+            @Override
+            public void onGroupCreate(Group group) {
+                if (cometChatGroupList != null && group != null)
+                    cometChatGroupList.add(group);
+            }
+
+            @Override
+            public void onError(CometChatException error) {
+
+            }
+
+            @Override
+            public void onGroupMemberLeave(User leftUser, Group leftGroup) {
+                if (cometChatGroupList != null && leftUser.equals(loggedInUser)) {
+                    if (cometChatGroupList.isJoinedOnly()) {
+                        cometChatGroupList.removeGroup(leftGroup);
+                    } else {
+                        cometChatGroupList.updateGroup(leftGroup);
+                    }
+                }
+            }
+
+            @Override
+            public void onGroupMemberChangeScope(User updatedBy, User updatedUser, String scopeChangedTo, String scopeChangedFrom, Group group) {
+
+            }
+
+            @Override
+            public void onGroupMemberBan(User bannedUser, User bannedBy, Group bannedFrom) {
+                if (cometChatGroupList != null && bannedFrom != null) {
+                    cometChatGroupList.updateGroup(bannedFrom);
+                }
+            }
+
+            @Override
+            public void onGroupMemberAdd(User addedBy, List<User> usersAdded, Group group) {
+                if (cometChatGroupList != null && group != null) {
+                    cometChatGroupList.updateGroup(group);
+                }
+            }
+
+            @Override
+            public void onGroupMemberKick(User kickedUser, User kickedBy, Group kickedFrom) {
+                if (cometChatGroupList != null && kickedFrom != null) {
+                    cometChatGroupList.updateGroup(kickedFrom);
+                }
+            }
+
+            @Override
+            public void onGroupMemberUnban(User unbannedUser, User unbannedBy, Group unBannedFrom) {
+
+            }
+
+            @Override
+            public void onGroupMemberJoin(User joinedUser, Group joinedGroup) {
+                if (cometChatGroupList != null && joinedGroup != null) {
+                    cometChatGroupList.updateGroup(joinedGroup);
+                }
+            }
+
+            @Override
+            public void onOwnershipChange(Group group, GroupMember member) {
+
+            }
+
+            @Override
+            public void onGroupDelete(Group group) {
+                if (cometChatGroupList != null) {
+                    cometChatGroupList.removeGroup(group);
+                }
+            }
+        });
+
+
     }
+
 
     /**
      * This method is used to change the color of create group icon shown at the top.
-     * @param color
      *
+     * @param color
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -323,8 +351,8 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * This method is used to set the create group icon.
-     * @param iconDrawable
      *
+     * @param iconDrawable
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -339,8 +367,8 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * This method is used to set the icon for back button.
-     * @param res this method is exposed for the user to change the backIcon as per there preference
      *
+     * @param res this method is exposed for the user to change the backIcon as per there preference
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -352,8 +380,8 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * This method is used to set the searchBox icon color
-     * @param res this method is exposed for the user to change the search Icon as per there preference
      *
+     * @param res this method is exposed for the user to change the search Icon as per there preference
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -364,54 +392,53 @@ public class CometChatGroups extends CometChatListBase {
 
     /**
      * This method is used to change the text color of Empty State Text
-     * @param color
      *
+     * @param color
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
-    public void emptyStateTextColor(@ColorInt int color){
-        if (cometChatGroupList != null && color!=0)
+    public void emptyStateTextColor(@ColorInt int color) {
+        if (cometChatGroupList != null && color != 0)
             cometChatGroupList.emptyTextColor(color);
     }
 
     /**
      * This method is used to change the text Appearance of Empty State Text
-     * @param appearance
      *
+     * @param appearance
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
-    public void emptyStateTextAppearance(int appearance){
-        if (cometChatGroupList != null && appearance!=0)
+    public void emptyStateTextAppearance(int appearance) {
+        if (cometChatGroupList != null && appearance != 0)
             cometChatGroupList.emptyStateTextAppearance(appearance);
     }
 
     /**
      * This method is used to change the font of Empty State Text.
-     * @param font
      *
+     * @param font
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
-    public void emptyStateTextFont(String font){
-        if (cometChatGroupList != null && font!=null)
+    public void emptyStateTextFont(String font) {
+        if (cometChatGroupList != null && font != null)
             cometChatGroupList.emptyStateTextFont(font);
 
     }
+
     /**
-     * 
      * This method is used to customize the inner component of CometChatGroups.
      *
      * @param style
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
-    
+
     //TODO(Add EmptyState Styles)
     public void setStyle(Style style) {
         if (style.getBackground() != 0) {
-            super.setBaseBackGroundColor(style.getBackground());
+            super.setBackground(style.getBackground());
         }
 
         if (style.getBorder() != 0) {
@@ -451,32 +478,14 @@ public class CometChatGroups extends CometChatListBase {
 
 
     /**
-     * Below method is used to handle the events performed by/under CometChatGroups.
-     *
-     * @param TAG             the tag
-     * @param onEventListener An object of <code>OnItemClickListener&lt;T&gt;</code> abstract class helps to initialize with events
-     *                        to perform onItemClick &amp; onItemLongClick.
-     * @see CometChatGroups.Events
-     *
-     * @author CometChat Team
-     * Copyright &copy; 2021 CometChat Inc.
-     */
-    public static void addListener(String TAG, Events<Group> onEventListener) {
-        events.put(TAG, onEventListener);
-    }
-
-    /**
      * This method is used to set Color of StatusBar
      *
      * @author CometChat Team
      * Copyright &copy;  2021 CometChat Inc.
      */
 
-    private void setStatusBarColor() {
-        int backgroundColor = palette.getPrimary();
-
-        if (backgroundColor != 0)
-            ((Activity) context).getWindow().setStatusBarColor(backgroundColor);
+    public void setStatusColor(int color) {
+        Utils.setStatusBarColor(context, color);
 
     }
 
@@ -501,229 +510,46 @@ public class CometChatGroups extends CometChatListBase {
     }
 
 
-    public void setProperties(CometChatListItemProperty cometChatListItemProperty) {
-        hideAvatar = cometChatListItemProperty.isAvatarHidden;
-        hideTitleListItem = cometChatListItemProperty.isTitleHidden;
-        hideSubtitleListItem = cometChatListItemProperty.isSubtitleHidden;
-        titleColorListItem = cometChatListItemProperty.titleColor;
-        subTitleColorListItem = cometChatListItemProperty.subTitleColor;
-        backgroundColorListItem = cometChatListItemProperty.backgroundColor;
-        backgroundColorListItemPosition = cometChatListItemProperty.backgroundColorAtPosition;
-        cornerRadiusListItem = cometChatListItemProperty.cornerRadius;
-        if (cometChatGroupList != null)
-            cometChatGroupList.setGroupListItemProperty(hideAvatar,
-                    hideTitleListItem, titleColorListItem,
-                    hideSubtitleListItem, subTitleColorListItem,
-                    backgroundColorListItem, backgroundColorListItemPosition,
-                    cornerRadiusListItem);
-
-    }
-
     /**
      * This method is used to set the configuration in CometChatGroups.
      *
      * @param configuration the configuration
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
     public void setConfiguration(CometChatConfigurations configuration) {
-        cometChatGroupList.setConfiguration(configuration);
+        if (configuration instanceof GroupsListConfiguration) {
+            setSearchText(((GroupsListConfiguration) configuration).getSearchKeyWord());
+            cometChatGroupList.setHideError(((GroupsListConfiguration) configuration).isHideError());
+            cometChatGroupList.setJoinedOnly(((GroupsListConfiguration) configuration).isJoinedOnly());
+            cometChatGroupList.setSearchKeyWord(((GroupsListConfiguration) configuration).getSearchKeyWord());
+            cometChatGroupList.setTags(((GroupsListConfiguration) configuration).getTags());
+            cometChatGroupList.setEmptyView(((GroupsListConfiguration) configuration).getEmptyView());
+            cometChatGroupList.setLimit(((GroupsListConfiguration) configuration).getLimit());
+            cometChatGroupList.setErrorView(((GroupsListConfiguration) configuration).getErrorView());
+            cometChatGroupList.errorStateText(((GroupsListConfiguration) configuration).getErrorText());
+            cometChatGroupList.emptyStateText(((GroupsListConfiguration) configuration).getEmptyText());
+        } else {
+            cometChatGroupList.setConfiguration(configuration);
+        }
     }
 
     /**
      * This method is used to set the multiple configurations in CometChatGroups
      *
      * @param configurations the configurations
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
     public void setConfiguration(List<CometChatConfigurations> configurations) {
+        if (configurations != null && !configurations.isEmpty()) {
+            for (CometChatConfigurations cometChatConfigurations : configurations) {
+                if (cometChatConfigurations instanceof GroupsListConfiguration) {
+                    setConfiguration(cometChatConfigurations);
+                }
+            }
+        }
         cometChatGroupList.setConfiguration(configurations);
     }
 
-    public static class CometChatListItemProperty {
-        private boolean isAvatarHidden;
-        private boolean isUserPresenceHidden;
-        private boolean isTitleHidden;
-        private boolean isSubtitleHidden;
-        private boolean isTimeHidden;
-        private boolean isHelperTextHidden = true;
-        private int backgroundColor;
-        private int backgroundColorAtPosition;
-        private float cornerRadius;
-        private int titleColor;
-        private int subTitleColor;
-        private final Context context;
-
-        /**
-         * Instantiates a new Comet chat list item property.
-         *
-         * @param context the context
-         */
-        public CometChatListItemProperty(Context context) {
-            this.context = context;
-        }
-
-        /**
-         * Sets avatar hidden.
-         *
-         * @param avatarHidden the avatar hidden
-         * @return the avatar hidden
-         */
-        public CometChatListItemProperty setAvatarHidden(boolean avatarHidden) {
-            isAvatarHidden = avatarHidden;
-            return this;
-        }
-
-        /**
-         * Sets title hidden.
-         *
-         * @param titleHidden the title hidden
-         * @return the title hidden
-         */
-        public CometChatListItemProperty setTitleHidden(boolean titleHidden) {
-            isTitleHidden = titleHidden;
-            return this;
-        }
-
-        /**
-         * Sets subtitle hidden.
-         *
-         * @param subtitleHidden the subtitle hidden
-         * @return the subtitle hidden
-         */
-        public CometChatListItemProperty setSubtitleHidden(boolean subtitleHidden) {
-            isSubtitleHidden = subtitleHidden;
-            return this;
-        }
-
-        /**
-         * Sets user presence hidden.
-         *
-         * @param isHidden the is hidden
-         * @return the user presence hidden
-         */
-        public CometChatListItemProperty setUserPresenceHidden(boolean isHidden) {
-            isUserPresenceHidden = isHidden;
-            return this;
-        }
-
-        /**
-         * Sets helper text hidden.
-         *
-         * @param isHidden the is hidden
-         * @return the helper text hidden
-         */
-        public CometChatListItemProperty setHelperTextHidden(boolean isHidden) {
-            isHelperTextHidden = isHidden;
-            return this;
-        }
-
-        /**
-         * Sets message time hidden.
-         *
-         * @param isHidden the is hidden
-         * @return the message time hidden
-         */
-        public CometChatListItemProperty setMessageTimeHidden(boolean isHidden) {
-            isTimeHidden = isHidden;
-            return this;
-        }
-
-        /**
-         * Sets title color.
-         *
-         * @param color the color
-         * @return the title color
-         */
-        public CometChatListItemProperty setTitleColor(@ColorInt int color) {
-            titleColor = color;
-            return this;
-        }
-
-        /**
-         * Sets sub title color.
-         *
-         * @param color the color
-         * @return the sub title color
-         */
-        public CometChatListItemProperty setSubTitleColor(@ColorInt int color) {
-            subTitleColor = color;
-            return this;
-        }
-
-        /**
-         * Sets corner radius.
-         *
-         * @param radius the radius
-         * @return the corner radius
-         */
-        public CometChatListItemProperty setCornerRadius(float radius) {
-            cornerRadius = radius;
-            return this;
-        }
-
-
-        /**
-         * Sets background color.
-         *
-         * @param color    the color
-         * @param position the position
-         * @return the background color
-         */
-        public CometChatListItemProperty setBackgroundColor(@ColorInt int color, int position) {
-            backgroundColor = color;
-            backgroundColorAtPosition = position;
-            return this;
-        }
-
-    }
-
-    /**
-     * Below is abstract class that includes events performed for CometChatGroups
-     *
-     * @param <T> the type parameter
-     *
-     * @author CometChat Team
-     * Copyright &copy; 2021 CometChat Inc.
-     */
-    public abstract static class Events<T> {
-
-        /**
-         * It is triggered whenever any item from CometChatGroupList is clicked
-         *
-         * @param var      the var
-         * @param position the position
-         *
-         * @author CometChat Team
-         * Copyright &copy; 2021 CometChat Inc.
-         */
-        public abstract void OnItemClick(T var, int position);
-
-
-        /**
-         * It is triggered whenever a createGroup icon on the topBar is clicked.
-         *
-         * @author CometChat Team
-         * Copyright &copy; 2021 CometChat Inc.
-         */
-        public void onCreateIconClick() {
-        }
-
-        /**
-         * It is triggered whenever a long press action is performed
-         * on the item from CometChatGroupList
-         *
-         * @param var      the var
-         * @param position the position
-         *
-         * @author CometChat Team
-         * Copyright &copy; 2021 CometChat Inc.
-         */
-        public void OnItemLongClick(T var, int position) {
-
-        }
-    }
 }

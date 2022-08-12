@@ -1,22 +1,52 @@
 package com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StyleRes;
+
 public class ActionItem implements Parcelable {
     String id;
-    String name;
-    int icon;
+    String text;
+    int startIcon;
+    int endIcon;
+    int startIconTint;
+    int endIconTint;
+    int appearance; // addition
+    int textColor ; // addition
 
-    public ActionItem(String name,int icon) {
-        this.name = name;
-        this.icon = icon;
+    public ActionItem(String text, int startIcon) {
+        this.text = text;
+        this.startIcon = startIcon;
+    }
+
+    public ActionItem(String id, String text, int startIcon) {
+        this.id = id;
+        this.text = text;
+        this.startIcon = startIcon;
     }
 
     protected ActionItem(Parcel in) {
-        name = in.readString();
-        icon = in.readInt();
+        text = in.readString();
+        startIcon = in.readInt();
     }
+    //UserAction Component , SharedMedia TabLayout
+    public ActionItem(String id, String text, @DrawableRes int startIcon, @DrawableRes int endIcon, @ColorInt int startIconTint,@ColorInt int endIconTint, @StyleRes int appearance, @ColorInt int textColor) {
+        this.id = id;
+        this.text = text;
+        this.startIcon = startIcon;
+        this.endIcon = endIcon;
+        this.startIconTint = startIconTint;
+        this.endIconTint = endIconTint;
+        this.appearance = appearance;
+        this.textColor = textColor;
+    }
+
+
+
 
     public static final Creator<ActionItem> CREATOR = new Creator<ActionItem>() {
         @Override
@@ -37,8 +67,8 @@ public class ActionItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeInt(icon);
+        dest.writeString(text);
+        dest.writeInt(startIcon);
     }
 
     public String getId() {
@@ -49,19 +79,39 @@ public class ActionItem implements Parcelable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return name;
+    public String getText() {
+        return text;
     }
 
     public void setTitle(String name) {
-        this.name = name;
+        this.text = name;
     }
 
-    public int getIcon() {
-        return icon;
+    public int getStartIcon() {
+        return startIcon;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public void setStartIcon(int startIcon) {
+        this.startIcon = startIcon;
+    }
+
+    public int getAppearance() {
+        return appearance;
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public int getEndIcon() {
+        return endIcon;
+    }
+
+    public int getStartIconTint() {
+        return startIconTint;
+    }
+
+    public int getEndIconTint() {
+        return endIconTint;
     }
 }

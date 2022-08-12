@@ -3,18 +3,16 @@ package com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatU
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.BindingMethod;
-import androidx.databinding.BindingMethods;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cometchat.pro.core.CometChat;
@@ -24,10 +22,11 @@ import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.UsersListConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
+import com.cometchatworkspace.components.users.CometChatUserEvents;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
 import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
@@ -54,7 +53,6 @@ import java.util.List;
  * Modified on  - 23rd March 2022
  */
 
-@BindingMethods(value = {@BindingMethod(type = CometChatUserList.class, attribute = "app:userlist", method = "setUserList")})
 public class CometChatUserList extends MaterialCardView {
 
     private final Context context;
@@ -96,7 +94,6 @@ public class CometChatUserList extends MaterialCardView {
 
     private CometChatSoundManager soundManager;
 
-    private onErrorCallBack onErrorCallBack;
 
     private LinearLayout custom_layout;
 
@@ -112,6 +109,8 @@ public class CometChatUserList extends MaterialCardView {
     private String empty_text = null;
     private View errorView = null;
     private Typography typography;
+    private Palette palette;
+    private OnItemClickListener<User> onItemClickListener;
 
     public CometChatUserList(@NonNull Context context) {
         super(context);
@@ -137,14 +136,15 @@ public class CometChatUserList extends MaterialCardView {
         if (cometChatUserListViewModel == null)
             cometChatUserListViewModel = new CometChatUserListViewModel(context, this, showHeader);
 
-        cometChatUserListViewModel.setHeaderColor(getResources().getColor(R.color.headerColor));
+        cometChatUserListViewModel.setHeaderColor(palette.getAccent500());
         cometChatUserListViewModel.setHeaderTextAppearance(typography.getText2());
     }
 
     private void initComponentView() {
         view = View.inflate(context, R.layout.cometchat_list, null);
         fontUtils = FontUtils.getInstance(context);
-        typography=Typography.getInstance();
+        typography = Typography.getInstance();
+        palette = Palette.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.CometChatUserList,
@@ -159,14 +159,13 @@ public class CometChatUserList extends MaterialCardView {
         empty_text = a.getString(R.styleable.CometChatUserList_empty_text);
         error_text = a.getString(R.styleable.CometChatUserList_error_text);
 
-        soundManager = new CometChatSoundManager(context);
         recyclerView = view.findViewById(R.id.list_recyclerview);
         userShimmer = view.findViewById(R.id.shimmer_layout);
         noUserView = view.findViewById(R.id.no_list_view);
         noListText = view.findViewById(R.id.no_list_text);
         custom_layout = view.findViewById(R.id.empty_view);
 
-        setNoListMessage(empty_text);
+        emptyStateText(empty_text);
         addView(view);
         setViewModel();
         // Uses to fetch next list of users if rvuserList (RecyclerView) is scrolled in upward direction.
@@ -180,14 +179,19 @@ public class CometChatUserList extends MaterialCardView {
 
             }
         });
+        clickEvent();
     }
 
-    public void setNoListMessage(String message) {
+    public void emptyStateText(String message) {
         if (message != null)
             noListText.setText(message);
         else
             noListText.setText(getResources().getString(R.string.no_user));
 
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 
     public void setStyle(Style style) {
@@ -230,6 +234,13 @@ public class CometChatUserList extends MaterialCardView {
 
     }
 
+    public void setBackground(int[] colorArray, GradientDrawable.Orientation orientation) {
+        GradientDrawable gd = new GradientDrawable(
+                orientation,
+                colorArray);
+        setBackground(gd);
+    }
+
     public void showHeader(boolean isVisible) {
         showHeader = isVisible;
         if (!showHeader)
@@ -243,10 +254,9 @@ public class CometChatUserList extends MaterialCardView {
     public void setEmptyView(int id) {
         try {
             emptyView = View.inflate(context, id, null);
-
         } catch (Exception e) {
             emptyView = null;
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -259,7 +269,7 @@ public class CometChatUserList extends MaterialCardView {
             errorView = View.inflate(context, id, null);
         } catch (Exception e) {
             errorView = null;
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -283,6 +293,11 @@ public class CometChatUserList extends MaterialCardView {
             cometChatUserListViewModel.update(user);
     }
 
+    public void add(User user) {
+        if (cometChatUserListViewModel != null)
+            cometChatUserListViewModel.add(user);
+    }
+
     /**
      * provide way to remove a particular user from the list
      *
@@ -300,28 +315,33 @@ public class CometChatUserList extends MaterialCardView {
      * @param onItemClickListener object of the OnItemClickListener
      */
     public void setItemClickListener(OnItemClickListener<User> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
+
+    private void clickEvent() {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new ClickListener() {
             @Override
             public void onClick(View var1, int var2) {
                 User user = (User) var1.getTag(R.string.user);
+                for (CometChatUserEvents e : CometChatUserEvents.userEvents.values()) {
+                    e.onItemClick(user, var2);
+                }
                 if (onItemClickListener != null)
                     onItemClickListener.OnItemClick(user, var2);
-                else
-                    throw new NullPointerException("OnItemClickListener<user> is null");
+
             }
 
             @Override
             public void onLongClick(View var1, int var2) {
                 User user = (User) var1.getTag(R.string.user);
+                for (CometChatUserEvents e : CometChatUserEvents.userEvents.values()) {
+                    e.onItemLongClick(user, var2);
+                }
                 if (onItemClickListener != null)
                     onItemClickListener.OnItemLongClick(user, var2);
-                else
-                    throw new NullPointerException("OnItemClickListener<user> is null");
-
             }
         }));
-
     }
 
     /**
@@ -338,20 +358,7 @@ public class CometChatUserList extends MaterialCardView {
             @Override
             public void onSuccess(List<User> users) {
                 cometChatUserListViewModel.setUsersList(users);
-
-                if (users.size() == 0) {
-                    if (emptyView != null) {
-                        custom_layout.setVisibility(VISIBLE);
-                        custom_layout.removeAllViews();
-                        custom_layout.addView(emptyView);
-                    } else {
-                        noUserView.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    custom_layout.removeAllViews();
-                    custom_layout.setVisibility(GONE);
-                    noUserView.setVisibility(View.GONE);
-                }
+                checkNoUser();
             }
 
             @Override
@@ -371,13 +378,18 @@ public class CometChatUserList extends MaterialCardView {
         return user;
     }
 
+    public void setSelectedUser(User user) {
+        if (cometChatUserListViewModel != null)
+            cometChatUserListViewModel.setSelectedUser(user);
+    }
 
     /**
-     * This method is used to clear a list of user present in CometChatUserList Component
+     * This method is used to clear a list of user present in CometChatUserList Component and fetch
+     * new list.
      *
      * @see CometChatUserListViewModel#clear()
      */
-    public void clearList() {
+    public void refreshList() {
         userList.clear();
         usersRequest = null;
         if (cometChatUserListViewModel != null)
@@ -385,21 +397,16 @@ public class CometChatUserList extends MaterialCardView {
         makeUserList();
     }
 
+    public void clearList() {
+        userList.clear();
+        if (cometChatUserListViewModel != null)
+            cometChatUserListViewModel.clear();
+    }
+
     public int size() {
         return cometChatUserListViewModel.size();
     }
 
-    public void setUserListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem,
-                                        boolean hideTitleListItem, int titleColorListItem,
-                                        boolean hideSubtitleListItem, int subTitleColorListItem,
-                                        int backgroundColorListItem, int backroundColorListItemPosition,
-                                        float cornerRadiusListItem) {
-        if (cometChatUserListViewModel != null)
-            cometChatUserListViewModel.setUserListItemProperty(hideAvatar,
-                    hideUserPresenceListItem, hideTitleListItem, titleColorListItem,
-                    hideSubtitleListItem, subTitleColorListItem,
-                    backgroundColorListItem, cornerRadiusListItem);
-    }
 
     /**
      * This method is used to retrieve list of users you have done.
@@ -412,7 +419,9 @@ public class CometChatUserList extends MaterialCardView {
 
         if (usersRequest == null) {
             usersRequest = new UsersRequest.UsersRequestBuilder().setLimit(limit).setUIDs(uidS)
-                    .friendsOnly(isFriendOnly).hideBlockedUsers(hideBlockedUsers).setSearchKeyword(searchKeyword).setUserStatus(getStatus(status)).setTags(tags).setRoles(roles).build();
+                    .friendsOnly(isFriendOnly).hideBlockedUsers(hideBlockedUsers)
+                    .setSearchKeyword(searchKeyword).setUserStatus(getStatus(status))
+                    .setTags(tags).setRoles(roles).build();
         }
         usersRequest.fetchNext(new CometChat.CallbackListener<List<User>>() {
             @Override
@@ -439,9 +448,21 @@ public class CometChatUserList extends MaterialCardView {
     }
 
     private void throwError(CometChatException e) {
-        if (onErrorCallBack != null)
-            onErrorCallBack.onError(e);
+        for (CometChatUserEvents events : CometChatUserEvents.userEvents.values()) {
+            events.onError(e);
+        }
+    }
 
+    public void errorStateTextFont(String errorMessageFont) {
+        this.errorMessageFont = errorMessageFont;
+    }
+
+    public void errorStateTextColor(int errorMessageColor) {
+        this.errorMessageColor = errorMessageColor;
+    }
+
+    public void errorStateText(String error_text) {
+        this.error_text = error_text;
     }
 
     /**
@@ -472,7 +493,6 @@ public class CometChatUserList extends MaterialCardView {
                             } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                                 alertDialog.dismiss();
                             }
-                            Log.e("alertCheck", "onButtonClick: " + which);
                         }
                     }, 0, false);
                 }
@@ -529,7 +549,7 @@ public class CometChatUserList extends MaterialCardView {
      * @see UsersRequest
      */
     public void refreshUser(CometChat.CallbackListener callbackListener) {
-        clearList();
+        refreshList();
         userList.clear();
         usersRequest = null;
         usersRequest = new UsersRequest.UsersRequestBuilder().setLimit(limit)
@@ -569,7 +589,7 @@ public class CometChatUserList extends MaterialCardView {
      *
      * @see CometChat#addMessageListener(String, CometChat.MessageListener)
      */
-    public void adduserListener() {
+    private void adduserListener() {
         CometChat.addUserListener(TAG, new CometChat.UserListener() {
             @Override
             public void onUserOnline(User user) {
@@ -601,6 +621,10 @@ public class CometChatUserList extends MaterialCardView {
         this.hideBlockedUsers = isTrue;
     }
 
+    public boolean isBlockedUsersHidden() {
+        return hideBlockedUsers;
+    }
+
     public void setHideError(boolean hideError) {
         this.hideError = hideError;
     }
@@ -626,7 +650,7 @@ public class CometChatUserList extends MaterialCardView {
         this.uidS = uidS;
     }
 
-    public void onPause() {
+    private void onPause() {
         removeUserListener();
     }
 
@@ -635,6 +659,7 @@ public class CometChatUserList extends MaterialCardView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         onResume();
+
     }
 
     @Override
@@ -650,7 +675,7 @@ public class CometChatUserList extends MaterialCardView {
      * @copyright © 2021 CometChat Inc.
      * @see CometChatUserList
      */
-    public void onResume() {
+    private void onResume() {
         usersRequest = null;
         cometChatUserListViewModel.clear();
         makeUserList();
@@ -658,33 +683,10 @@ public class CometChatUserList extends MaterialCardView {
     }
 
     public void setConfiguration(CometChatConfigurations configuration) {
-        if (configuration instanceof UsersListConfiguration) {
-            hideError = ((UsersListConfiguration) configuration).isHideError();
-            isFriendOnly = ((UsersListConfiguration) configuration).isFriendOnly();
-            hideBlockedUsers = ((UsersListConfiguration) configuration).isHideBlockedUsers();
-            searchKeyword = ((UsersListConfiguration) configuration).getSearchKeyword();
-            status = ((UsersListConfiguration) configuration).getStatus();
-            limit = ((UsersListConfiguration) configuration).getLimit();
-            tags = ((UsersListConfiguration) configuration).getTags();
-            uidS = ((UsersListConfiguration) configuration).getUidS();
-            roles = ((UsersListConfiguration) configuration).getRoles();
-            emptyView = ((UsersListConfiguration) configuration).getEmptyView();
-        } else
-            cometChatUserListViewModel.setConfiguration(configuration);
+        cometChatUserListViewModel.setConfiguration(configuration);
     }
 
     public void setConfiguration(List<CometChatConfigurations> configurations) {
         cometChatUserListViewModel.setConfiguration(configurations);
-    }
-
-    /**
-     * @param onErrorCallBack this method is for user to handle error as per there need
-     */
-    public void addOnErrorListener(onErrorCallBack onErrorCallBack) {
-        this.onErrorCallBack = onErrorCallBack;
-    }
-
-    public interface onErrorCallBack {
-        void onError(CometChatException exception);
     }
 }

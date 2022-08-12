@@ -3,18 +3,19 @@ package com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatC
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cometchat.pro.constants.CometChatConstants;
@@ -37,6 +38,7 @@ import com.cometchatworkspace.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cometchatworkspace.components.chats.CometChatConversationEvents;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
@@ -81,6 +83,8 @@ public class CometChatConversationList extends MaterialCardView {
 
     private RecyclerView recyclerView;
 
+    private RecyclerView.LayoutManager layoutManager;
+
     private ShimmerFrameLayout conversationShimmer;
 
     private LinearLayout noConversationView; // Used to display a information when no conversation are fetched.
@@ -91,9 +95,8 @@ public class CometChatConversationList extends MaterialCardView {
 
     private static final String TAG = "CometChatConversation";
 
-    private onErrorCallBack onErrorCallBack;
 
-    private boolean userAndGroupTags, hideError;
+    private boolean withUserAndGroupTags, hideError;
 
     private View emptyView = null;
 
@@ -104,6 +107,8 @@ public class CometChatConversationList extends MaterialCardView {
     private int limit;
 
     private List<String> tags = new ArrayList<>();
+    private List<String> userTags = new ArrayList<>();
+    private List<String> groupTags = new ArrayList<>();
 
     private TextView noListText;
     private FontUtils fontUtils;
@@ -113,6 +118,7 @@ public class CometChatConversationList extends MaterialCardView {
     private String error_text = null;
     private String empty_text = null;
     private View errorView = null;
+    private OnItemClickListener<Conversation> onItemClickListener;
 
     public CometChatConversationList(@NonNull Context context) {
         super(context);
@@ -154,17 +160,19 @@ public class CometChatConversationList extends MaterialCardView {
         limit = a.getInt(R.styleable.CometChatConversationList_limit, 30);
         conversationListType = a.getString(R.styleable.CometChatConversationList_conversationType);
         hideError = a.getBoolean(R.styleable.CometChatConversationList_hideError, false);
-        userAndGroupTags = a.getBoolean(R.styleable.CometChatConversationList_userAndGroupTags, false);
+        withUserAndGroupTags = a.getBoolean(R.styleable.CometChatConversationList_userAndGroupTags, false);
         empty_text = a.getString(R.styleable.CometChatConversationList_empty_text);
         error_text = a.getString(R.styleable.CometChatConversationList_error_text);
 
         custom_layout = view.findViewById(R.id.empty_view);
         soundManager = new CometChatSoundManager(context);
         recyclerView = view.findViewById(R.id.list_recyclerview);
+        layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
         conversationShimmer = view.findViewById(R.id.shimmer_layout);
         noConversationView = view.findViewById(R.id.no_list_view);
         noListText = view.findViewById(R.id.no_list_text);
-        setNoListMessage(empty_text);
+        emptyStateText(empty_text);
         addView(view);
         setViewModel();
 
@@ -179,17 +187,15 @@ public class CometChatConversationList extends MaterialCardView {
 
             }
         });
-
+        clickEvents();
     }
 
-    public void setNoListMessage(String message) {
-        if (message != null)
-            noListText.setText(message);
-        else
-            noListText.setText(getResources().getString(R.string.no_chats));
-
+    public void setBackground(int[] colorArray, GradientDrawable.Orientation orientation) {
+        GradientDrawable gd = new GradientDrawable(
+                orientation,
+                colorArray);
+        setBackground(gd);
     }
-
     public void setStyle(Style style) {
         if (style.getBackground() != 0) {
             setCardBackgroundColor(style.getBackground());
@@ -202,33 +208,52 @@ public class CometChatConversationList extends MaterialCardView {
         }
 
         if (style.getEmptyStateTextFont() != null) {
-            setNoListTextFont(style.getEmptyStateTextFont());
+            emptyStateTextFont(style.getEmptyStateTextFont());
         }
         if (style.getEmptyStateTextColor() != 0) {
-            setNoListTextColor(style.getEmptyStateTextColor());
+            emptyStateTextColor(style.getEmptyStateTextColor());
         }
         if (style.getErrorStateTextFont() != null) {
-            errorMessageFont = style.getErrorStateTextFont();
+            errorStateTextFont(style.getErrorStateTextFont());
         }
         if (style.getErrorStateTextColor() != 0) {
-            errorMessageColor = style.getErrorStateTextColor();
+            errorStateTextColor(style.getErrorStateTextColor());
         }
     }
 
-    public void setNoListTextColor(int color) {
+    public void emptyStateText(String message) {
+        if (message != null)
+            noListText.setText(message);
+        else
+            noListText.setText(getResources().getString(R.string.no_chats));
+
+    }
+
+    public void emptyStateTextColor(int color) {
         if (color != 0)
             noListText.setTextColor(color);
     }
 
-    public void setNoListTextFont(String font) {
+    public void emptyStateTextFont(String font) {
         if (font != null)
             noListText.setTypeface(fontUtils.getTypeFace(font));
     }
 
-    public void setNoListTextAppearance(int appearance) {
+    public void emptyStateTextAppearance(int appearance) {
         if (appearance != 0)
             noListText.setTextAppearance(context, appearance);
 
+    }
+    public void errorStateTextFont(String errorMessageFont) {
+        this.errorMessageFont = errorMessageFont;
+    }
+
+    public void errorStateTextColor(int errorMessageColor) {
+        this.errorMessageColor = errorMessageColor;
+    }
+
+    public void errorStateText(String error_text) {
+        this.error_text = error_text;
     }
 
     /**
@@ -257,9 +282,33 @@ public class CometChatConversationList extends MaterialCardView {
      * @param conversation to be removed
      */
     public void remove(Conversation conversation) {
-        if (conversationViewModel != null)
+        if (conversationViewModel != null && conversation != null)
             conversationViewModel.remove(conversation);
     }
+
+    public void removeGroupConversation(Group group) {
+
+        if (conversationViewModel != null && group != null)
+            conversationViewModel.removeGroup(group);
+        checkNoConversation();
+
+    }
+
+    public void removeUserConversation(User user) {
+        if (conversationViewModel != null && user != null)
+            conversationViewModel.removeUser(user);
+        checkNoConversation();
+    }
+
+    public void updateGroupConversation(Group group) {
+        if (conversationViewModel != null)
+            conversationViewModel.updateGroupConversation(group);
+    }
+    public void updateConversationForSentMessages(BaseMessage baseMessage) {
+        if (conversationViewModel != null)
+            conversationViewModel.updateConversationForSentMessages(baseMessage);
+    }
+
 
 
     /**
@@ -268,25 +317,30 @@ public class CometChatConversationList extends MaterialCardView {
      * @param onItemClickListener object of the OnItemClickListener
      */
     public void setItemClickListener(OnItemClickListener<Conversation> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
+
+    private void clickEvents() {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new ClickListener() {
             @Override
             public void onClick(View var1, int var2) {
                 Conversation conversation = (Conversation) var1.getTag(R.string.conversation);
+                for (CometChatConversationEvents events : CometChatConversationEvents.conversationEvents.values()) {
+                    events.onItemClick(conversation, var2);
+                }
                 if (onItemClickListener != null)
                     onItemClickListener.OnItemClick(conversation, var2);
-                else
-                    throw new NullPointerException("OnItemClickListener<Conversation> is null");
             }
 
             @Override
             public void onLongClick(View var1, int var2) {
                 Conversation conversation = (Conversation) var1.getTag(R.string.conversation);
+                for (CometChatConversationEvents events : CometChatConversationEvents.conversationEvents.values()) {
+                    events.onItemLongClick(conversation, var2);
+                }
                 if (onItemClickListener != null)
                     onItemClickListener.OnItemLongClick(conversation, var2);
-                else
-                    throw new NullPointerException("OnItemClickListener<Conversation> is null");
-
             }
         }));
 
@@ -296,10 +350,31 @@ public class CometChatConversationList extends MaterialCardView {
      * This method is used to perform search operation in a list of conversations.
      *
      * @param searchString is a String object which will be searched in conversation.
-     * @see CometChatConversationListViewModel#searchConversation(String)
+     * @see CometChatConversationListViewModel#searchConversations(List)
      */
     public void searchConversation(String searchString) {
-        conversationViewModel.searchConversation(searchString);
+        List<Conversation> new_conversation = new ArrayList<>();
+        if (conversationList != null && conversationList.size() > 0) {
+            for (Conversation conversation : conversationList) {
+                if (conversation.getConversationType().equals(CometChatConstants.CONVERSATION_TYPE_USER) &&
+                        ((User) conversation.getConversationWith()).getName().toLowerCase().contains(searchString)) {
+
+                    new_conversation.add(conversation);
+                } else if (conversation.getConversationType().equals(CometChatConstants.CONVERSATION_TYPE_GROUP) &&
+                        ((Group) conversation.getConversationWith()).getName().toLowerCase().contains(searchString)) {
+                    new_conversation.add(conversation);
+                } else if (conversation.getLastMessage() != null &&
+                        conversation.getLastMessage().getCategory().equals(CometChatConstants.CATEGORY_MESSAGE) &&
+                        conversation.getLastMessage().getType().equals(CometChatConstants.MESSAGE_TYPE_TEXT)
+                        && ((TextMessage) conversation.getLastMessage()).getText() != null
+                        && ((TextMessage) conversation.getLastMessage()).getText().contains(searchString)) {
+                    new_conversation.add(conversation);
+                }
+                conversationViewModel.searchConversations(new_conversation);
+                checkNoConversation(new_conversation);
+            }
+
+        }
     }
 
     /**
@@ -319,12 +394,24 @@ public class CometChatConversationList extends MaterialCardView {
         update(newConversation, isActionMessage);
     }
 
-    public void setUserAndGroupTags(boolean userAndGroupTags) {
-        this.userAndGroupTags = userAndGroupTags;
+    public void withUserAndGroupTags(boolean userAndGroupTags) {
+        this.withUserAndGroupTags = userAndGroupTags;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 
     public void setHideError(boolean hideError) {
         this.hideError = hideError;
+    }
+
+    public void setUserTags(List<String> tags) {
+        this.userTags = tags;
+    }
+
+    public void setGroupTags(List<String> tags) {
+        this.groupTags = tags;
     }
 
     public void setTags(List<String> tags) {
@@ -337,7 +424,7 @@ public class CometChatConversationList extends MaterialCardView {
 
         } catch (Exception e) {
             emptyView = null;
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -350,7 +437,7 @@ public class CometChatConversationList extends MaterialCardView {
             errorView = View.inflate(context, id, null);
         } catch (Exception e) {
             errorView = null;
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -368,7 +455,7 @@ public class CometChatConversationList extends MaterialCardView {
      * @param messageReceipt is object of MessageReceipt which is recieved in real-time.
      * @see MessageReceipt
      */
-    public void setReciept(MessageReceipt messageReceipt) {
+    public void setReceipt(MessageReceipt messageReceipt) {
         if (conversationViewModel != null && messageReceipt.getReceivertype().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
             if (messageReceipt.getReceiptType().equals(MessageReceipt.RECEIPT_TYPE_DELIVERED))
                 conversationViewModel.setDeliveredReceipts(messageReceipt);
@@ -382,7 +469,7 @@ public class CometChatConversationList extends MaterialCardView {
      *
      * @see CometChatConversationListViewModel#clear()
      */
-    public void clearList() {
+    public void refreshList() {
         conversationList.clear();
         conversationsRequest = null;
         if (conversationViewModel != null)
@@ -394,21 +481,21 @@ public class CometChatConversationList extends MaterialCardView {
         return conversationViewModel.size();
     }
 
-    public void setConversationListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem,
-                                                boolean hideTitleListItem, int titleColorListItem,
-                                                boolean hideSubtitleListItem, int subTitleColorListItem,
-                                                boolean hideHelperTextListItem, int helperTextColorListItem,
-                                                boolean hideTimeListItem, int timeTextColorListItem,
-                                                int backgroundColorListItem, int backroundColorListItemPosition,
-                                                float cornerRadiusListItem,
-                                                int typingIndicatorColorListItem) {
-        if (conversationViewModel != null)
-            conversationViewModel.setConversationListItemProperty(hideAvatar,
-                    hideUserPresenceListItem, hideTitleListItem, titleColorListItem,
-                    hideSubtitleListItem, subTitleColorListItem, hideHelperTextListItem,
-                    helperTextColorListItem, hideTimeListItem, timeTextColorListItem,
-                    backgroundColorListItem, cornerRadiusListItem, typingIndicatorColorListItem);
-    }
+//    public void setConversationListItemProperty(boolean hideAvatar, boolean hideUserPresenceListItem,
+//                                                boolean hideTitleListItem, int titleColorListItem,
+//                                                boolean hideSubtitleListItem, int subTitleColorListItem,
+//                                                boolean hideHelperTextListItem, int helperTextColorListItem,
+//                                                boolean hideTimeListItem, int timeTextColorListItem,
+//                                                int backgroundColorListItem, int backroundColorListItemPosition,
+//                                                float cornerRadiusListItem,
+//                                                int typingIndicatorColorListItem) {
+//        if (conversationViewModel != null)
+//            conversationViewModel.setConversationListItemProperty(hideAvatar,
+//                    hideUserPresenceListItem, hideTitleListItem, titleColorListItem,
+//                    hideSubtitleListItem, subTitleColorListItem, hideHelperTextListItem,
+//                    helperTextColorListItem, hideTimeListItem, timeTextColorListItem,
+//                    backgroundColorListItem, cornerRadiusListItem, typingIndicatorColorListItem);
+//    }
 
     public void setTypingIndicator(TypingIndicator typingIndicator, boolean b) {
         if (conversationViewModel != null)
@@ -427,7 +514,9 @@ public class CometChatConversationList extends MaterialCardView {
             conversationsRequest = new ConversationsRequest.ConversationsRequestBuilder().
                     setConversationType(conversationListType)
                     .setTags(tags)
-                    .withUserAndGroupTags(userAndGroupTags)
+                    .setUserTags(userTags)
+                    .setGroupTags(groupTags)
+                    .withUserAndGroupTags(withUserAndGroupTags)
                     .setLimit(limit)
                     .build();
         }
@@ -481,6 +570,24 @@ public class CometChatConversationList extends MaterialCardView {
         }
     }
 
+    private void checkNoConversation(List<Conversation> conversations) {
+        if (conversations.size() == 0) {
+            stopHideShimmer();
+            if (emptyView != null) {
+                custom_layout.setVisibility(VISIBLE);
+                custom_layout.removeAllViews();
+                custom_layout.addView(emptyView);
+            } else {
+                noConversationView.setVisibility(View.VISIBLE);
+            }
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            noConversationView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            custom_layout.setVisibility(GONE);
+        }
+    }
+
     /**
      * This method is used to refresh the Conversation List shown in CometChatConversationList.
      * It clears the CometChatConversationList and fetches the fresh list of conversation and set it
@@ -493,12 +600,14 @@ public class CometChatConversationList extends MaterialCardView {
      */
 
     public void refreshConversation(CometChat.CallbackListener callbackListener) {
-        clearList();
         conversationList.clear();
         conversationsRequest = null;
         conversationsRequest = new ConversationsRequest.ConversationsRequestBuilder().
                 setConversationType(conversationListType)
-                .setTags(tags).withUserAndGroupTags(userAndGroupTags)
+                .setTags(tags)
+                .setUserTags(userTags)
+                .setGroupTags(groupTags)
+                .withUserAndGroupTags(withUserAndGroupTags)
                 .setLimit(limit)
                 .build();
         conversationsRequest.fetchNext(new CometChat.CallbackListener<List<Conversation>>() {
@@ -521,7 +630,7 @@ public class CometChatConversationList extends MaterialCardView {
                 stopHideShimmer();
                 throwError(e);
                 hideError();
-                callbackListener.onSuccess(conversationList);
+                callbackListener.onError(e);
                 Log.d(TAG, "onError: " + e.getMessage());
             }
         });
@@ -573,13 +682,13 @@ public class CometChatConversationList extends MaterialCardView {
             @Override
             public void onMessagesDelivered(MessageReceipt messageReceipt) {
                 if (recyclerView != null)
-                    setReciept(messageReceipt);
+                    setReceipt(messageReceipt);
             }
 
             @Override
             public void onMessagesRead(MessageReceipt messageReceipt) {
                 if (recyclerView != null)
-                    setReciept(messageReceipt);
+                    setReceipt(messageReceipt);
             }
 
             @Override
@@ -610,7 +719,6 @@ public class CometChatConversationList extends MaterialCardView {
         CometChat.addGroupListener(TAG, new CometChat.GroupListener() {
             @Override
             public void onGroupMemberKicked(Action action, User kickedUser, User kickedBy, Group kickedFrom) {
-                Log.e(TAG, "onGroupMemberKicked: " + kickedUser);
                 if (kickedUser.getUid().equals(CometChat.getLoggedInUser().getUid())) {
                     if (recyclerView != null)
                         updateConversationForGroup(action, true);
@@ -621,25 +729,36 @@ public class CometChatConversationList extends MaterialCardView {
 
             @Override
             public void onMemberAddedToGroup(Action action, User addedby, User userAdded, Group addedTo) {
-                Log.e(TAG, "onMemberAddedToGroup: ");
                 updateConversationForGroup(action, false);
             }
 
             @Override
             public void onGroupMemberJoined(Action action, User joinedUser, Group joinedGroup) {
-                Log.e(TAG, "onGroupMemberJoined: ");
                 updateConversationForGroup(action, false);
             }
 
             @Override
             public void onGroupMemberLeft(Action action, User leftUser, Group leftGroup) {
-                Log.e(TAG, "onGroupMemberLeft: ");
                 updateConversationForGroup(action, leftUser.getUid().equals(CometChat.getLoggedInUser().getUid()));
             }
 
             @Override
             public void onGroupMemberScopeChanged(Action action, User updatedBy, User updatedUser, String scopeChangedTo, String scopeChangedFrom, Group group) {
                 updateConversationForGroup(action, false);
+            }
+        });
+
+        CometChat.addUserListener(TAG, new CometChat.UserListener() {
+            @Override
+            public void onUserOnline(User user) {
+                if (conversationViewModel != null && user != null)
+                    conversationViewModel.updateUserConversation(user);
+            }
+
+            @Override
+            public void onUserOffline(User user) {
+                if (conversationViewModel != null && user != null)
+                    conversationViewModel.updateUserConversation(user);
             }
         });
     }
@@ -666,14 +785,14 @@ public class CometChatConversationList extends MaterialCardView {
     /**
      * This method is used to remove the conversationlistener.
      */
-    public void removeConversationListener() {
+    private void removeConversationListener() {
         CometChat.removeMessageListener(TAG);
         CometChat.removeGroupListener(TAG);
+        CometChat.removeUserListener(TAG);
     }
 
     public void setConversationType(String conversationListType) {
         this.conversationListType = conversationListType;
-        clearList();
     }
 
     public void onPause() {
@@ -729,8 +848,9 @@ public class CometChatConversationList extends MaterialCardView {
 
 
     private void throwError(CometChatException e) {
-        if (onErrorCallBack != null)
-            onErrorCallBack.onError(e);
+        for (CometChatConversationEvents events : CometChatConversationEvents.conversationEvents.values()) {
+            events.onError(e);
+        }
 
     }
 
@@ -756,11 +876,4 @@ public class CometChatConversationList extends MaterialCardView {
         conversationViewModel.setConfiguration(configurations);
     }
 
-    public void addOnErrorListener(onErrorCallBack onErrorCallBack) {
-        this.onErrorCallBack = onErrorCallBack;
-    }
-
-    public interface onErrorCallBack {
-        void onError(CometChatException exception);
-    }
 }

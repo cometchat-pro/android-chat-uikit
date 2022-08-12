@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatDataItem.CometChatDataItem
+            android:id="@+id/dataItem"
+            android:layout_width="match_parent"
+            app:hideSubTitle="false"
+            android:layout_height="wrap_content" />
+
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatSectionList.CometChatSectionList
+            android:id="@+id/sectionList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatSharedMedia.CometChatSharedMedia
+            android:id="@+id/sharedMedia"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

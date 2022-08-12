@@ -7,36 +7,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupsListConfiguration extends CometChatConfigurations {
-    private boolean hideStartGroup;
     private final Context context;
-    private View emptyView = null;
+    private int emptyView = 0;
     private boolean isHideError, isJoinedOnly;
 
     private String searchKeyWord = "";
 
     private List<String> tags = new ArrayList<>();
     private int limit=30;
-
+    private int errorView = 0;
+    private String errorText="";
+    private String emptyText="";
 
     public GroupsListConfiguration(Context context) {
         this.context = context;
     }
 
+    public int getErrorView() {
+        return errorView;
+    }
 
-    public GroupsListConfiguration hideStartGroup(boolean isHidden) {
-        this.hideStartGroup = isHidden;
+    public GroupsListConfiguration setErrorView(int errorView) {
+        this.errorView = errorView;
         return this;
     }
 
-    public boolean isStartGroupHidden() {
-        return hideStartGroup;
+    public String getErrorText() {
+        return errorText;
     }
 
-    public View getEmptyView() {
+    public GroupsListConfiguration setErrorText(String errorText) {
+        this.errorText = errorText;
+        return this;
+    }
+
+    public String getEmptyText() {
+        return emptyText;
+    }
+
+    public GroupsListConfiguration setEmptyText(String emptyText) {
+        this.emptyText = emptyText;
+        return this;
+    }
+    public int getEmptyView() {
         return emptyView;
     }
 
-    public GroupsListConfiguration setEmptyView(View emptyView) {
+    public GroupsListConfiguration setEmptyView(int emptyView) {
         this.emptyView = emptyView;
         return this;
     }

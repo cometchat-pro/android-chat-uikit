@@ -5,14 +5,11 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="com.cometchatworkspace.components.chats.Conversations"
     tools:ignore="SpeakableTextPresentCheck">
 
-    <com.cometchatworkspace.components.chats.CometChatConversations
-        android:id="@+id/conversationList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:title="@string/chats"
-        app:hideStartConversation="false"
-        app:hideSearch="true"/>
+    <com.cometchatworkspace.components.chats.CometChatConversationsWithMessages
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/conversationList"/>
+
 </RelativeLayout>

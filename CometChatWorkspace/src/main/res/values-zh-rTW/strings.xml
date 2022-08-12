@@ -124,7 +124,7 @@
     <string name="added">添加</string>
     <string name="made">制作</string>
     <string name="translate_message">翻譯訊息</string>
-    <string name="no_translation_available">沒有可用的翻譯</string>
+    <string name="translation_error">沒有可用的翻譯</string>
     <string name="has_shared_group_call">分享了一个群组通话。</string>
     <string name="custom_message_meeting">"📹 群组通话 "</string>
     <string name="you_created_group_call">您已建立群组通话。</string>
@@ -171,4 +171,41 @@
     <string name="votes">投票</string>
     <string name="replies">回复</string>
     <string name="reply_message_privately">私下回复</string>
+
+    <string name="error_cant_load_group_members">無法載入群組成員。請再試一次</string>
+    <string name="users">使用者</string>
+    <string name="groups">群組</string>
+    <string name="details">詳細資料</string>
+    <string name="something_went_wrong">出了什麼問題！</string>
+    <string name="more_option">更多</string>
+    <string name="shared_media">共用媒體</string>
+    <string name="transfer_ownership">您是群組擁有者，請在離開群組前將擁有權移轉給會員。</string>
+    <string name="transfer_ownership_text">移轉所有權</string>
+    <string name="view_members">查看成員</string>
+    <string name="banned_members">被禁止的成員</string>
+    <string name="add_members">新增成員</string>
+    <string name="leave_group">離開群組</string>
+    <string name="leave_group_text">您確定要離開群組嗎？</string>
+    <string name="delete_group_text">您確定要刪除群組嗎？</string>
+    <string name="delete_and_exit">刪除並退出</string>
+    <string name="unblock_user">解除封鎖用戶</string>
+    <string name="block_user">封鎖使用者</string>
+    <string name="no_members">沒有成員</string>
+    <string name="extra_space"> </string>
+    <string name="owner">擁有者</string>
+    <string name="selected">選</string>
+    <string name="view_profile">檢視個人檔案</string>
+    <string name="group_password">群組密碼</string>
+    <string name="join_group_text">輸入密碼以存取 %1$s 群組。 </string>
+    <string name="protected_group">受保護的群組</string>
+    <string name="type_public">公眾</string>
+    <string name="type_private">私人</string>
+    <string name="type_protected">受保護</string>
+    <string name="name">越南</string>
+    <string name="new_group">新群組</string>
+    <string name="please_try_another_password">請嘗試使用其他密碼</string>
+    <string name="incorrect_password">密碼不正確</string>
+    <string name="sdk_incorrect_password_error">群組的密碼不正確。</string>
+    <string name="okay">好的</string>
+
 </resources>

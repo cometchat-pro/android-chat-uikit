@@ -1,12 +1,13 @@
 package com.cometchatworkspace.components.messages.message_list;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,13 +15,20 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.User;
 
 
 import com.cometchatworkspace.R;
 
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
+
+import java.util.List;
 
 /**
 
@@ -41,6 +49,8 @@ public class CometChatMessagesActivity extends AppCompatActivity {
 
     private static final String TAG = "CometChatMessageListAct";
 
+    private static List<CometChatConfigurations> messageConfigurations;
+
     CometChatMessages fragment = new CometChatMessages();
 
     private static AppCompatActivity activity;
@@ -49,15 +59,45 @@ public class CometChatMessagesActivity extends AppCompatActivity {
 
     private static Group group;
 
+    private static CometChatConfigurations messageConfiguration;
+
     public static void launch(Context context,User user_) {
         group = null;
         user = user_;
         context.startActivity(new Intent(context,CometChatMessagesActivity.class));
     }
 
+    public static void launch(Context context, User user_, CometChatConfigurations configurations) {
+        group = null;
+        user = user_;
+        messageConfiguration = configurations;
+        context.startActivity(new Intent(context,CometChatMessagesActivity.class));
+    }
+
+    public static void launch(Context context, User user_, List<CometChatConfigurations> configurations) {
+        group = null;
+        user = user_;
+        messageConfigurations = configurations;
+        context.startActivity(new Intent(context,CometChatMessagesActivity.class));
+    }
+
     public static void launch(Context context,Group group_) {
         user = null;
         group = group_;
+        context.startActivity(new Intent(context,CometChatMessagesActivity.class));
+    }
+
+    public static void launch(Context context,Group group_,List<CometChatConfigurations> configurations) {
+        user = null;
+        group = group_;
+        messageConfigurations = configurations;
+        context.startActivity(new Intent(context,CometChatMessagesActivity.class));
+    }
+
+    public static void launch(Context context,Group group_,CometChatConfigurations configurations) {
+        user = null;
+        group = group_;
+        messageConfiguration = configurations;
         context.startActivity(new Intent(context,CometChatMessagesActivity.class));
     }
 
@@ -70,12 +110,12 @@ public class CometChatMessagesActivity extends AppCompatActivity {
         EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
         EmojiCompat.init(config);
 
+
          if (getIntent()!=null) {
              if (user!=null)
                  fragment.setUser(user);
              if (group!=null)
                  fragment.setGroup(group);
-
 
 //             Bundle bundle = new Bundle();
 //             bundle.putString(UIKitConstants.IntentStrings.AVATAR, getIntent().getStringExtra(UIKitConstants.IntentStrings.AVATAR));
@@ -105,9 +145,21 @@ public class CometChatMessagesActivity extends AppCompatActivity {
 
 //              fragment.setArguments(bundle);
              getSupportFragmentManager().beginTransaction().replace(R.id.chat_fragment, fragment).commit();
+
+              getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+                  @Override
+                  public void onFragmentActivityCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @Nullable Bundle savedInstanceState) {
+                      super.onFragmentActivityCreated(fm, f, savedInstanceState);
+                      if (messageConfiguration!=null)
+                          fragment.setConfiguration(messageConfiguration);
+                      if (messageConfigurations!=null && !messageConfigurations.isEmpty())
+                          fragment.setConfiguration(messageConfigurations);
+                  }
+              },false);
+
+
          }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode,resultCode,data);

@@ -1,8 +1,18 @@
-<com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatConferenceBubble
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/group_call_bubble"
-    app:messageAlignment="right"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+    <com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatMessageBubble
+        android:layout_width="wrap_content"
+        android:id="@+id/cometchatBubble"
+        app:messageAlignment="right"
+        android:layout_height="wrap_content">
+        <com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatConferenceBubble
+            android:id="@+id/group_call_bubble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatMessageBubble>
+</LinearLayout>

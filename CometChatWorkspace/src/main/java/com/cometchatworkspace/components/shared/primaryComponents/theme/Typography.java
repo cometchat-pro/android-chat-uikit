@@ -7,44 +7,8 @@ import com.cometchatworkspace.R;
 
 public class Typography {
 
-//    public static class FontDetails {
-//        private final String fontFamily;
-//        private final int fontWeight;
-//        private final int fontSize;
-//
-//        public FontDetails(String fontFamily, int fontWeight, int fontSize) {
-//            this.fontFamily = fontFamily;
-//            this.fontWeight = fontWeight;
-//            this.fontSize = fontSize;
-//        }
-//
-//        public String getFontFamily() {
-//            return fontFamily;
-//        }
-//
-//        public int getFontWeight() {
-//            return fontWeight;
-//        }
-//
-//        public int getFontSize() {
-//            return fontSize;
-//        }
-//    }
-
-    //    private String fontFamily = "Roboto-Regular.ttf";
-//    private int fontWeightRegular = FontStyle.FONT_WEIGHT_NORMAL;
-//    private int fontWeightMedium = FontStyle.FONT_WEIGHT_MEDIUM;
-//    private int fontWeightSemiBold = FontStyle.FONT_WEIGHT_SEMI_BOLD;
-//    private int fontWeightBold = FontStyle.FONT_WEIGHT_BOLD;
-
-//    private int fontWeightRegular = Typeface.NORMAL;
-//    private int fontWeightMedium = Typeface.BOLD_ITALIC;
-//    private int fontWeightSemiBold = Typeface.BOLD_ITALIC;
-//    private int fontWeightBold = R.style.Heading;
-
-
     //create an object of SingletonObject
-    private static Typography instance = new Typography();
+    private static final Typography instance = new Typography();
 
     //private constructor so that we cannot instantiate the class
     private Typography() {

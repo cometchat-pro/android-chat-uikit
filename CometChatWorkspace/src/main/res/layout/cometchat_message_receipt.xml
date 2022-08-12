@@ -8,15 +8,15 @@
     <com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt
         tools:src="@drawable/ic_message_delivered"
         android:id="@+id/receiptsIcon"
+        android:layout_toEndOf="@+id/time"
         android:layout_width="16dp"
         android:layout_height="16dp"/>
     <com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate
-        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         app:date_format="hh:mm a"
         android:id="@+id/time"
         android:minHeight="16dp"
         android:background="@android:color/transparent"
-        android:layout_toEndOf="@+id/receiptsIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </RelativeLayout>

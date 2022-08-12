@@ -16,7 +16,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.cometchatworkspace.R;
 
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.TabAdapter;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSharedMedia.fragments.CometChatSharedFiles;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSharedMedia.fragments.CometChatSharedImages;
@@ -39,44 +40,46 @@ public class CometChatSharedMedia extends RelativeLayout {
     private String type;
 
     private AttributeSet attrs;
-
+    private Palette palette;
+    private Typography typography;
     private TabAdapter adapter;
 
     public CometChatSharedMedia(Context context) {
         super(context);
         this.context = context;
-        initViewComponent(context,null,-1,-1);
+        initViewComponent(context, null, -1, -1);
     }
 
     public CometChatSharedMedia(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.attrs = attrs;
         this.context = context;
-        initViewComponent(context,attrs,-1,-1);
+        initViewComponent(context, attrs, -1, -1);
     }
 
     public CometChatSharedMedia(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         this.attrs = attrs;
-        initViewComponent(context,attrs,defStyleAttr,-1);
+        initViewComponent(context, attrs, defStyleAttr, -1);
     }
 
 
-    private void initViewComponent(Context context,AttributeSet attributeSet,int defStyleAttr,int defStyleRes){
-
-        View view =View.inflate(context, R.layout.cometchat_shared_media,null);
+    private void initViewComponent(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
+        palette = Palette.getInstance(context);
+        typography = Typography.getInstance();
+        View view = View.inflate(context, R.layout.cometchat_shared_media, null);
 
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.SharedMediaView, 0, 0);
         addView(view);
 
         Bundle bundle = new Bundle();
-        bundle.putString("Id",Id);
-        bundle.putString("type",type);
-        if (type!=null) {
+        bundle.putString("Id", Id);
+        bundle.putString("type", type);
+        if (type != null) {
             viewPager = this.findViewById(R.id.viewPager);
             tabLayout = view.findViewById(R.id.tabLayout);
-            adapter = new TabAdapter(((FragmentActivity)context).getSupportFragmentManager());
+            adapter = new TabAdapter(((FragmentActivity) context).getSupportFragmentManager());
             CometChatSharedImages images = new CometChatSharedImages();
             images.setArguments(bundle);
             adapter.addFragment(images, getResources().getString(R.string.images));
@@ -90,12 +93,12 @@ public class CometChatSharedMedia extends RelativeLayout {
             viewPager.setOffscreenPageLimit(3);
             tabLayout.setupWithViewPager(viewPager);
 
-            if (CometChatTheme.primaryColor !=null) {
+            if (palette.getPrimary() != 0) {
                 Drawable wrappedDrawable = DrawableCompat.wrap(getResources().
                         getDrawable(R.drawable.tab_layout_background_active));
-                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(CometChatTheme.primaryColor));
+                DrawableCompat.setTint(wrappedDrawable, palette.getPrimary());
                 tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).view.setBackground(wrappedDrawable);
-                tabLayout.setSelectedTabIndicatorColor(Color.parseColor(CometChatTheme.primaryColor));
+                tabLayout.setSelectedTabIndicatorColor(palette.getPrimary());
             } else {
                 tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).
                         view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -104,13 +107,12 @@ public class CometChatSharedMedia extends RelativeLayout {
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    if (CometChatTheme.primaryColor!=null) {
+                    if (palette.getPrimary() != 0) {
                         Drawable wrappedDrawable = DrawableCompat.wrap(getResources().
                                 getDrawable(R.drawable.tab_layout_background_active));
-                        DrawableCompat.setTint(wrappedDrawable, Color.parseColor(CometChatTheme.primaryColor));
+                        DrawableCompat.setTint(wrappedDrawable, palette.getPrimary());
                         tab.view.setBackground(wrappedDrawable);
-                    }
-                    else
+                    } else
                         tab.view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
 
@@ -125,12 +127,12 @@ public class CometChatSharedMedia extends RelativeLayout {
                 }
             });
 
-            if(Utils.isDarkMode(context)) {
+            if (Utils.isDarkMode(context)) {
                 tabLayout.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
-                tabLayout.setTabTextColors(getResources().getColor(R.color.light_grey),getResources().getColor(R.color.textColorWhite));
+                tabLayout.setTabTextColors(getResources().getColor(R.color.light_grey), getResources().getColor(R.color.textColorWhite));
             } else {
                 tabLayout.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.textColorWhite)));
-                tabLayout.setTabTextColors(getResources().getColor(R.color.primaryTextColor),getResources().getColor(R.color.textColorWhite));
+                tabLayout.setTabTextColors(getResources().getColor(R.color.primaryTextColor), getResources().getColor(R.color.textColorWhite));
             }
 
         }
@@ -143,7 +145,8 @@ public class CometChatSharedMedia extends RelativeLayout {
     public void setRecieverType(String receiverTypeUser) {
         this.type = receiverTypeUser;
     }
+
     public void reload() {
-        initViewComponent(context,null,-1,-1);
+        initViewComponent(context, null, -1, -1);
     }
 }

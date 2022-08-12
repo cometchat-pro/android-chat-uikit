@@ -17,6 +17,8 @@ import com.cometchat.pro.models.Action;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.google.android.material.card.MaterialCardView;
 
@@ -30,7 +32,8 @@ public class CometChatGroupActionBubble extends RelativeLayout {
 
 
     private TextView title;
-
+    private Palette palette;
+    private Typography typography;
     private MaterialCardView cvMessageBubble;
 
     private final String TAG = "GroupActionBubble";
@@ -57,6 +60,8 @@ public class CometChatGroupActionBubble extends RelativeLayout {
 
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
+        palette = Palette.getInstance(context);
+        typography= Typography.getInstance();
         fontUtils=FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,

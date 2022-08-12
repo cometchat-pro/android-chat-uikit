@@ -126,7 +126,6 @@ public class CometChatMessageInfoActivity extends AppCompatActivity {
         CometChat.getMessageReceipts(id, new CometChat.CallbackListener<List<MessageReceipt>>() {
             @Override
             public void onSuccess(List<MessageReceipt> messageReceipts) {
-                Log.e(TAG, "onSuccess: "+messageReceipts.toString() );
             }
 
             @Override
@@ -222,7 +221,7 @@ public class CometChatMessageInfoActivity extends AppCompatActivity {
 //                audioFileSize.setText(Utils.getFileSize(messageSize));
             } else if (messageType.equals(UIKitConstants.IntentStrings.WHITEBOARD)) {
                 whiteBoardMessage.setVisibility(View.VISIBLE);
-                whiteBoardMessage.title(getString(R.string.you_created_whiteboard));
+                whiteBoardMessage.subTitle(getString(R.string.you_created_whiteboard));
 //                joinWhiteBoard.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
@@ -234,7 +233,7 @@ public class CometChatMessageInfoActivity extends AppCompatActivity {
 //              });
             } else if (messageType.equals(UIKitConstants.IntentStrings.WRITEBOARD)) {
                 documentMessage.setVisibility(View.VISIBLE);
-                documentMessage.title(getString(R.string.you_created_document));
+                documentMessage.subtitle(getString(R.string.you_created_document));
 //                joinWriteBoard.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {

@@ -18,30 +18,57 @@ public class UsersListConfiguration extends CometChatConfigurations {
     private boolean isFriendOnly;
 
     private boolean hideBlockedUsers;
-    
+
     private boolean hideError;
 
     private String searchKeyword = "";
 
     private String status = null;
 
-    private int limit=30;
+    private int limit = 30;
 
     private List<String> tags = new ArrayList<>();
 
     private List<String> roles = new ArrayList<>();
     private List<String> uidS = new ArrayList<>();
-    
-    private View emptyView = null;
 
+    private int emptyView = 0;
+    private int errorView = 0;
+    private String errorText="";
+    private String emptyText="";
 
     private final Context context;
+
+    public int getErrorView() {
+        return errorView;
+    }
+
+    public UsersListConfiguration setErrorView(int errorView) {
+        this.errorView = errorView;
+        return this;
+    }
 
     public UsersListConfiguration(Context context) {
         this.context = context;
     }
 
+    public String getErrorText() {
+        return errorText;
+    }
 
+    public UsersListConfiguration setErrorText(String errorText) {
+        this.errorText = errorText;
+        return this;
+    }
+
+    public String getEmptyText() {
+        return emptyText;
+    }
+
+    public UsersListConfiguration setEmptyText(String emptyText) {
+        this.emptyText = emptyText;
+        return this;
+    }
     public boolean isShowHeader() {
         return showHeader;
     }
@@ -144,11 +171,11 @@ public class UsersListConfiguration extends CometChatConfigurations {
 
     }
 
-    public View getEmptyView() {
+    public int getEmptyView() {
         return emptyView;
     }
 
-    public UsersListConfiguration setEmptyView(View emptyView) {
+    public UsersListConfiguration setEmptyView(int emptyView) {
         this.emptyView = emptyView;
         return this;
     }

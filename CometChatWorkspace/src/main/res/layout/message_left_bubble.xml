@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layoutDirection="ltr"
+    android:id="@+id/rl_message"
+    android:animateLayoutChanges="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
+            android:layout_width="24dp"
+            android:id="@+id/iv_user"
+            tools:src="@tools:sample/avatars"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_height="24dp"/>
+        <TextView
+            android:id="@+id/tv_user"
+            tools:text="Iron Man"
+            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/iv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_below="@+id/tv_user"
+            android:layout_width="wrap_content"
+            android:id="@+id/bubble_container"
+            android:layout_marginEnd="8dp"
+            app:cardElevation="0dp"
+            android:elevation="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/iv_user"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:id="@+id/message_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
+                    android:id="@+id/reactions_group"
+                    app:messageReaction_gravity="end"
+                    app:borderRadius="64"
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/divider"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/grey_200"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <TextView
+                    android:foreground="?selectableItemBackground"
+                    android:clickable="true"
+                    android:layout_margin="8dp"
+                    android:textColor="@color/primary"
+                    style="@style/Name"
+                    android:id="@+id/thread_reply_count"
+                    tools:text="View 2 Replies"
+                    android:drawableEnd="@drawable/ic_next"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:id="@+id/img_pending"
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/bubble_container"
+        android:visibility="visible" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="start"
+            android:layout_marginBottom="16dp"
+            android:layout_alignStart="@id/bubble_container"
+            android:layout_below="@+id/bubble_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <include
+                android:id="@+id/receipt_layout"
+                layout="@layout/cometchat_message_receipt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
+        </LinearLayout>
+</RelativeLayout>
+

@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import androidx.annotation.RequiresApi;
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.models.Group;
 import com.cometchatworkspace.R;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.InputData;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
@@ -26,10 +24,7 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Typograp
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
-
-import java.util.HashMap;
 
 public class CometChatGroupListItem extends MaterialCardView {
 
@@ -44,7 +39,7 @@ public class CometChatGroupListItem extends MaterialCardView {
     private int privateGroupIcon = 0, publicGroupIcon = 0, protectedGroupIcon = 0;
     private Palette palette;
     private Typography typography;
-
+    private Group group;
     public CometChatGroupListItem(Context context) {
         super(context);
         initViewComponent(context, null, -1);
@@ -140,29 +135,16 @@ public class CometChatGroupListItem extends MaterialCardView {
      * i.e we can control the visibility of the component inside the CometChatUserListItem,
      * and also decide what value i need to show in that particular view
      */
-    public void inputData(InputData data) {
-        if (data.getThumbnail() == null || data.getThumbnail().isEmpty()) {
-            hideIcon(true);
-        } else {
-            setIcon(data.getThumbnail() + "", null);
-        }
-        if (data.getTitle() != null) {
-            setTitle(data.getTitle());
-        } else {
-            hideTitle(true);
-        }
-        if (data.getSubTitle() != null) {
-            setSubTitle(data.getSubTitle());
-            hideSubTitle(false);
-        } else {
-            hideSubTitle(true);
-        }
-        if (data.getStatus() != null) {
-            setType(data.getStatus());
-            hideGroupTypeIndicator(false);
-        } else {
-            hideGroupTypeIndicator(true);
-        }
+    public void inputData(InputData inputData) {
+
+
+        setSubTitle(inputData.getSubTitle(group).toString());
+        hideSubTitle(false);
+
+        hideTitle(!inputData.isTitle());
+
+        hideIcon(!inputData.isThumbnail());
+        hideGroupTypeIndicator(!inputData.isStatus());
 
     }
 
@@ -297,6 +279,7 @@ public class CometChatGroupListItem extends MaterialCardView {
 
     public void setGroup(Group group) {
         if (group != null) {
+            this.group=group;
             setTitle(group.getName());
             if (group.getMembersCount() <= 1)
                 setSubTitle(group.getMembersCount() + " " + context.getString(R.string.member));
@@ -306,17 +289,8 @@ public class CometChatGroupListItem extends MaterialCardView {
             setType(group.getGroupType());
             setIcon(group.getIcon(), group.getName());
         }
-        setSubTitleFont(CometChatTheme.Typography.robotoRegular);
-        setTitleFont(CometChatTheme.Typography.robotoMedium);
-        if (Utils.isDarkMode(context)) {
-            setTitleImageColor(context.getResources().getColor(R.color.grey));
-            setTitleColor(context.getResources().getColor(R.color.textColorWhite));
-//            groupViewHolder.tvSeprator.setBackgroundColor(context.getResources().getColor(R.color.grey));
-        } else {
-            setTitleImageColor(context.getResources().getColor(R.color.message_bubble_grey));
-            setTitleColor(context.getResources().getColor(R.color.primaryTextColor));
-//            groupViewHolder.tvSeprator.setBackgroundColor(context.getResources().getColor(R.color.light_grey));
-        }
+//        setSubTitleFont(CometChatTheme.Typography.robotoRegular);
+//        setTitleFont(CometChatTheme.Typography.robotoMedium);
 
     }
 }

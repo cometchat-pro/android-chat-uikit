@@ -1,13 +1,11 @@
 package com.cometchatworkspace.components.users;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -15,23 +13,25 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.cometchat.pro.constants.CometChatConstants;
+import com.cometchat.pro.exceptions.CometChatException;
+import com.cometchat.pro.models.GroupMember;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.shared.primaryComponents.CometChatListBase;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.UsersListConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatUsers.CometChatUserList;
 import com.cometchatworkspace.resources.utils.CometChatError;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerViewSwipeListener;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,10 +57,6 @@ public class CometChatUsers extends CometChatListBase {
      */
     private boolean isFriends;
 
-    private static final HashMap<String, Events> events = new HashMap<>();
-    /**Used to handle events given by CometChatUsers.
-     * Refer https://cometchat.com/docs/android-chat-uikit/CometChatUsers#Events
-     */
     private static final String TAG = "UserList";
 
     private View view;
@@ -68,50 +64,6 @@ public class CometChatUsers extends CometChatListBase {
     private Context context;
 
     private FontUtils fontUtils;
-
-    /**
-     * The Hide avatar.
-     */
-    //CometChatUserListItem Properties
-    boolean hideAvatar,
-    /**
-     * The Hide user presence list item.
-     */
-    hideUserPresenceListItem,
-    /**
-     * The Hide title list item.
-     */
-    hideTitleListItem,
-    /**
-     * The Hide subtitle list item.
-     */
-    hideSubtitleListItem;
-
-    /**
-     * The Title color list item.
-     */
-    int titleColorListItem = 0,
-    /**
-     * The Sub title color list item.
-     */
-    subTitleColorListItem = 0,
-
-    /**
-     * The Background color list item.
-     */
-    backgroundColorListItem = 0,
-    /**
-     * The Typing indicator color list item.
-     */
-    typingIndicatorColorListItem,
-    /**
-     * The Background color list item position.
-     */
-    backgroundColorListItemPosition;
-    /**
-     * The Corner radius list item.
-     */
-    float cornerRadiusListItem = 16f;
 
     private ImageView icon;
 
@@ -122,11 +74,14 @@ public class CometChatUsers extends CometChatListBase {
     private Palette palette;
     private Typography typography;
 
+    private final List<String> uids = new ArrayList<>();
+    private final List<GroupMember> groupMembers = new ArrayList<>();
+    private OnAddMemberClick onAddMemberClick;
+
     /**
      * Constructor used to initiate a CometChatUsers.
      *
      * @param context
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -141,7 +96,6 @@ public class CometChatUsers extends CometChatListBase {
      *
      * @param context
      * @param attrs
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -157,7 +111,6 @@ public class CometChatUsers extends CometChatListBase {
      * @param context
      * @param attrs
      * @param defStyleAttr
-     *
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -173,7 +126,6 @@ public class CometChatUsers extends CometChatListBase {
      * @param context      - It is reference object of Context
      * @param attributeSet - It is object of AttributeSet which is used to handle attributes passed from xml
      * @param defStyleAttr
-     *
      * @author CometChat Team
      * Copyright &copy;  2022 CometChat Inc.
      */
@@ -190,7 +142,7 @@ public class CometChatUsers extends CometChatListBase {
                 0, 0);
 
         //Start of Handling Attributes
-        String title = a.getString(R.styleable.Users_title);
+        String title = a.getString(R.styleable.Users_title) != null ? a.getString(R.styleable.Users_title) : getResources().getString(R.string.users);
 
         int titleColor = a.getColor(R.styleable.
                 Users_titleColor, palette.getAccent());
@@ -199,7 +151,7 @@ public class CometChatUsers extends CometChatListBase {
 
         boolean showBackButton = a.getBoolean(
                 R.styleable.Users_showBackButton, false);
-        boolean hideTags = a.getBoolean(R.styleable.Users_hideTags, false);
+        boolean hideTags = a.getBoolean(R.styleable.Users_hideTags, true);
         int filterIconColor = a.getColor(R.styleable.
                 Users_filterIconColor, 0);
         Drawable filterIcon = a.getDrawable(R.styleable.Users_filterIcon);
@@ -208,7 +160,7 @@ public class CometChatUsers extends CometChatListBase {
         float searchBoxRadius = a.getDimension(R.styleable.
                 Users_searchCornerRadius, 0f);
         int searchBoxColor = a.getColor(R.styleable.
-                Users_searchBackgroundColor, palette.getSearchBackground());
+                Users_searchBackgroundColor, palette.getAccent50());
         int searchTextColor = a.getColor(R.styleable.
                 Users_searchTextColor, palette.getAccent600());
         int searchBorderWidth = (int) a.getDimension(R.styleable.Users_searchBorderWidth, 0f);
@@ -218,12 +170,12 @@ public class CometChatUsers extends CometChatListBase {
                 Users_listBackgroundColor, getResources().getColor(android.R.color.transparent));
         String searchHint = a.getString(R.styleable.
                 Users_searchHint);
+        int backgroundColor = a.getColor(R.styleable.Users_backgroundColor, palette.getBackground());
 
         //End of Handling Attributes
 
         //Below method will set color of StatusBar.
-        setStatusBarColor();
-
+        setStatusColor(palette.getBackground());
         cometchatUserList = view.findViewById(R.id.cometchat_user_list);
 
         /**
@@ -234,8 +186,7 @@ public class CometChatUsers extends CometChatListBase {
         super.backIcon(backButtonIcon);
         super.showBackButton(showBackButton);
         super.setSearchTextAppearance(typography.getText1());
-        super.setTitleAppearance(typography.getHeading());
-        super.setBaseBackGroundColor(palette.getBackground());
+//        super.setTitleAppearance(typography.getHeading());
         emptyStateTextAppearance(typography.getHeading());
         emptyStateTextColor(palette.getAccent400());
         super.setTitleColor(titleColor);
@@ -247,34 +198,40 @@ public class CometChatUsers extends CometChatListBase {
         super.setSearchBackground(searchBoxColor);
         super.hideSearch(searchBoxVisible);
         super.setSearchCornerRadius(searchBoxRadius);
+        if (palette.getGradientBackground() != null)
+            setBackground(palette.getGradientBackground());
+        else
+            setBackgroundColor(backgroundColor);
+
         super.addListView(view);
 
         CometChatError.init(getContext());
-        if (!hideTags) {
-            icon = new ImageView(context);
-            icon.setImageResource(R.drawable.ic_list_bulleted_white_24dp);
-            icon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
-            super.addMenuIcon(icon);
-            icon.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (Events e : events.values()) {
-                        e.onMenuIconClick("tags");
-                    }
-                }
-            });
-        }
-
+//        if (!hideTags) {
+//            icon = new ImageView(context);
+//            icon.setImageResource(R.drawable.ic_list_bulleted_white_24dp);
+//            icon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+//            super.addMenuIcon(icon);
+//            icon.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+////                    for (Events e : events.values()) {
+////                        e.onMenuIconClick("tags");
+////                    }
+//                }
+//            });
+//        }
 
         super.addEventListener(new OnEventListener() {
             @Override
             public void onSearch(String state, String text) {
                 if (state.equals(SearchState.Filter)) {
                     cometchatUserList.searchUser(text);
+                    cometchatUserList.setSearchKeyword(text);
                 } else if (state.equals(SearchState.TextChange)) {
                     if (text.length() == 0) {
 //                    // if searchEdit is empty then fetch all users.
-                        cometchatUserList.clearList();
+                        cometchatUserList.setSearchKeyword(null);
+                        cometchatUserList.refreshList();
                     } else {
 //                    // Search users based on text in searchEdit field.
                         cometchatUserList.searchUser(text);
@@ -288,39 +245,49 @@ public class CometChatUsers extends CometChatListBase {
             }
         });
 
-
-        // Used to trigger event on click of Users item in cometchatUserList (RecyclerView)
-        cometchatUserList.setItemClickListener(new OnItemClickListener<User>() {
+        CometChatUserEvents.addUserListener("CometChatUsers", new CometChatUserEvents() {
             @Override
-            public void OnItemClick(User user, int position) {
-                if (events != null) {
-                    for (Events e : events.values()) {
-                        e.OnItemClick(user, position);
+            public void onError(CometChatException error) {
+
+            }
+
+            @Override
+            public void onItemClick(User user, int position) {
+
+            }
+
+            @Override
+            public void onItemLongClick(User user, int position) {
+
+            }
+
+            @Override
+            public void onUserBlock(User user) {
+                if (cometchatUserList != null) {
+                    if (cometchatUserList.isBlockedUsersHidden()) {
+                        cometchatUserList.remove(user);
+                    } else {
+                        cometchatUserList.update(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onUserUnblock(User user) {
+                if (cometchatUserList != null) {
+                    if (cometchatUserList.isBlockedUsersHidden()) {
+                        cometchatUserList.add(user);
+                    } else {
+                        cometchatUserList.update(user);
                     }
                 }
             }
         });
 
-        swipeHelper = new RecyclerViewSwipeListener(getContext()) {
-            @SuppressLint("ResourceType")
-            @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+    }
 
-                Bitmap callBitmap = Utils.drawableToBitmap(getResources().getDrawable(R.drawable.ic_audiocall));
-                underlayButtons.add(new UnderlayButton(
-                        "Delete",
-                        callBitmap,
-                        getResources().getColor(Color.WHITE),
-                        new UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(final int pos) {
-                                User user = cometchatUserList.getUser(pos);
-                            }
-                        }
-                ));
-            }
-
-        };
+    public void setStatusColor(int color) {
+        Utils.setStatusBarColor(context, color);
 
     }
 
@@ -342,10 +309,9 @@ public class CometChatUsers extends CometChatListBase {
     }
 
     /**
-     *
      * This method is used to change the backIcon
-     * @param res
      *
+     * @param res
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -355,8 +321,8 @@ public class CometChatUsers extends CometChatListBase {
 
     /**
      * This method is exposed for the user to change the search Icon
-     * @param res
      *
+     * @param res
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
@@ -365,16 +331,15 @@ public class CometChatUsers extends CometChatListBase {
     }
 
     /**
-     *
      * This method is used to customize the inner components of CometChatUsers
-     * @param style
      *
+     * @param style
      * @author CometChat Team
      * Copyright &copy; 2021 CometChat Inc.
      */
     public void setStyle(Style style) {
         if (style.getBackground() != 0) {
-            super.setBaseBackGroundColor(style.getBackground());
+            super.setBackground(style.getBackground());
         }
 
         if (style.getBorder() != 0) {
@@ -412,17 +377,6 @@ public class CometChatUsers extends CometChatListBase {
 
     }
 
-    /**
-     * This method is used to set Color of StatusBar
-     *
-     * @author CometChat Team
-     * Copyright &copy;  2021 CometChat Inc.
-     */
-    private void setStatusBarColor() {
-        int backgroundColor = palette.getPrimary();
-        if (backgroundColor != 0)
-            ((Activity) context).getWindow().setStatusBarColor(backgroundColor);
-    }
 
     /**
      * This method is used to set background color of cometchatUserList.
@@ -444,47 +398,41 @@ public class CometChatUsers extends CometChatListBase {
         }
     }
 
-
-
-
-    /**
-     * Add listener.
-     *
-     * @param TAG             the tag
-     * @param onEventListener An object of <code>OnItemClickListener&lt;T&gt;</code> abstract class helps to initialize with events
-     *                        to perform onItemClick &amp; onItemLongClick.
-     * @see Events
-     */
-    public static void addListener(String TAG, Events<User> onEventListener) {
-        events.put(TAG, onEventListener);
-    }
-
-
-    /**
-     * Sets properties.
-     *
-     * @param cometChatListItemProperty the comet chat list item property
-     */
-    public void setProperties(CometChatListItemProperty cometChatListItemProperty) {
-        hideAvatar = cometChatListItemProperty.isAvatarHidden;
-        hideUserPresenceListItem = cometChatListItemProperty.isUserPresenceHidden;
-        hideTitleListItem = cometChatListItemProperty.isTitleHidden;
-        hideSubtitleListItem = cometChatListItemProperty.isSubtitleHidden;
-
-        titleColorListItem = cometChatListItemProperty.titleColor;
-        subTitleColorListItem = cometChatListItemProperty.subTitleColor;
-
-        backgroundColorListItem = cometChatListItemProperty.backgroundColor;
-        backgroundColorListItemPosition = cometChatListItemProperty.backgroundColorAtPosition;
-        cornerRadiusListItem = cometChatListItemProperty.cornerRadius;
-        if (cometchatUserList != null)
-            cometchatUserList.setUserListItemProperty(hideAvatar, hideUserPresenceListItem,
-                    hideTitleListItem, titleColorListItem,
-                    hideSubtitleListItem, subTitleColorListItem,
-                    backgroundColorListItem, backgroundColorListItemPosition,
-                    cornerRadiusListItem);
+    public void setSelectedUser(User user) {
+        if (cometchatUserList != null && user != null) {
+            GroupMember groupMember = new GroupMember(user.getUid(), CometChatConstants.SCOPE_PARTICIPANT);
+            if (!groupMembers.contains(groupMember))
+                groupMembers.add(groupMember);
+            else
+                groupMembers.remove(groupMember);
+            cometchatUserList.setSelectedUser(user);
+        }
+        setAddMemberIcon(groupMembers.size() > 0);
+        if (groupMembers.size() > 0 && icon != null)
+            super.hideMenuIcon(false);
 
     }
+
+    private void setAddMemberIcon(boolean value) {
+        if (value && icon == null) {
+            icon = new ImageView(context);
+            icon.setImageResource(R.drawable.ic_check_primary);
+            icon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+            super.addMenuIcon(icon);
+            icon.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onAddMemberClick != null) {
+                        if (groupMembers.size() > 0)
+                            onAddMemberClick.onAddMemberClick(groupMembers);
+                    }
+                }
+            });
+        } else if (!value) {
+            super.hideMenuIcon(true);
+        }
+    }
+
 
     /**
      * Sets configuration.
@@ -492,7 +440,26 @@ public class CometChatUsers extends CometChatListBase {
      * @param configuration the configuration
      */
     public void setConfiguration(CometChatConfigurations configuration) {
-        cometchatUserList.setConfiguration(configuration);
+        if (configuration instanceof UsersListConfiguration) {
+            cometchatUserList.showHeader(((UsersListConfiguration) configuration).isShowHeader());
+            cometchatUserList.setHideError(((UsersListConfiguration) configuration).isHideError());
+            cometchatUserList.isFriendsOnly(((UsersListConfiguration) configuration).isFriendOnly());
+            cometchatUserList.isHideBlockUsers(((UsersListConfiguration) configuration).isHideBlockedUsers());
+            setSearchText(((UsersListConfiguration) configuration).getSearchKeyword());
+            cometchatUserList.setSearchKeyword(((UsersListConfiguration) configuration).getSearchKeyword());
+            cometchatUserList.setStatus(((UsersListConfiguration) configuration).getStatus());
+            cometchatUserList.setLimit(((UsersListConfiguration) configuration).getLimit());
+            cometchatUserList.setTags(((UsersListConfiguration) configuration).getTags());
+            cometchatUserList.setUidS(((UsersListConfiguration) configuration).getUidS());
+            cometchatUserList.setRoles(((UsersListConfiguration) configuration).getRoles());
+            cometchatUserList.setEmptyView(((UsersListConfiguration) configuration).getEmptyView());
+            cometchatUserList.setErrorView(((UsersListConfiguration) configuration).getErrorView());
+            cometchatUserList.errorStateText(((UsersListConfiguration) configuration).getErrorText());
+            cometchatUserList.emptyStateText(((UsersListConfiguration) configuration).getEmptyText());
+        } else {
+            cometchatUserList.setConfiguration(configuration);
+        }
+
     }
 
     /**
@@ -501,176 +468,32 @@ public class CometChatUsers extends CometChatListBase {
      * @param configurations the configurations
      */
     public void setConfiguration(List<CometChatConfigurations> configurations) {
+        if (configurations != null && !configurations.isEmpty()) {
+            for (CometChatConfigurations cometChatConfigurations : configurations) {
+                if (cometChatConfigurations instanceof UsersListConfiguration) {
+                    setConfiguration(cometChatConfigurations);
+                }
+            }
+        }
         cometchatUserList.setConfiguration(configurations);
     }
 
-    /**
-     * The type Comet chat list item property.
-     */
-    public static class CometChatListItemProperty {
-        private boolean isAvatarHidden;
-        private boolean isUserPresenceHidden;
-        private boolean isTitleHidden;
-        private boolean isSubtitleHidden;
 
-        private int backgroundColor;
-        private int backgroundColorAtPosition;
-        private float cornerRadius;
-        private int titleColor;
-        private int subTitleColor;
-
-        private int typingIndicatorColor;
-        private final Context context;
-
-        /**
-         * Instantiates a new Comet chat list item property.
-         *
-         * @param context the context
-         */
-        public CometChatListItemProperty(Context context) {
-            this.context = context;
-        }
-
-        /**
-         * Sets avatar hidden.
-         *
-         * @param avatarHidden the avatar hidden
-         * @return the avatar hidden
-         */
-        public CometChatListItemProperty setAvatarHidden(boolean avatarHidden) {
-            isAvatarHidden = avatarHidden;
-            return this;
-        }
-
-        /**
-         * Sets title hidden.
-         *
-         * @param titleHidden the title hidden
-         * @return the title hidden
-         */
-        public CometChatListItemProperty setTitleHidden(boolean titleHidden) {
-            isTitleHidden = titleHidden;
-            return this;
-        }
-
-        /**
-         * Sets subtitle hidden.
-         *
-         * @param subtitleHidden the subtitle hidden
-         * @return the subtitle hidden
-         */
-        public CometChatListItemProperty setSubtitleHidden(boolean subtitleHidden) {
-            isSubtitleHidden = subtitleHidden;
-            return this;
-        }
-
-        /**
-         * Sets user presence hidden.
-         *
-         * @param isHidden the is hidden
-         * @return the user presence hidden
-         */
-        public CometChatListItemProperty setUserPresenceHidden(boolean isHidden) {
-            isUserPresenceHidden = isHidden;
-            return this;
-        }
-
-
-        /**
-         * Sets title color.
-         *
-         * @param color the color
-         * @return the title color
-         */
-        public CometChatListItemProperty setTitleColor(@ColorInt int color) {
-            titleColor = color;
-            return this;
-        }
-
-        /**
-         * Sets sub title color.
-         *
-         * @param color the color
-         * @return the sub title color
-         */
-        public CometChatListItemProperty setSubTitleColor(@ColorInt int color) {
-            subTitleColor = color;
-            return this;
-        }
-
-        /**
-         * Sets corner radius.
-         *
-         * @param radius the radius
-         * @return the corner radius
-         */
-        public CometChatListItemProperty setCornerRadius(float radius) {
-            cornerRadius = radius;
-            return this;
-        }
-
-
-        /**
-         * Sets background color.
-         *
-         * @param color    the color
-         * @param position the position
-         * @return the background color
-         */
-        public CometChatListItemProperty setBackgroundColor(@ColorInt int color, int position) {
-            backgroundColor = color;
-            backgroundColorAtPosition = position;
-            return this;
-        }
-
-        /**
-         * Sets typing indicator color.
-         *
-         * @param color the color
-         * @return the typing indicator color
-         */
-        public CometChatListItemProperty setTypingIndicatorColor(@ColorInt int color) {
-            typingIndicatorColor = color;
-            return this;
-        }
+    public void onAddMemberClick(OnAddMemberClick addMemberClick) {
+        this.onAddMemberClick = addMemberClick;
     }
 
-    /**
-     * Below is abstract class that includes events performed for CometChatUsers
-     * @param <T> the type parameter
-     *
-     * @author CometChat Team
-     * Copyright &copy; 2021 CometChat Inc.
-     *
-     */
-    public abstract static class Events<T> {
+    public void clearList() {
+        if (cometchatUserList != null)
+            cometchatUserList.clearList();
+    }
 
-        /**
-         * It is triggered whenever any item from CometChatUserList is clicked
-         *
-         * @param var      the var
-         * @param position the position
-         *
-         * @author CometChat Team
-         * Copyright &copy; 2021 CometChat Inc.
-         */
-        public abstract void OnItemClick(T var, int position);
+    public void setUserList(List<User> users) {
+        if (cometchatUserList != null)
+            cometchatUserList.setUserList(users);
+    }
 
-
-        public void onMenuIconClick(String id) {
-        }
-
-        /**
-         * It is triggered whenever a long press action is performed
-         * on the item from CometChatUserList
-         *
-         * @param var      the var
-         * @param position the position
-         *
-         * @author CometChat Team
-         * Copyright &copy; 2021 CometChat Inc.
-         */
-        public void OnItemLongClick(T var, int position) {
-        }
+    public interface OnAddMemberClick {
+        void onAddMemberClick(List<GroupMember> groupMembers);
     }
 }

@@ -1,67 +1,52 @@
 package com.cometchatworkspace.components.shared.primaryComponents;
 
-public class InputData {
+import java.util.function.Function;
 
-    private final String id;
-    private final String thumbnail;
-    private final String title;
-    private final String subTitle;
-    private String status=null;
-    private long time;
-    private int unreadCount;
+public class InputData<T> {
 
-    //for UsersListItem
-    public InputData(String id, String thumbnail, String title, String subTitle, String status) {
-        this.id = id;
+
+    private boolean thumbnail;
+    private boolean status;
+    private boolean title;
+    private Function<T, Object> subTitle;
+    private String metaData;
+    public InputData(){}
+    public InputData(boolean thumbnail, boolean status, boolean title, Function<T, Object> subTitle) {
         this.thumbnail = thumbnail;
-        this.title = title;
-        this.subTitle = subTitle;
         this.status = status;
-    }
-    //for GroupsListItem
-    public InputData(String id, String thumbnail, String title, String subTitle) {
-        this.id = id;
-        this.thumbnail = thumbnail;
         this.title = title;
         this.subTitle = subTitle;
     }
-    //for ConversationsListItem
 
-    public InputData(String id, String thumbnail, String title, String subTitle, String status, long time, int unreadCount) {
-        this.id = id;
+    public InputData(boolean thumbnail, boolean status, boolean title, String metaData) {
         this.thumbnail = thumbnail;
-        this.title = title;
-        this.subTitle = subTitle;
         this.status = status;
-        this.time = time;
-        this.unreadCount = unreadCount;
+        this.title = title;
+        this.metaData = metaData;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getThumbnail() {
+    public boolean isThumbnail() {
         return thumbnail;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public String getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public long getTime() {
-        return time;
+    public boolean isTitle() {
+        return title;
     }
 
-    public int getUnreadCount() {
-        return unreadCount;
+    public Object getSubTitle(T obj) {
+        Object string = "";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (subTitle!=null)
+                string = subTitle.apply(obj);
+        }
+        return string;
+    }
+
+    public String getMetaData() {
+        return metaData;
     }
 }

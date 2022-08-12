@@ -1,23 +1,25 @@
 package com.cometchatworkspace.components.shared.primaryComponents;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+
 import androidx.annotation.ColorInt;
 
 public class Style {
 
-
-    private final int background;
-    private final int border;
-    private final float cornerRadius;
+    private int background;
+    private Drawable gradientDrawable;
+    private int borderWidth;
+    private int borderColor;
+    private float cornerRadius;
     private String emptyStateTextFont;
     private int emptyStateTextColor;
     private String errorStateTextFont;
     private int errorStateTextColor;
-
-
     private String titleFont;
     private int titleColor;
     private int backIconTint = 0;
-    private int searchBorder = 0;
+    private int searchBorderWidth = 0;
     private int searchCornerRadius = 0;
     private int searchBackground = 0;
     private String searchTextFont = null;
@@ -30,64 +32,139 @@ public class Style {
     private int threadIndicatorTextColor = 0;
     private String threadIndicatorTextFont = null;
 
-    //UserListItem,GroupListItem
-    public Style(int border, float cornerRadius, @ColorInt int titleColor, @ColorInt int subTitleColor, String titleFont, String subTitleFont, int background) {
-        this.border = border;
-        this.cornerRadius = cornerRadius;
-        this.titleColor = titleColor;
-        this.subTitleColor = subTitleColor;
-        this.titleFont = titleFont;
-        this.subTitleFont = subTitleFont;
-        this.background = background;
+    public Style gradientBackground(int[] colors, GradientDrawable.Orientation orientation) {
+        this.gradientDrawable = new GradientDrawable(orientation,colors);
+        return this;
     }
 
-    //ConversationListItem
-    public Style(int border, float cornerRadius, int titleColor, int subTitleColor, String titleFont, String subTitleFont, int background, int typingIndicatorTextColor, String typingIndicatorTextFont, int threadIndicatorTextColor, String threadIndicatorTextFont) {
-        this.border = border;
-        this.cornerRadius = cornerRadius;
-        this.titleColor = titleColor;
-        this.subTitleColor = subTitleColor;
-        this.titleFont = titleFont;
-        this.subTitleFont = subTitleFont;
+    public Style background(@ColorInt int background) {
         this.background = background;
-        this.typingIndicatorTextColor = typingIndicatorTextColor;
-        this.typingIndicatorTextFont = typingIndicatorTextFont;
-        this.threadIndicatorTextColor = threadIndicatorTextColor;
-        this.threadIndicatorTextFont = threadIndicatorTextFont;
+        return this;
     }
 
-    //Users,Groups,Conversations
-    public Style(int background, int border, float cornerRadius, String titleFont, int titleColor, int backIconTint, int searchBorder, int searchCornerRadius, int searchBackground, String searchTextFont, int searchTextColor, int searchIconTint) {
-        this.background = background;
-        this.border = border;
-        this.cornerRadius = cornerRadius;
-        this.titleFont = titleFont;
-        this.titleColor = titleColor;
-        this.backIconTint = backIconTint;
-        this.searchBorder = searchBorder;
-        this.searchCornerRadius = searchCornerRadius;
-        this.searchBackground = searchBackground;
-        this.searchTextFont = searchTextFont;
-        this.searchTextColor = searchTextColor;
-        this.searchIconTint = searchIconTint;
+    public Style borderWidth(int width) {
+        this.borderWidth = width;
+        return this;
     }
 
-    //UserList,GroupList,ConversationList
-    public Style(int background, int border, float cornerRadius, String emptyStateTextFont, int emptyStateTextColor, String errorStateTextFont, int errorStateTextColor) {
-        this.background = background;
-        this.border = border;
+    public Style borderColor(@ColorInt int color) {
+        this.borderColor = color;
+        return this;
+    }
+
+    public Style cornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
+        return this;
+    }
+
+    public Style emptyStateTextFont(String emptyStateTextFont) {
         this.emptyStateTextFont = emptyStateTextFont;
-        this.emptyStateTextColor = emptyStateTextColor;
-        this.errorStateTextFont = errorStateTextFont;
-        this.errorStateTextColor = errorStateTextColor;
+        return this;
     }
 
+    public Style emptyStateTextColor(@ColorInt int emptyStateTextColor) {
+        this.emptyStateTextColor = emptyStateTextColor;
+        return this;
+    }
+
+    public Style errorStateTextFont(String errorStateTextFont) {
+        this.errorStateTextFont = errorStateTextFont;
+        return this;
+    }
+
+    public Style errorStateTextColor(@ColorInt int errorStateTextColor) {
+        this.errorStateTextColor = errorStateTextColor;
+        return this;
+    }
+
+    public Style titleFont(String titleFont) {
+        this.titleFont = titleFont;
+        return this;
+    }
+
+    public Style titleColor(@ColorInt int titleColor) {
+        this.titleColor = titleColor;
+        return this;
+    }
+
+    public Style backIconTint(@ColorInt int backIconTint) {
+        this.backIconTint = backIconTint;
+        return this;
+    }
+
+    public Style searchBorderWidth(int searchBorder) {
+        this.searchBorderWidth = searchBorder;
+        return this;
+    }
+
+    public Style searchCornerRadius(int searchCornerRadius) {
+        this.searchCornerRadius = searchCornerRadius;
+        return this;
+    }
+
+    public Style searchBackground(@ColorInt int searchBackground) {
+        this.searchBackground = searchBackground;
+        return this;
+    }
+
+    public Style searchTextFont(String searchTextFont) {
+        this.searchTextFont = searchTextFont;
+        return this;
+    }
+
+    public Style searchTextColor(@ColorInt int searchTextColor) {
+        this.searchTextColor = searchTextColor;
+        return this;
+    }
+
+    public Style searchIconTint(@ColorInt int searchIconTint) {
+        this.searchIconTint = searchIconTint;
+        return this;
+    }
+
+    public Style subTitleFont(String subTitleFont) {
+        this.subTitleFont = subTitleFont;
+        return this;
+
+    }
+
+    public Style subTitleColor(@ColorInt int subTitleColor) {
+        this.subTitleColor = subTitleColor;
+        return this;
+
+    }
+
+    public Style typingIndicatorTextColor(@ColorInt int typingIndicatorTextColor) {
+        this.typingIndicatorTextColor = typingIndicatorTextColor;
+        return this;
+
+    }
+
+    public Style typingIndicatorTextFont(String typingIndicatorTextFont) {
+        this.typingIndicatorTextFont = typingIndicatorTextFont;
+        return this;
+
+    }
+
+    public Style threadIndicatorTextColor(@ColorInt int threadIndicatorTextColor) {
+        this.threadIndicatorTextColor = threadIndicatorTextColor;
+        return this;
+
+    }
+
+    public Style threadIndicatorTextFont(String threadIndicatorTextFont) {
+        this.threadIndicatorTextFont = threadIndicatorTextFont;
+        return this;
+
+    }
+
+
+    //getters
     public String getEmptyStateTextFont() {
         return emptyStateTextFont;
     }
 
-    public int getEmptyStateTextColor() {
+    public @ColorInt int getEmptyStateTextColor() {
         return emptyStateTextColor;
     }
 
@@ -95,16 +172,20 @@ public class Style {
         return errorStateTextFont;
     }
 
-    public int getErrorStateTextColor() {
+    public @ColorInt int getErrorStateTextColor() {
         return errorStateTextColor;
     }
 
-    public int getBackground() {
+    public @ColorInt int getBackground() {
         return background;
     }
 
     public int getBorder() {
-        return border;
+        return borderWidth;
+    }
+
+    public @ColorInt int getBorderColor() {
+        return borderColor;
     }
 
     public float getCornerRadius() {
@@ -115,23 +196,23 @@ public class Style {
         return titleFont;
     }
 
-    public int getTitleColor() {
+    public @ColorInt int getTitleColor() {
         return titleColor;
     }
 
-    public int getBackIconTint() {
+    public @ColorInt int getBackIconTint() {
         return backIconTint;
     }
 
     public int getSearchBorder() {
-        return searchBorder;
+        return searchBorderWidth;
     }
 
     public int getSearchCornerRadius() {
         return searchCornerRadius;
     }
 
-    public int getSearchBackground() {
+    public @ColorInt int getSearchBackground() {
         return searchBackground;
     }
 
@@ -139,15 +220,15 @@ public class Style {
         return searchTextFont;
     }
 
-    public int getSearchTextColor() {
+    public @ColorInt int getSearchTextColor() {
         return searchTextColor;
     }
 
-    public int getSearchIconTint() {
+    public @ColorInt int getSearchIconTint() {
         return searchIconTint;
     }
 
-    public int getSubTitleColor() {
+    public @ColorInt int getSubTitleColor() {
         return subTitleColor;
     }
 
@@ -155,7 +236,7 @@ public class Style {
         return subTitleFont;
     }
 
-    public int getTypingIndicatorTextColor() {
+    public @ColorInt int getTypingIndicatorTextColor() {
         return typingIndicatorTextColor;
     }
 
@@ -163,7 +244,7 @@ public class Style {
         return typingIndicatorTextFont;
     }
 
-    public int getThreadIndicatorTextColor() {
+    public @ColorInt int getThreadIndicatorTextColor() {
         return threadIndicatorTextColor;
     }
 
@@ -172,4 +253,7 @@ public class Style {
     }
 
 
+    public Drawable getGradientBackground() {
+        return gradientDrawable;
+    }
 }

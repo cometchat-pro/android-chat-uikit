@@ -20,7 +20,7 @@
             android:layout_marginStart="8dp"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back_selected" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -33,7 +33,7 @@
             android:layout_marginBottom="16dp"
             android:layout_toEndOf="@id/back_icon"
             android:text="@string/conversation_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/Heading"
             android:textColor="@color/primaryTextColor"
             android:textStyle="bold"
             tools:text="Chats"
@@ -49,22 +49,23 @@
     </RelativeLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/rl_search_box"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:cardCornerRadius="18dp"
         app:boxBackgroundColor="@color/menu_background_grey"
         app:boxBackgroundMode="none"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        android:layout_marginLeft="16dp"
+        app:boxCornerRadiusTopStart="18dp"
+        app:boxCornerRadiusTopEnd="18dp"
+        app:boxCornerRadiusBottomStart="18dp"
+        app:boxCornerRadiusBottomEnd="18dp"
+        android:layout_marginStart="16dp"
         app:boxStrokeWidth="0dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         app:hintEnabled="false"
         app:startIconDrawable="@drawable/ic_search"
         android:layout_gravity="center"
+        app:placeholderTextAppearance="@style/Text1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="36dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_bar"

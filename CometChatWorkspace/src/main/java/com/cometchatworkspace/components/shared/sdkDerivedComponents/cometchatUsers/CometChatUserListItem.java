@@ -11,10 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
-import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
-import com.cometchatworkspace.components.shared.primaryComponents.CometChatTheme;
 import com.cometchatworkspace.components.shared.primaryComponents.InputData;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
@@ -22,7 +20,6 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Typograp
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
 
 public class CometChatUserListItem extends MaterialCardView {
@@ -38,7 +35,6 @@ public class CometChatUserListItem extends MaterialCardView {
     TextView tvSeperator;
     boolean isRole = false, isStatus = true;
     RelativeLayout parentLayout;
-    private boolean activeUser;
     int titleColor;
 
     private Palette palette;
@@ -62,21 +58,14 @@ public class CometChatUserListItem extends MaterialCardView {
             setSubTitle(user.getRole());
 
 
-        hideStatusIndicator(!user.getStatus().equals(CometChatConstants.USER_STATUS_ONLINE));
+//        hideStatusIndicator(!user.getStatus().equals(CometChatConstants.USER_STATUS_ONLINE));
         setTitle(user.getName());
-        setSubTitleFont(CometChatTheme.Typography.robotoMedium);
+//        setSubTitleFont(CometChatTheme.Typography.robotoMedium);
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
             getAvatar().setInitials(user.getName());
         } else {
             getAvatar().setAvatar(user.getAvatar());
-        }
-        if (Utils.isDarkMode(context)) {
-            setTitleColor(context.getResources().getColor(R.color.textColorWhite));
-            setSeperatorColor(context.getResources().getColor(R.color.grey));
-        } else {
-            setTitleColor(titleColor);
-            setSeperatorColor(context.getResources().getColor(R.color.light_grey));
         }
     }
 
@@ -104,8 +93,6 @@ public class CometChatUserListItem extends MaterialCardView {
                 .CometChatUserListItem_userListItem_subTitleColor, palette.getAccent600());
         boolean userPresenceHidden = a.getBoolean(R.styleable
                 .CometChatUserListItem_userListItem_hideUserPresence, false);
-        activeUser = a.getBoolean(R.styleable
-                .CometChatUserListItem_userListItem_isActive, false);
 
         parentLayout = view.findViewById(R.id.view_foreground);
         userListItemTitle = view.findViewById(R.id.userListItem_title);
@@ -120,7 +107,7 @@ public class CometChatUserListItem extends MaterialCardView {
         setTitleTextAppearance(typography.getName());
         setSubTitleTextAppearance(typography.getSubtitle1());
         setSubTitleColor(subTitleColor);
-        setTitleFont(CometChatTheme.Typography.robotoMedium);
+//        setTitleFont(CometChatTheme.Typography.robotoMedium);
         hideSubTitle(subTitleHidden);
         hideStatusIndicator(userPresenceHidden);
         setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -128,8 +115,6 @@ public class CometChatUserListItem extends MaterialCardView {
         setAvatarTextColor(palette.getAccent900());
         setAvatarTextAppearance(typography.getName());
     }
-
-
 
     public void setAvatarBackgroundColor(int color) {
         if (color != 0)
@@ -145,9 +130,6 @@ public class CometChatUserListItem extends MaterialCardView {
         if (appearance != 0)
             getAvatar().setTextAppearance(appearance);
     }
-    public void setActiveUser(boolean activeUser) {
-        this.activeUser = activeUser;
-    }
 
 
     /**
@@ -157,28 +139,37 @@ public class CometChatUserListItem extends MaterialCardView {
      * and also decide what value i need to show in that particular view
      */
 
-    public void inputData(InputData data) {
+    public void inputData(InputData inputData) {
 
-        if (data.getThumbnail() == null || data.getThumbnail().isEmpty()) {
-            hideAvatar(true);
-        } else {
-            getAvatar().setAvatar(data.getThumbnail());
-        }
-        if (data.getTitle() != null) {
-            setTitle(data.getTitle());
-        } else {
-            hideTitle(true);
-        }
-        if (data.getSubTitle() != null) {
-            setSubTitle(data.getSubTitle());
-        } else {
-            hideSubTitle(true);
-        }
-        if (data.getStatus() != null) {
-            setStatusIndicator(data.getStatus());
-        } else {
-            hideStatusIndicator(true);
-        }
+        setSubTitle(inputData.getSubTitle(user).toString());
+        hideSubTitle(false);
+
+        hideTitle(!inputData.isTitle());
+
+        hideAvatar(!inputData.isThumbnail());
+        hideStatusIndicator(!inputData.isStatus());
+
+
+//        if (data.getThumbnail() == null || data.getThumbnail().isEmpty()) {
+//            hideAvatar(true);
+//        } else {
+//            getAvatar().setAvatar(data.getThumbnail());
+//        }
+//        if (data.getTitle() != null) {
+//            setTitle(data.getTitle());
+//        } else {
+//            hideTitle(true);
+//        }
+//        if (data.getSubTitle() != null) {
+//            setSubTitle(data.getSubTitle());
+//        } else {
+//            hideSubTitle(true);
+//        }
+//        if (data.getStatus() != null) {
+//            setStatusIndicator(data.getStatus());
+//        } else {
+//            hideStatusIndicator(true);
+//        }
 
 
     }
@@ -313,14 +304,14 @@ public class CometChatUserListItem extends MaterialCardView {
         return userListItemAvatar;
     }
 
-    public void hideSeperator(boolean isHidden) {
+    public void hideSeparator(boolean isHidden) {
         if (isHidden)
             tvSeperator.setVisibility(View.GONE);
         else
             tvSeperator.setVisibility(View.VISIBLE);
     }
 
-    public void setSeperatorColor(int color) {
+    public void setSeparatorColor(int color) {
         tvSeperator.setBackgroundColor(color);
     }
 

@@ -38,7 +38,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/avatar_section"
         android:layout_marginEnd="16dp"
@@ -88,20 +88,22 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:orientation="horizontal">
 
             <com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt
                 android:id="@+id/conversationListItem_receipt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="4dp" />
 
             <TextView
                 android:id="@+id/conversationListItem_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
@@ -117,6 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/avatar_section"
         android:layout_marginEnd="16dp"
         android:background="@color/light_grey" />
 

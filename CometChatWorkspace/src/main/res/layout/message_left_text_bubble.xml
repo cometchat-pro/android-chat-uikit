@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<RelativeLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:animateLayoutChanges="true">
-
-    <RelativeLayout
-        android:layoutDirection="ltr"
-        android:id="@+id/rl_message"
-        android:animateLayoutChanges="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
-            android:layout_width="24dp"
-            android:id="@+id/iv_user"
-            tools:src="@tools:sample/avatars"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_height="24dp"/>
-        <TextView
-            android:id="@+id/tv_user"
-            tools:text="Iron Man"
-            android:textSize="12sp"
-            android:layout_marginLeft="10dp"
-            android:layout_toEndOf="@+id/iv_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layoutDirection="ltr"
+    android:id="@+id/rl_message"
+    android:animateLayoutChanges="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_message_container"
             android:layout_below="@+id/tv_user"
@@ -41,6 +21,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <include
                     layout="@layout/message_left_reply_item"
                     android:layout_width="wrap_content"
@@ -102,47 +83,5 @@
                 </RelativeLayout>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
-        <ImageView
-            android:id="@+id/img_pending"
-            android:layout_width="15dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginStart="-5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_toEndOf="@+id/cv_message_container"
-            android:visibility="visible"/>
-        <LinearLayout
-            android:orientation="vertical"
-            android:gravity="start"
-            android:layout_marginBottom="16dp"
-            android:layout_alignStart="@id/cv_message_container"
-            android:layout_below="@+id/cv_message_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+</RelativeLayout>
 
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-    </LinearLayout>
-    </RelativeLayout>
-
-</LinearLayout>

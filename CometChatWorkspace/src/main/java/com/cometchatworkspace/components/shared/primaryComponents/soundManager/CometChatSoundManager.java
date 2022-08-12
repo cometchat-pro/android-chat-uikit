@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Vibrator;
 
 import com.cometchatworkspace.R;
 
@@ -27,8 +28,10 @@ public class CometChatSoundManager {
     private final IncomingAudioManager incomingAudioHelper;
 
     private final OutgoingAudioManager outgoingAudioHelper;
+    private final Vibrator vibrator;
 
     private final SoundPool soundPool;
+    private static final long[] VIBRATE_PATTERN = {0, 1000,1000};
 
     private final int  disconnectedSoundId;
 
@@ -39,7 +42,9 @@ public class CometChatSoundManager {
         this.outgoingAudioHelper=new OutgoingAudioManager(context);
         this.soundPool=new SoundPool(1,AudioManager.STREAM_VOICE_CALL,0);
         this.disconnectedSoundId=this.soundPool.load(context, R.raw.beep2,1);
-        initAudio();
+        this.vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+//        initAudio();
     }
 
     private void initAudio(){
@@ -53,6 +58,10 @@ public class CometChatSoundManager {
     }
 
     public void play(Sound sound) {
+        AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+        if(audioManager.isMusicActive()){
+            vibrator.vibrate(VIBRATE_PATTERN,2);
+        }
         if (sound.equals(Sound.incomingCall)) {
             startIncomingAudio(Uri.parse("android.resource://" + context.getPackageName() + "/" +
                     Sound.incomingCall.getRawFile()),true);
@@ -66,6 +75,7 @@ public class CometChatSoundManager {
         } else if (sound.equals(Sound.incomingMessageFromOther)) {
             playMessageSound(context,Sound.incomingMessageFromOther.getRawFile());
         }
+
     }
 
     public void play(Sound sound,int rawFile) {

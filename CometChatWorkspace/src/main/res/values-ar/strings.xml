@@ -122,7 +122,7 @@
     <string name="added">مضاف</string>
     <string name="made">مصنوع</string>
     <string name="translate_message">ترجمة الرسالة</string>
-    <string name="no_translation_available">لا يوجد ترجمة متوفرة</string>
+    <string name="translation_error">لا يوجد ترجمة متوفرة</string>
     <string name="has_shared_group_call">شارك في مكالمة جماعية.</string>
     <string name="custom_message_meeting">مكالمة جماعية 📹</string>
     <string name="you_created_group_call">لقد قمت بإنشاء مكالمة جماعية.</string>
@@ -187,4 +187,40 @@
     <string name="error_cant_load_conversation">لا يمكن تحميل المحادثة. حاول مرة اخرى</string>
     <string name="error_cant_load_group">لا يمكن تحميل المجموعة. حاول مرة اخرى</string>
     <string name="no_chats">ts الشاي</string>
+
+    <string name="error_cant_load_group_members">لا يمكن تحميل أعضاء المجموعة. يرجى المحاولة مرة أخرى</string>
+    <string name="users">المستخدمون</string>
+    <string name="groups">مجموعات</string>
+    <string name="details">التفاصيل</string>
+    <string name="something_went_wrong">حدث خطأ ما!</string>
+    <string name="more_option">أكثر</string>
+    <string name="shared_media">الوسائط المشتركة</string>
+    <string name="transfer_ownership">أنت مالك المجموعة، يرجى نقل الملكية إلى عضو قبل مغادرة المجموعة.</string>
+    <string name="transfer_ownership_text">نقل الملكية</string>
+    <string name="view_members">عرض الأعضاء</string>
+    <string name="banned_members">الأعضاء المحظورون</string>
+    <string name="add_members">إضافة أعضاء</string>
+    <string name="leave_group">اترك المجموعة</string>
+    <string name="leave_group_text">هل أنت متأكد أنك تريد مغادرة المجموعة؟</string>
+    <string name="delete_group_text">هل تريد بالتأكيد حذف المجموعة؟</string>
+    <string name="delete_and_exit">حذف وخروج</string>
+    <string name="unblock_user">إلغاء حظر المستخدم</string>
+    <string name="block_user">حظر المستخدم</string>
+    <string name="no_members">لا يوجد أعضاء</string>
+    <string name="extra_space"> </string>
+    <string name="owner">مالك</string>
+    <string name="selected">تم اختياره</string>
+    <string name="view_profile">عرض الملف الشخصي</string>
+    <string name="group_password">كلمة مرور المجموعة</string>
+    <string name="join_group_text">أدخل كلمة المرور للوصول إلى مجموعة %1$s. </string>
+    <string name="protected_group">مجموعة محمية</string>
+    <string name="type_public">عامة</string>
+    <string name="type_private">خاص</string>
+    <string name="type_protected">محمي</string>
+    <string name="name">حركة عدم الانحياز</string>
+    <string name="new_group">مجموعة جديدة</string>
+    <string name="please_try_another_password">يرجى تجربة كلمة مرور أخرى</string>
+    <string name="incorrect_password">كلمة مرور خاطئة</string>
+    <string name="sdk_incorrect_password_error">كلمة المرور الخاصة بالمجموعة غير صحيحة.</string>
+    <string name="okay">حسنا</string>
 </resources>

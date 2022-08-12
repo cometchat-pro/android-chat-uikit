@@ -44,6 +44,7 @@ public class CometChatWebViewActivity extends AppCompatActivity {
         if (url!=null) {
             WebSettings webSettings = webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
+            webSettings.setSupportZoom(true);
             webSettings.setAppCacheEnabled(true);
             webView.setWebViewClient(new WebViewClient()
             {

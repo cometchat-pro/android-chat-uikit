@@ -5,14 +5,15 @@
     android:layout_width="wrap_content"
     android:layoutDirection="ltr"
     android:layout_height="wrap_content">
+
     <com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar
-        android:layout_width="24dp"
         android:id="@+id/iv_user"
-        tools:src="@tools:sample/avatars"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_alignTop="@id/cv_message_container"
-        android:layout_marginBottom="4dp"
         android:layout_marginStart="4dp"
-        android:layout_height="24dp"/>
+        android:layout_marginBottom="4dp"
+        tools:src="@tools:sample/avatars" />
     <TextView
         android:id="@+id/tv_user"
         tools:text="Iron Man"
@@ -60,7 +61,7 @@
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/ic_circle_grey_32dp"
                 android:padding="8dp"
-                android:src="@drawable/ic_play_arrow_black_24dp" />
+                android:src="@drawable/ic_play_2x" />
 
             <TextView
                 android:id="@+id/audiolength_tv"

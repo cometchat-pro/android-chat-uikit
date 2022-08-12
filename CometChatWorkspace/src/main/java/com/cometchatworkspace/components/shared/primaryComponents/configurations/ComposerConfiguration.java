@@ -2,20 +2,27 @@ package com.cometchatworkspace.components.shared.primaryComponents.configuration
 
 import android.content.Context;
 
+import com.cometchatworkspace.components.shared.primaryComponents.Style;
+
 public class ComposerConfiguration extends CometChatConfigurations {
 
-
+    private Style style;
     private int cornerRadius;
     private int borderWidth;
     private float width;
     private float height;
     private int textSize;
     private int maxLines;
-    private boolean isAttachmentVisible,isMicrophoneVisible,isLiveReactionVisible,isSendButtonVisible;
-    private final Context context;
+    private boolean isAttachmentHidden,
+            isMicrophoneHidden=true, isLiveReactionHidden,
+            isSendButtonHidden;
 
-    public ComposerConfiguration(Context context) {
-            this.context = context;
+    private int liveReactionIcon=-1,attachmentIcon=-1,microphoneIcon=-1,sendButtonIcon=-1;
+    private Context context;
+    String placeholderStr;
+
+    public ComposerConfiguration(Context context_) {
+            this.context = context_;
     }
 
     public ComposerConfiguration setCornerRadius(int radius) {
@@ -72,31 +79,84 @@ public class ComposerConfiguration extends CometChatConfigurations {
         return maxLines;
     }
 
-    public ComposerConfiguration hideAttachment(boolean isHidden) {
-        isAttachmentVisible = isHidden;
+    public ComposerConfiguration attachmentIcon(int icon) {
+        attachmentIcon = icon;
         return this;
     }
 
-    public boolean isAttachmentHidden() { return isAttachmentVisible; }
+    public int getAttachmentIcon() {
+        return attachmentIcon;
+    }
+
+    public ComposerConfiguration hideAttachment(boolean isHidden) {
+        isAttachmentHidden = isHidden;
+        return this;
+    }
+
+    public boolean isAttachmentHidden() { return isAttachmentHidden; }
+
+    public ComposerConfiguration microphoneIcon(int icon) {
+        microphoneIcon = icon;
+        return this;
+    }
+
+    public int getMicrophoneIcon() {
+        return microphoneIcon;
+    }
 
     public ComposerConfiguration hideMicrophone(boolean isHidden) {
-        isMicrophoneVisible = isHidden;
+        isMicrophoneHidden = isHidden;
         return this;
     }
 
-    public boolean isMicrophoneHidden() { return isMicrophoneVisible; }
+    public boolean isMicrophoneHidden() { return isMicrophoneHidden; }
 
     public ComposerConfiguration hideLiveReaction(boolean isHidden) {
-        isLiveReactionVisible = isHidden;
+        isLiveReactionHidden = isHidden;
         return this;
     }
 
-    public boolean isLiveReactionHidden() { return isLiveReactionVisible; }
+    public boolean isLiveReactionHidden() { return isLiveReactionHidden; }
+
+    public ComposerConfiguration liveReactionIcon(int icon) {
+        liveReactionIcon = icon;
+        return this;
+    }
+
+    public int getLiveReactionIcon() {
+        return liveReactionIcon;
+    }
 
     public ComposerConfiguration hideSendButton(boolean isHidden) {
-        isSendButtonVisible = isHidden;
+        isSendButtonHidden = isHidden;
         return this;
     }
 
-    public boolean isSendButtonHidden() { return isSendButtonVisible; }
+    public boolean isSendButtonHidden() { return isSendButtonHidden; }
+
+    public ComposerConfiguration sendButtonIcon(int icon) {
+        sendButtonIcon = icon;
+        return this;
+    }
+
+    public int getSendButtonIcon() {
+        return sendButtonIcon;
+    }
+
+    public ComposerConfiguration setPlaceholder(String placeholder) {
+        placeholderStr = placeholder;
+        return this;
+    }
+    public String getPlaceholder() {
+        return placeholderStr;
+    }
+
+    public ComposerConfiguration setStyle(Style style1) {
+        this.style = style1;
+        return this;
+    }
+
+    public Style getStyle() {
+        return style;
+    }
 }

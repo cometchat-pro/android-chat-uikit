@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    app:cardElevation="0dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="8dp"
     android:layout_height="wrap_content">
@@ -15,8 +16,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_gravity="center"
             android:id="@+id/iconBackground"
-            app:cardBackgroundColor="@color/action_sheet_icon_bg"
-            app:cardCornerRadius="24dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -25,7 +26,7 @@
                 android:id="@+id/icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:tint="@color/textColorWhite" />
+                app:tint="@color/accent700" />
         </com.google.android.material.card.MaterialCardView>
         <TextView
             android:textStyle="bold"

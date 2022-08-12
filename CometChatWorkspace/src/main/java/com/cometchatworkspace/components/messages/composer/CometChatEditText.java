@@ -57,9 +57,7 @@ public class CometChatEditText extends AppCompatEditText {
                         ContentResolver cr = getContext().getContentResolver();
                         String mimeType = cr.getType(inputContentInfo.getLinkUri());
 
-                        Log.e(TAG, "onCommitContent: "+inputContentInfo.getLinkUri().getPath()
-                                +"\n"+inputContentInfo.getContentUri()+"\n"+
-                                mimeType);
+
                         onEditTextMediaListener.OnMediaSelected(inputContentInfo);
                         // read and display inputContentInfo asynchronously.
                         // call inputContentInfo.releasePermission() as needed.

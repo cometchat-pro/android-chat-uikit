@@ -5,56 +5,11 @@
     android:layoutDirection="ltr"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
-
-    <RelativeLayout
-        android:id="@+id/rl_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.imageview.ShapeableImageView
+    <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_message"
-            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_defaulf_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="8dp"
             android:adjustViewBounds="true" />
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_alignEnd="@id/image_message"
-            android:layout_below="@+id/image_message"
-            android:layout_width="wrap_content"
-            android:gravity="end"
-            android:layout_marginBottom="16dp"
-            android:layout_height="wrap_content">
-            <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-                android:id="@+id/reactions_group"
-                app:messageReaction_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:clickable="true"
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/thread_reply_count"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="16dp"
-                tools:text="2 replies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <include
-                android:id="@+id/receipt_layout"
-                layout="@layout/cometchat_message_receipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp" />
-        </LinearLayout>
-    </RelativeLayout>
-
-
 </LinearLayout>

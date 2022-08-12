@@ -3,17 +3,8 @@ package com.cometchatworkspace.components.calls;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.cometchatworkspace.R;
 import com.cometchat.pro.core.Call;
-import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.exceptions.CometChatException;
-import com.cometchat.pro.models.Group;
-import com.cometchat.pro.models.User;
-import com.google.android.material.snackbar.Snackbar;
 
 import com.cometchatworkspace.components.calls.callManager.CometChatStartCallActivity;
 import com.cometchatworkspace.resources.constants.UIKitConstants;

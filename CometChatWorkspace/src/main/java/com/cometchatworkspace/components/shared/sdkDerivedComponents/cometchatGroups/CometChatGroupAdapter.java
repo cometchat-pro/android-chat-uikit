@@ -11,14 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cometchat.pro.models.Group;
 import com.cometchatworkspace.R;
-import com.cometchatworkspace.components.shared.primaryComponents.InputData;
-import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.GroupListItemConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.DataItemConfiguration;
+import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatDataItem.CometChatDataItem;
 import com.cometchatworkspace.resources.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CometChatGroupAdapter extends RecyclerView.Adapter<CometChatGroupAdapter.myGroupViewHolder> {
@@ -32,9 +30,7 @@ public class CometChatGroupAdapter extends RecyclerView.Adapter<CometChatGroupAd
     private CometChatConfigurations configuration;
     private List<CometChatConfigurations> configurations = new ArrayList();
 
-    private boolean isAvatarHidden, isTitleHidden, isSubtitleHidden;
-    private int titleColor, subTitleColor, backgroundColor;
-    private float cornerRadius;
+
 
     public CometChatGroupAdapter(Context context) {
         this.context = context;
@@ -44,39 +40,39 @@ public class CometChatGroupAdapter extends RecyclerView.Adapter<CometChatGroupAd
     @NonNull
     @Override
     public myGroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cometchat_grouplist_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cometchat_data_item_row, parent, false);
 
         return new CometChatGroupAdapter.myGroupViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull myGroupViewHolder holder, int position) {
+        holder.setIsRecyclable(true);
         Group group = groupList.get(position);
-
-        String memberMessage;
-        if (group.getMembersCount() <= 1)
-            memberMessage = group.getMembersCount() + " " + context.getString(R.string.member);
-        else
-            memberMessage = group.getMembersCount() + "" + context.getString(R.string.members);
-
-        holder.group_list_item.setGroup(group);
-        /**
-         * @InputData is a class which is helpful to set data into the view and control visibility
-         * as per value passed in constructor .
-         * i.e we can control the visibility of the component inside the CometChatUserListItem,
-         * and also decide what value i need to show in that particular view
-         */
-//        InputData inputData = new InputData(group.getGuid(), group.getIcon(), group.getName(), memberMessage);
-//        holder.group_list_item.inputData(inputData);
-
-        holder.group_list_item.setTag(R.string.group, group);
-
-        if (configuration instanceof GroupListItemConfiguration) {
-            holder.group_list_item.inputData(((GroupListItemConfiguration) configuration).get());
-        }
+        holder.dataItem.group(group);
+        holder.dataItem.hideSeparator(false);
+        checkWithConfigurations(holder.dataItem);
+        holder.itemView.setTag(R.string.group, group);
 
     }
+    private void checkWithConfigurations(CometChatDataItem listItem) {
+        if (configurations != null && !configurations.isEmpty()) {
+            for (CometChatConfigurations cometChatConfigurations : configurations) {
+                configuration = cometChatConfigurations;
+                setConfiguration(listItem);
+            }
+        } else if (configuration != null) {
+            setConfiguration(listItem);
+        }
+    }
 
+    private void setConfiguration(CometChatDataItem listItem) {
+        if (configuration instanceof DataItemConfiguration) {
+            listItem.inputData(((DataItemConfiguration) configuration).getInputData());
+        }else {
+            listItem.setConfiguration(configuration);
+        }
+    }
     @Override
     public int getItemCount() {
         return groupList.size();
@@ -107,6 +103,14 @@ public class CometChatGroupAdapter extends RecyclerView.Adapter<CometChatGroupAd
 
     public void add(Group group) {
         groupList.add(group);
+        notifyItemInserted(groupList.size() - 1);
+    }
+
+    public Group getGroup(Group group) {
+        if (groupList.contains(group))
+            return groupList.get(groupList.indexOf(group));
+        else
+            return null;
     }
 
     public void searchGroup(List<Group> groups) {
@@ -158,24 +162,12 @@ public class CometChatGroupAdapter extends RecyclerView.Adapter<CometChatGroupAd
 
     }
 
-    public void setConversationListItemProperty(boolean hideAvatar, boolean hideTitleListItem, int titleColorListItem, boolean hideSubtitleListItem, int subTitleColorListItem, int backgroundColorListItem, float cornerRadiusListItem) {
-
-        isAvatarHidden = hideAvatar;
-        isTitleHidden = hideTitleListItem;
-        titleColor = titleColorListItem;
-        isSubtitleHidden = hideSubtitleListItem;
-        subTitleColor = subTitleColorListItem;
-        backgroundColor = backgroundColorListItem;
-        cornerRadius = cornerRadiusListItem;
-        notifyDataSetChanged();
-    }
-
     public class myGroupViewHolder extends RecyclerView.ViewHolder {
-        CometChatGroupListItem group_list_item;
+        CometChatDataItem dataItem;
 
         public myGroupViewHolder(View view) {
             super(view);
-            group_list_item = view.findViewById(R.id.group_list_item);
+            dataItem = view.findViewById(R.id.dataItem);
         }
     }
 }

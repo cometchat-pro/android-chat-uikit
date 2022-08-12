@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +12,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -39,6 +42,7 @@ public class CometChatMediaViewActivity extends AppCompatActivity {
     private ImageView playBtn;
     private MediaPlayer mediaPlayer;
     private TextView mediaSize;
+    private ProgressBar progressBar;
 
     private RelativeLayout audioMessage;
     private final String TAG = CometChatMediaViewActivity.class.getName();
@@ -55,6 +59,7 @@ public class CometChatMediaViewActivity extends AppCompatActivity {
         toolbar.setSubtitle(Utils.getLastMessageDate(this,sentAt));
         imageMessage = findViewById(R.id.image_message);
         videoMessage = findViewById(R.id.video_message);
+        progressBar = findViewById(R.id.progress_bar);
         audioMessage = findViewById(R.id.audio_message);
         mediaSize = findViewById(R.id.media_size_tv);
         playBtn = findViewById(R.id.playBtn);
@@ -63,10 +68,17 @@ public class CometChatMediaViewActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.NONE).into(imageMessage);
             imageMessage.setVisibility(View.VISIBLE);
         } else if (mediaType.equals(CometChatConstants.MESSAGE_TYPE_VIDEO)) {
-            MediaController mediacontroller = new MediaController(this);
+            progressBar.setVisibility(View.GONE);
+            MediaController mediacontroller = new MediaController(this,true);
             mediacontroller.setAnchorView(videoMessage);
             videoMessage.setMediaController(mediacontroller);
             videoMessage.setVideoURI(Uri.parse(mediaUrl));
+            videoMessage.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.start();
+                }
+            });
             videoMessage.setVisibility(View.VISIBLE);
         } else if (mediaType.equals(CometChatConstants.MESSAGE_TYPE_AUDIO)) {
             mediaPlayer.reset();
@@ -80,18 +92,18 @@ public class CometChatMediaViewActivity extends AppCompatActivity {
                         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
-                                playBtn.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                                playBtn.setImageResource(R.drawable.ic_play_2x);
                             }
                         });
                     } catch (Exception e) {
-                        Log.e(TAG, "MediaPlayerError: "+e.getMessage());
+                        e.printStackTrace();
                     }
                     if (!mediaPlayer.isPlaying()) {
                         mediaPlayer.start();
                         playBtn.setImageResource(R.drawable.ic_pause_24dp);
                     } else {
                         mediaPlayer.pause();
-                        playBtn.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                        playBtn.setImageResource(R.drawable.ic_play_2x);
                     }
                 }
             });
@@ -101,6 +113,15 @@ public class CometChatMediaViewActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        //handle Video layout in handScape mode
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if(mediaType.equals(CometChatConstants.MESSAGE_TYPE_VIDEO)){
+                RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.BELOW, R.id.toolbar);
+                videoMessage.setLayoutParams(params);
+            }
         }
     }
     @Override

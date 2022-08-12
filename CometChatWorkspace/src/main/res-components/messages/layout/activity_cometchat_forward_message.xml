@@ -83,7 +83,7 @@
             android:layout_below="@+id/selected_view"
             android:layout_width="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/cometchat_user_list_row"
+            tools:listitem="@layout/cometchat_dataitem_list_row"
             android:layout_height="match_parent"/>
         <!--End of Conversation_List-->
 

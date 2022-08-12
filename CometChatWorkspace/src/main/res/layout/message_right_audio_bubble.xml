@@ -8,75 +8,49 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_message_container"
         android:layout_width="250dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
         app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
         android:layout_height="wrap_content">
         <RelativeLayout
             android:id="@+id/cv_message_container_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp">
-            <TextView
-                android:id="@+id/title"
-                android:layout_margin="8dp"
-                android:textColor="@color/textColorWhite"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:text="Audio File"
+            <LinearLayout
+                android:layout_toEndOf="@id/playBtn"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Audio File"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                <com.cometchatworkspace.components.messages.composer.audioVisualizer.AudioRecordView
+                    android:id="@+id/audio_visualizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/audiolength_tv"
+                    tools:text="125 KB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
             <ImageView
-                android:padding="8dp"
                 android:id="@+id/playBtn"
-                android:backgroundTint="@color/textColorWhite"
-                android:background="@drawable/ic_circle_grey_32dp"
-                android:src="@drawable/ic_play_arrow_black_24dp"
-                android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:tint="@color/colorPrimary" />
-            <TextView
-                android:layout_marginLeft="8dp"
-                android:layout_below="@+id/title"
-                android:textColor="@color/textColorWhite"
-                android:id="@+id/audiolength_tv"
-                tools:text="125 KB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_centerVertical="true"
+                android:padding="4dp"
+                android:src="@drawable/ic_play_2x" />
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginBottom="16dp"
-        android:layout_alignEnd="@id/cv_message_container"
-        android:layout_below="@+id/cv_message_container"
-        android:layout_width="wrap_content"
-        android:gravity="end"
-        android:layout_height="wrap_content">
-        <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
-            android:id="@+id/reactions_group"
-            app:messageReaction_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:visibility="gone"
-            android:clickable="true"
-            android:foreground="?selectableItemBackground"
-            android:id="@+id/thread_reply_count"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            tools:text="2 replies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <include
-            android:id="@+id/receipt_layout"
-            layout="@layout/cometchat_message_receipt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp" />
-    </LinearLayout>
 </RelativeLayout>

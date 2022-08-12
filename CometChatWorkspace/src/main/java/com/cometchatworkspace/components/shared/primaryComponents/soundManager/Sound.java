@@ -9,12 +9,15 @@ public enum Sound {
     outgoingMessage(R.raw.outgoing_message),
     incomingMessageFromOther(R.raw.incoming_message_other);
 
-    private final int rawFile;
+    private int rawFile;
     Sound(int rawFile) {
         this.rawFile = rawFile;
     }
 
     public int getRawFile() {
         return rawFile;
+    }
+    public int setRawFile(int rawFile){
+       return this.rawFile=rawFile;
     }
 }

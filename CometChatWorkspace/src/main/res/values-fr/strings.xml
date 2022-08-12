@@ -125,7 +125,7 @@
     <string name="added">ajouté</string>
     <string name="made">fabriqué</string>
     <string name="translate_message">Traduire le message</string>
-    <string name="no_translation_available">Pas de traduction disponible</string>
+    <string name="translation_error">Pas de traduction disponible</string>
     <string name="has_shared_group_call">a partagé un appel de groupe.</string>
     <string name="custom_message_meeting">📹 Appel de groupe</string>
     <string name="you_created_group_call">Vous avez créé un appel de groupe.</string>
@@ -193,5 +193,39 @@
     <string name="error_cant_load_group">Impossible de charger le groupe. Veuillez réessayer</string>
     <string name="no_chats">Thé ts</string>
 
-
+    <string name="error_cant_load_group_members">Impossible de charger les membres du groupe. Veuillez réessayer</string>
+    <string name="users">Utilisateurs</string>
+    <string name="groups">Groupes</string>
+    <string name="details">Détails</string>
+    <string name="something_went_wrong">Quelque chose s\'est mal passé !</string>
+    <string name="more_option">plus</string>
+    <string name="shared_media">MÉDIAS PARTAGÉS</string>
+    <string name="transfer_ownership">Vous êtes le propriétaire du groupe, veuillez transférer la propriété à un membre avant de quitter le groupe.</string>
+    <string name="transfer_ownership_text">Transférer la propriété</string>
+    <string name="view_members">Afficher les membres</string>
+    <string name="banned_members">Membres bannis</string>
+    <string name="add_members">Ajouter des membres</string>
+    <string name="leave_group">Quitter le groupe</string>
+    <string name="leave_group_text">Êtes-vous sûr de vouloir quitter le groupe ?</string>
+    <string name="delete_group_text">Êtes-vous sûr de vouloir supprimer le groupe ?</string>
+    <string name="delete_and_exit">Supprimer et quitter</string>
+    <string name="unblock_user">Débloquer l\'utilisateur</string>
+    <string name="block_user">Bloquer l\'utilisateur</string>
+    <string name="no_members">Aucun membre</string>
+    <string name="extra_space"> </string>
+    <string name="owner">Propriétaire</string>
+    <string name="selected">sélectionné</string>
+    <string name="view_profile">Voir le profil</string>
+    <string name="group_password">Mot de passe groupe</string>
+    <string name="join_group_text">Entrez le mot de passe pour accéder au groupe %1$s. </string>
+    <string name="protected_group">Groupe protégé</string>
+    <string name="type_public">Public</string>
+    <string name="type_private">Privé</string>
+    <string name="type_protected">Protégé</string>
+    <string name="name">Vietnam</string>
+    <string name="new_group">Nouveau groupe</string>
+    <string name="please_try_another_password">Veuillez essayer un autre mot de passe</string>
+    <string name="incorrect_password">Mot de passe incorrect</string>
+    <string name="sdk_incorrect_password_error">Le mot de passe du groupe est incorrect.</string>
+    <string name="okay">Okay</string>
 </resources>

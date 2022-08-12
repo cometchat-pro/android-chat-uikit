@@ -91,8 +91,15 @@ public class StickersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void setStickerData(ImageViewHolder viewHolder, int i) {
         Sticker sticker = stickerArrayList.get(i);
-        Glide.with(context).asBitmap().load(sticker.getUrl())
-                    .into(viewHolder.imageView);
+        if(sticker !=null && sticker.getUrl()!=null){
+            if(sticker.getUrl().contains(".gif")){
+                Glide.with(context).asGif().load(sticker.getUrl())
+                        .into(viewHolder.imageView);
+            }else {
+                Glide.with(context).asBitmap().load(sticker.getUrl())
+                        .into(viewHolder.imageView);
+            }
+        }
         viewHolder.itemView.setTag(R.string.sticker, sticker);
     }
 

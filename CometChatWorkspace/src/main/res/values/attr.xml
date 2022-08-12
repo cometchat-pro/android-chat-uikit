@@ -23,6 +23,11 @@
         <enum name="right" value="1" />
     </attr>
 
+    <attr name="receiptAlignment" format="enum">
+        <enum name="top" value="0" />
+        <enum name="right" value="1" />
+    </attr>
+
     <attr name="listBackgroundColor" format="color" />
     <attr name="searchBackgroundColor" format="color" />
     <attr name="searchCornerRadius" format="dimension" />
@@ -41,6 +46,7 @@
     <attr name="text_color" format="color" />
     <attr name="playButtonDrawable" format="reference" />
     <attr name="icon" format="reference" />
+    <attr name="iconTint" format="color" />
     <attr name="iconVisibility" format="enum">
         <enum name="visible" value="0" />
         <enum name="invisible" value="4" />
@@ -70,8 +76,8 @@
         <attr name="limit" format="integer" />
         <attr name="searchKeyword" format="string" />
         <attr name="status" format="string" />
-        <attr name="empty_text"/>
-        <attr name="error_text"/>
+        <attr name="empty_text" />
+        <attr name="error_text" />
         <attr name="friendsonly" format="boolean" />
         <attr name="hideBlockedUsers" format="boolean" />
         <attr name="hideError" format="boolean" />
@@ -93,18 +99,36 @@
         <attr name="limit" />
         <attr name="conversationType" />
         <attr name="hideError" />
-        <attr name="empty_text"/>
-        <attr name="error_text"/>
+        <attr name="empty_text" />
+        <attr name="error_text" />
         <attr name="userAndGroupTags" format="boolean" />
     </declare-styleable>
+
     <declare-styleable name="CometChatGroupList">
-        <attr name="empty_text" format="string"/>
-        <attr name="error_text" format="string"/>
+        <attr name="empty_text" format="string" />
+        <attr name="error_text" format="string" />
         <attr name="joinedOnly" format="boolean" />
         <attr name="searchKeyword" />
         <attr name="hideError" />
         <attr name="limit" />
 
+    </declare-styleable>
+    <declare-styleable name="CometChatGroupMemberList">
+        <attr name="empty_text" />
+        <attr name="error_text" />
+        <attr name="searchKeyword" />
+        <attr name="hideError" />
+        <attr name="limit" />
+        <attr name="allowKickMember" format="boolean" />
+        <attr name="AllowBanMember" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="CometChatBannedMemberList">
+        <attr name="empty_text" />
+        <attr name="error_text" />
+        <attr name="searchKeyword" />
+        <attr name="hideError" />
+        <attr name="limit" />
+        <attr name="allowBanUnbanMembers" />
     </declare-styleable>
 
     <declare-styleable name="SmartReplyList">
@@ -197,6 +221,7 @@
         <attr name="searchBorderColor" />
         <attr name="searchBorderWidth" />
         <attr name="title" />
+        <attr name="backgroundColor" />
         <attr name="titleColor" />
         <attr name="showBackButton" />
     </declare-styleable>
@@ -210,6 +235,7 @@
         <attr name="backButtonIcon" />
         <attr name="searchHint" format="string" />
         <attr name="listBackgroundColor" />
+        <attr name="backgroundColor" />
         <attr name="hideSearch" />
         <attr name="searchBackgroundColor" />
         <attr name="searchCornerRadius" />
@@ -220,6 +246,26 @@
         <attr name="titleColor" />
 
     </declare-styleable>
+
+    <declare-styleable name="CometChatDetails">
+        <attr name="showBackButton" />
+        <attr name="backButtonIcon" />
+        <attr name="backIconTint" />
+        <attr name="backgroundColor" />
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="allowBanUnbanMembers" format="boolean" />
+        <attr name="allowKickMembers" format="boolean" />
+        <attr name="allowPromoteDemoteMembers" format="boolean" />
+        <attr name="allowAddMembers" format="boolean" />
+        <attr name="allowDeleteGroup" format="boolean" />
+        <attr name="allowLeaveGroup" format="boolean" />
+        <attr name="viewSharedMedia" format="boolean" />
+        <attr name="allowBlockUnblockUser" format="boolean" />
+        <attr name="viewProfile" format="boolean" />
+    </declare-styleable>
+
+
     <declare-styleable name="CometChatGroups">
         <attr name="title" />
         <attr name="showBackButton" />
@@ -229,13 +275,100 @@
         <attr name="activeGroup" format="reference" />
         <attr name="createGroupIcon" format="reference" />
         <attr name="backButtonIcon" format="reference" />
+        <attr name="backIconTint" />
         <attr name="listBackgroundColor" />
         <attr name="searchBackgroundColor" />
         <attr name="searchCornerRadius" />
         <attr name="searchTextColor" />
         <attr name="searchBorderColor" />
         <attr name="searchBorderWidth" />
+        <attr name="backgroundColor" />
         <attr name="titleColor" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatJoinGroup">
+        <attr name="title" />
+        <attr name="labelText" format="string" />
+        <attr name="editTextPlaceHolderText" format="string" />
+
+        <attr name="titleColor" />
+        <attr name="backIconTint" />
+        <attr name="joinGroupIconTint" format="color" />
+        <attr name="labelColor" format="color" />
+        <attr name="editBoxBackgroundColor" format="color" />
+        <attr name="editBoxBorderColor" format="color" />
+        <attr name="editBoxTextColor" format="color" />
+        <attr name="editTextPlaceHolderColor" format="color" />
+        <attr name="backgroundColor" />
+        <attr name="showBackButton" />
+        <attr name="showLabel" format="boolean" />
+
+        <attr name="backButtonIcon" />
+        <attr name="joinGroupIcon" format="reference" />
+
+        <attr name="editBoxCornerRadius" format="integer" />
+        <attr name="editBoxBorderWidth" format="integer" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatCreateGroup">
+        <attr name="title" />
+
+        <attr name="titleColor" />
+        <attr name="backIconTint" />
+        <attr name="createGroupIconTint" format="color" />
+        <attr name="tabSelectedTextColor" format="color"/>
+        <attr name="tabTextColor" format="color" />
+        <attr name="tabBackground" />
+        <attr name="tabBackgroundTint" format="color" />
+        <attr name="tabBackgroundState" format="reference" />
+        <attr name="tabIndicatorColor" />
+
+        <attr name="backgroundColor" />
+        <attr name="showBackButton" />
+
+        <attr name="backButtonIcon" />
+        <attr name="createGroupIcon" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatGroupMembers">
+        <attr name="title" />
+        <attr name="showBackButton" />
+        <attr name="searchPlaceholder" />
+        <attr name="hideSearch" />
+        <attr name="backButtonIcon" />
+        <attr name="backIconTint" />
+        <attr name="listBackgroundColor" />
+        <attr name="searchBackgroundColor" />
+        <attr name="searchCornerRadius" />
+        <attr name="searchTextColor" />
+        <attr name="searchBorderColor" />
+        <attr name="searchBorderWidth" />
+        <attr name="backgroundColor" />
+        <attr name="titleColor" />
+        <attr name="limit" />
+        <attr name="searchKeyword" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CometChatBannedMembers">
+        <attr name="title" />
+        <attr name="titleColor" />
+        <attr name="showBackButton" />
+        <attr name="backButtonIcon" />
+        <attr name="backIconTint" />
+        <attr name="searchPlaceholder" />
+        <attr name="hideSearch" />
+        <attr name="listBackgroundColor" />
+        <attr name="searchBackgroundColor" />
+        <attr name="searchCornerRadius" />
+        <attr name="searchTextColor" />
+        <attr name="backgroundColor" />
+        <attr name="searchBorderColor" />
+        <attr name="searchBorderWidth" />
+        <attr name="allowBanUnbanMembers" />
 
     </declare-styleable>
 
@@ -275,8 +408,20 @@
         <attr name="userListItem_subTitleColor" format="color" />
         <attr name="userListItem_hideUserPresence" format="boolean" />
         <attr name="userListItem_hideTime" format="boolean" />
-        <attr name="userListItem_timeColor" format="color" />
-        <attr name="userListItem_isActive" format="boolean" />
+
+    </declare-styleable>
+    <declare-styleable name="DataItem">
+        <attr name="hideAvatar" format="boolean" />
+        <attr name="hideTitle" format="boolean" />
+        <attr name="titleColor" />
+        <attr name="hideSubTitle" format="boolean" />
+        <attr name="hideSeparator" format="boolean" />
+        <attr name="separatorColor" format="color" />
+        <attr name="subTitleColor" format="color" />
+        <attr name="hideStatusIndicator" format="boolean" />
+        <attr name="backgroundColor" />
+        <attr name="avatarBackgroundColor" format="color" />
+        <attr name="avatarTextColor" format="color" />
     </declare-styleable>
 
 
@@ -314,9 +459,28 @@
         <attr name="title" />
         <attr name="titleColor" />
         <attr name="titleHidden" />
+        <attr name="borderColor" />
+        <attr name="borderWidth" />
     </declare-styleable>
 
     <!--Message Bubble Starts-->
+
+    <declare-styleable name="CometChatMessageBubble">
+        <attr name="avatar" />
+        <attr name="avatarVisibility" />
+        <attr name="backgroundColor" />
+
+        <attr name="userNameVisibility" />
+
+        <attr name="userName" />
+        <attr name="userNameColor" />
+        <attr name="messageAlignment" />
+
+        <attr name="receiptAlignment"/>
+        <attr name="corner_radius"/>
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+    </declare-styleable>
 
     <declare-styleable name="TextMessageBubble">
         <attr name="corner_radius" />
@@ -583,12 +747,6 @@
         <attr name="titleColor" />
         <attr name="subtitle" />
         <attr name="subtitleColor" />
-        <attr name="audioCallIcon" format="reference" />
-        <attr name="audioCallIconTint" format="color" />
-        <attr name="videoCallIcon" format="reference" />
-        <attr name="videoCallIconTint" format="color" />
-        <attr name="viewDetailsIcon" format="reference" />
-        <attr name="viewDetailsIconTint" format="color" />
         <attr name="backIconTint" format="color" />
     </declare-styleable>
 

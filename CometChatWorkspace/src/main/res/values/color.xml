@@ -26,32 +26,33 @@
     <color name="grey_200">#9E9C9C</color>
     <color name="darkModeBackground">#202124</color>
     <color name="action_sheet_icon_bg">#6929CA</color>
+    <color name="divider_option">#32141414</color>
+    <color name="yellow">#FFC900</color>
 
     <!--    default theme colors light-->
     <color name="background">#FFFFFF</color>
     <color name="primary">#3399FF</color>
+    <color name="secondary">#ebf8f8f8</color>
     <color name="error">#FF3B30</color>
     <color name="accent">#141414</color>
-    <color name="accent50">#66141414</color>
+    <color name="accent50">#0a141414</color>
     <color name="accent100">#14141414</color>
     <color name="accent200">#26141414</color>
     <color name="accent300">#3d141414</color>
     <color name="accent400">#54141414</color>
     <color name="accent500">#75141414</color>
     <color name="accent600">#94141414</color>
-    <color name="accent700">#45141414</color>
+    <color name="accent700">#B0141414</color>
     <color name="accent800">#d1141414</color>
     <color name="accent900">#FFFFFF</color>
-    <color name="searchBackground">#14141414</color>
-    <color name="headerColor">#80141414</color>
-
 
     <!--    default theme colors dark-->
     <color name="background_dark">#99141414</color>
     <color name="primary_dark">#3399FF</color>
+    <color name="secondary_dark">#333333</color>
     <color name="error_dark">#FF3B30</color>
     <color name="accent_dark">#FFFFFF</color>
-    <color name="accent50_dark">#0a141414</color>
+    <color name="accent50_dark">#0affffff</color>
     <color name="accent100_dark">#14ffffff</color>
     <color name="accent200_dark">#24ffffff</color>
     <color name="accent300_dark">#3bffffff</color>
@@ -61,11 +62,10 @@
     <color name="accent700_dark">#b5ffffff</color>
     <color name="accent800_dark">#d6ffffff</color>
     <color name="accent900_dark">#141414</color>
-    <color name="searchBackground_dark">#14141414</color>
-    <color name="headerColor_dark">#80141414</color>
 
 
     <!--    default theme colors dark end-->
+
 
 
     <!--    PersianTheme-->
