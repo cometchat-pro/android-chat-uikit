@@ -28,7 +28,7 @@ The UI Kit is developed to keep developers in mind and aims to reduce developmen
 Before you begin, ensure you have met the following requirements:<br/>
 ✅ &nbsp; You have `Android Studio` installed in your machine.<br/>
 ✅ &nbsp; You have a `Android Device or Emulator` with Android Version 6.0 or above.<br/>
-✅ &nbsp; You have read [CometChat Key Concepts](https://prodocs.cometchat.com/docs/concepts).<br/>
+✅ &nbsp; You have read [CometChat Key Concepts](https://www.cometchat.com/docs/java-uikit-beta/key-concepts).<br/>
 
 <hr/>
 
@@ -78,7 +78,7 @@ dependencies {
 
 
 You can refer to the below link for next instructions:<br/>
-[📝 Add CometChat Dependency](https://prodocs.cometchat.com/docs/android-quick-start#section-add-the-cometchat-dependency)
+[📝 Add Java Pluto UI Kit Dependency](https://www.cometchat.com/docs/java-uikit-beta/integration)
 
 <hr/>
 
@@ -153,7 +153,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 <hr/>
 
-📝  &nbsp; Please refer to our [Developer Documentation](https://prodocs.cometchat.com/docs/android-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
+📝  &nbsp; Please refer to our [Developer Documentation](https://www.cometchat.com/docs/java-uikit-beta/overview) for more information on how to configure the Java Pluto UI Kit and implement various features using the same.
 
 <hr/>
 
@@ -161,9 +161,9 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 | :information_source: &nbsp; <b>Note - If you have added <code>android-java-ui-kit</code> as Dependency, then you can skip first three steps.</b> |
 |------------------------------------------------------------------------------------------------------------|
 
-1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro/android-java-chat-ui-kit/tree/v3) repository.
+1. Simply clone the project from [android-java-chat-ui-kit](https://github.com/cometchat-pro/android-java-chat-ui-kit/tree/pluto) repository.
 
-2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://prodocs.cometchat.com/docs/android-ui-kit-setup) )
+2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://www.cometchat.com/docs/java-uikit-beta/integration) )
 
 3. If the Library is added successfully, it will look like mentioned in the below image.
    <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
@@ -253,7 +253,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 ## Troubleshooting
 
-- To read the full documentation on UI Kit integration visit our [Documentation](https://prodocs.cometchat.com/docs/android-ui-kit)  .
+- To read the full documentation on Java Pluto UI Kit integration visit our [Documentation](https://www.cometchat.com/docs/java-uikit-beta/integration)  .
 
 - Facing any issues while integrating or installing the UI Kit please <a href="https://app.cometchat.com/"> connect with us via real time support present in CometChat Dashboard.</a>.
 
@@ -267,8 +267,6 @@ Thanks to the following people who have contributed to this project:
 [👨‍💻 @vivekprajapati 💻](https://github.com/vivekCometChat) <br>
 [👨‍💻 @darshanbhanushali 💻](https://github.com/darshanbhanushali)
 
-[Contribution guidelines for this project]()
-
 ---
 
 ## :mailbox: Contact
@@ -277,7 +275,4 @@ Contact us via real time support present in [CometChat Dashboard.](https://app.c
 
 ---
 
-## License
-
-This project uses the following license: [License.md](LICENSE).
 
