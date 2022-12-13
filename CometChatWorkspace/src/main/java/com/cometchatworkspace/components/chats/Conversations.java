@@ -1,6 +1,7 @@
 package com.cometchatworkspace.components.chats;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.models.Conversation;
@@ -32,6 +34,7 @@ import com.cometchatworkspace.components.shared.primaryComponents.configurations
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageListConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatConversationList.ConversationInputData;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.onItemClick;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
 
 import java.util.ArrayList;
@@ -71,7 +74,7 @@ public class Conversations extends Fragment {
                  container, false);
 
          CometChatConversationsWithMessages conversationsWithMessages =
-                 view.findViewById(R.id.conversationList);
+                 view.findViewById(R.id.conversation);
 //
 //         int[] colorArray = new int[] {
 //                 getContext().getColor(R.color.purple),
@@ -88,6 +91,36 @@ public class Conversations extends Fragment {
 //                 GradientDrawable.Orientation.LEFT_RIGHT);
 //         conversationsWithMessages.setConfiguration(messagesConfigurations);
 
+//        CometChatMessageTemplate giphy = new CometChatMessageTemplate()
+//                .setId("Giphy")
+//                .setName("Giphy")
+//                .setIcon(R.drawable.ic_hand)
+//                .setActionClick(new onItemClick<Object>() {
+//                    @Override
+//                    public void onClick(Object appEntity, Context context) {
+//                        Toast.makeText(context,"Giphy",Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//        CometChatMessageTemplate giphy1 = new CometChatMessageTemplate()
+//                .setId("jv")
+//                .setName("Giphy1")
+//                .setIcon(R.drawable.ic_hand)
+//                .setActionClick(new onItemClick<Object>() {
+//                    @Override
+//                    public void onClick(Object appEntity, Context context) {
+//                        Toast.makeText(context,"Giphy1",Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+////
+//        List<CometChatMessageTemplate>ll=TemplateUtils.getDefaultList(getContext());
+//        ll.add(giphy);
+//        ll.add(giphy1);
+//       CometChatMessagesConfigurations configurations=new CometChatMessagesConfigurations().setMessageFilter(ll).excludeMessageTypes(Arrays.asList(CometChatMessageTemplate.DefaultList.sticker));
+//       ConversationListConfiguration conversationListConfiguration=new ConversationListConfiguration().setConversationType(UIKitConstants.ReceiverTypeConstants.USER);
+//       List<CometChatConfigurations> conf=new ArrayList<>();
+//       conf.add(configurations);
+//       conf.add(conversationListConfiguration);
+//       conversationsWithMessages.setConfiguration(conf);
 
          return view;
     }

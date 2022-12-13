@@ -1,12 +1,12 @@
 package com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions;
 
-import android.view.View;
+import com.cometchat.pro.models.BaseMessage;
 
 public class CometChatOptions {
     String id;
     String title;
     int icon;
-    OnOptionClick onClick; //Change to onItemClick
+    onItemClick<BaseMessage> onClick;
 
     public CometChatOptions(String id, String title, int icon) {
         this.id = id;
@@ -14,7 +14,7 @@ public class CometChatOptions {
         this.icon = icon;
     }
 
-    public CometChatOptions(String id, String title, int icon, OnOptionClick onClick) {
+    public CometChatOptions(String id, String title, int icon, onItemClick<BaseMessage> onClick) {
         this.id = id;
         this.title = title;
         this.icon = icon;
@@ -33,11 +33,11 @@ public class CometChatOptions {
         return icon;
     }
 
-    public OnOptionClick getOnClick() {
+    public onItemClick<BaseMessage> getOnClick() {
         return onClick;
     }
 
-    public void setOnClickListener(OnOptionClick onClickListener) {
+    public void setOnClickListener(onItemClick<BaseMessage> onClickListener) {
         onClick = onClickListener;
     }
 }

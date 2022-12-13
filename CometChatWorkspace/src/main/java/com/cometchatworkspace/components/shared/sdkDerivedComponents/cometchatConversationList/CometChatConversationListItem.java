@@ -56,6 +56,7 @@ public class CometChatConversationListItem extends MaterialCardView {
     private TextView conversationListItemTypingIndicator;
     private TextView conversationListItemHelperText;
     private TextView conversationListItemTime;
+    private TextView itemSeparator;
     private CometChatAvatar conversationListItemAvatar;
     private CometChatStatusIndicator conversationListUserPresence;
     private CometChatBadgeCount conversationListBadgeCount;
@@ -85,7 +86,7 @@ public class CometChatConversationListItem extends MaterialCardView {
      * i.e we can control the visibility of the component inside the CometChatUserListItem,
      * and also decide what value i need to show, in that particular view
      */
-    public void setConversationInputData(InputData inputData) {
+    public void setConversationInputData(InputData<ConversationInputData> inputData) {
 
         if (inputData instanceof ConversationInputData) {
             ConversationInputData conversationInputData=(ConversationInputData) inputData;
@@ -237,6 +238,7 @@ public class CometChatConversationListItem extends MaterialCardView {
         int timeColor = a.getColor(R.styleable
                 .CometChatConversationListItem_conversationListItem_timeColor, palette.getAccent600());
 
+
         avatarSection = view.findViewById(R.id.avatar_section);
         parentLayout = view.findViewById(R.id.view_foreground);
         conversationListItemTitle = view.findViewById(R.id.conversationListItem_title);
@@ -248,6 +250,7 @@ public class CometChatConversationListItem extends MaterialCardView {
         conversationListItemHelperText = view.findViewById(R.id.conversationListItem_helperText);
         conversationListItemTime = view.findViewById(R.id.conversationListItem_time);
         conversationListItemReceipt = view.findViewById(R.id.conversationListItem_receipt);
+        itemSeparator=view.findViewById(R.id.tv_separator);
         hideAvatar(avatarHidden);
         setTitleColor(titleColor);
         setSubTitleColor(subTitleColor);
@@ -262,6 +265,7 @@ public class CometChatConversationListItem extends MaterialCardView {
         hideTitle(titleHidden);
         hideSubTitle(subTitleHidden);
         setTimeColor(timeColor);
+        setSeparatorColor(palette.getAccent100());
         setAvatarBackgroundColor(palette.getAccent700());
         setAvatarTextColor(palette.getAccent900());
         setAvatarTextAppearance(typography.getName());
@@ -271,6 +275,10 @@ public class CometChatConversationListItem extends MaterialCardView {
 
     }
 
+    public void setSeparatorColor(@ColorInt int color){
+        if(color!=0)
+            itemSeparator.setBackgroundColor(color);
+    }
     public void setBadgeBackgroundColor(@ColorInt int color) {
         if (color != 0)
             conversationListBadgeCount.setBackground(color);

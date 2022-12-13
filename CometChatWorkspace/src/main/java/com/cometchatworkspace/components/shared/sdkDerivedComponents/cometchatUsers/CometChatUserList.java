@@ -28,8 +28,8 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Typograp
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStatusIndicator.CometChatStatusIndicator;
 import com.cometchatworkspace.components.users.CometChatUserEvents;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.ClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerTouchListener;
@@ -103,7 +103,6 @@ public class CometChatUserList extends MaterialCardView {
 
     private FontUtils fontUtils;
     private static final String TAG = "CometChatUserList";
-    private String errorMessageFont = null;
     private int errorMessageColor = 0;
     private String error_text = null;
     private String empty_text = null;
@@ -111,6 +110,7 @@ public class CometChatUserList extends MaterialCardView {
     private Typography typography;
     private Palette palette;
     private OnItemClickListener<User> onItemClickListener;
+    private int errorStateTextAppearance=0;
 
     public CometChatUserList(@NonNull Context context) {
         super(context);
@@ -145,6 +145,7 @@ public class CometChatUserList extends MaterialCardView {
         fontUtils = FontUtils.getInstance(context);
         typography = Typography.getInstance();
         palette = Palette.getInstance(context);
+        errorStateTextAppearance=typography.getText1();
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.CometChatUserList,
@@ -210,9 +211,6 @@ public class CometChatUserList extends MaterialCardView {
         if (style.getEmptyStateTextColor() != 0) {
             emptyStateTextColor(style.getEmptyStateTextColor());
         }
-        if (style.getErrorStateTextFont() != null) {
-            errorMessageFont = style.getErrorStateTextFont();
-        }
         if (style.getErrorStateTextColor() != 0) {
             errorMessageColor = style.getErrorStateTextColor();
         }
@@ -231,7 +229,6 @@ public class CometChatUserList extends MaterialCardView {
     public void emptyStateTextAppearance(int appearance) {
         if (appearance != 0)
             noListText.setTextAppearance(context, appearance);
-
     }
 
     public void setBackground(int[] colorArray, GradientDrawable.Orientation orientation) {
@@ -256,7 +253,6 @@ public class CometChatUserList extends MaterialCardView {
             emptyView = View.inflate(context, id, null);
         } catch (Exception e) {
             emptyView = null;
-//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -269,7 +265,6 @@ public class CometChatUserList extends MaterialCardView {
             errorView = View.inflate(context, id, null);
         } catch (Exception e) {
             errorView = null;
-//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -453,8 +448,9 @@ public class CometChatUserList extends MaterialCardView {
         }
     }
 
-    public void errorStateTextFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void errorStateTextColor(int errorMessageColor) {
@@ -470,11 +466,11 @@ public class CometChatUserList extends MaterialCardView {
      * handle error
      */
     private void hideError() {
-        String error_message;
+        String errorMessage;
         if (error_text != null)
-            error_message = error_text;
+            errorMessage = error_text;
         else
-            error_message = getContext().getString(R.string.error_cant_load_user);
+            errorMessage = getContext().getString(R.string.error_cant_load_user);
 
         if (!hideError && errorView != null) {
             custom_layout.removeAllViews();
@@ -484,9 +480,25 @@ public class CometChatUserList extends MaterialCardView {
             custom_layout.setVisibility(GONE);
             if (!hideError) {
                 if (getContext() != null) {
-                    new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, getContext().getString(R.string.try_again), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
+
+                    new CometChatDialog( context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            palette.getAccent700(),
+                            errorMessage,
+                            "",
+                            getContext().getString(R.string.try_again),
+                            getResources().getString(R.string.cancel),
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0
+                            , new OnDialogButtonClickListener() {
                         @Override
-                        public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 alertDialog.dismiss();
                                 makeUserList();

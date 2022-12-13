@@ -183,7 +183,7 @@ public class CometChatImageBubble extends RelativeLayout {
                 }
             } else {
                 if (attachment.getFileExtension().equalsIgnoreCase(".gif"))
-                    setImageDrawable(((MediaMessage)baseMessage).getAttachment().getFileUrl(),true,false);
+                    setImageDrawable(((MediaMessage)baseMessage).getAttachment().getFileUrl(),true,isImageNotSafe);
                 else
                     setImageDrawable(((MediaMessage)baseMessage).getAttachment().getFileUrl(),false,isImageNotSafe);
             }
@@ -202,7 +202,7 @@ public class CometChatImageBubble extends RelativeLayout {
                     .skipMemoryCache(false).load(url).into(imageMessage);
         } else {
             Glide.with(context).asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true).load(url).into(new CustomTarget<Bitmap>() {
+                    .skipMemoryCache(false).load(url).into(new CustomTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     if (isImageNotSafe)

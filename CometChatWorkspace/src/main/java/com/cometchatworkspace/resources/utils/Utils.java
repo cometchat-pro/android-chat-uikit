@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.security.keystore.UserPresenceUnavailableException;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -42,6 +43,7 @@ import androidx.renderscript.Element;
 import androidx.renderscript.RenderScript;
 import androidx.renderscript.ScriptIntrinsicBlur;
 
+import com.cometchat.pro.models.Conversation;
 import com.cometchatworkspace.R;
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.Call;
@@ -215,61 +217,47 @@ public class Utils {
         switch (lastMessage.getCategory()) {
 
             case CometChatConstants.CATEGORY_MESSAGE:
-
                 if (lastMessage instanceof TextMessage) {
-
-                    if (isLoggedInUser(lastMessage.getSender()))
-                        message = context.getString(R.string.you) + ": " + (((TextMessage) lastMessage).getText() == null
-                                ? context.getString(R.string.this_message_deleted) : ((TextMessage) lastMessage).getText());
-                    else
-                        message = lastMessage.getSender().getName() + ": " + (((TextMessage) lastMessage).getText() == null
-                                ? context.getString(R.string.this_message_deleted) : ((TextMessage) lastMessage).getText());
-
+                    message = getMessagePrefix(lastMessage, context) + (((TextMessage) lastMessage).getText() == null
+                            ? context.getString(R.string.this_message_deleted) : ((TextMessage) lastMessage).getText());
                 } else if (lastMessage instanceof MediaMessage) {
                     if (lastMessage.getDeletedAt() == 0) {
                         if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_IMAGE))
-                            message = context.getString(R.string.message_image);
+                            message =getMessagePrefix(lastMessage, context)+ context.getString(R.string.message_image);
                         else if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_VIDEO))
-                            message = context.getString(R.string.message_video);
+                            message = getMessagePrefix(lastMessage, context)+context.getString(R.string.message_video);
                         else if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_FILE))
-                            message = context.getString(R.string.message_file);
+                            message = getMessagePrefix(lastMessage, context)+context.getString(R.string.message_file);
                         else if (lastMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_AUDIO))
-                            message = context.getString(R.string.message_audio);
+                            message =getMessagePrefix(lastMessage, context)+ context.getString(R.string.message_audio);
                     } else
                         message = context.getString(R.string.this_message_deleted);
 
-
-//                    if (isLoggedInUser(lastMessage.getSender())) {
-//
-//                    }
-//                    else {
-//                        message = String.format(context.getString(R.string.you_received), lastMessage.getType());
-//                    }
                 }
                 break;
             case CometChatConstants.CATEGORY_CUSTOM:
                 if (lastMessage.getDeletedAt() == 0) {
                     if (lastMessage.getType().equals(UIKitConstants.IntentStrings.LOCATION))
-                        message = context.getString(R.string.custom_message_location);
+                        message =getMessagePrefix(lastMessage, context)+ context.getString(R.string.custom_message_location);
                     else if (lastMessage.getType().equals(UIKitConstants.IntentStrings.POLLS))
-                        message = context.getString(R.string.custom_message_poll);
+                        message = getMessagePrefix(lastMessage, context)+context.getString(R.string.custom_message_poll);
                     else if (lastMessage.getType().equalsIgnoreCase(UIKitConstants.IntentStrings.STICKERS))
-                        message = context.getString(R.string.custom_message_sticker);
+                        message = getMessagePrefix(lastMessage, context)+context.getString(R.string.custom_message_sticker);
                     else if (lastMessage.getType().equalsIgnoreCase(UIKitConstants.IntentStrings.WHITEBOARD))
-                        message = context.getString(R.string.custom_message_whiteboard);
+                        message = getMessagePrefix(lastMessage, context)+context.getString(R.string.custom_message_whiteboard);
                     else if (lastMessage.getType().equalsIgnoreCase(UIKitConstants.IntentStrings.WRITEBOARD))
-                        message = context.getString(R.string.custom_message_document);
+                        message =getMessagePrefix(lastMessage, context)+ context.getString(R.string.custom_message_document);
                     else if (lastMessage.getType().equalsIgnoreCase(UIKitConstants.IntentStrings.GROUP_CALL))
-                        message = context.getString(R.string.custom_message_meeting);
+                        message = getMessagePrefix(lastMessage, context)+context.getString(R.string.custom_message_meeting);
                     else {
-                        if(lastMessage.getMetadata()!=null && lastMessage.getMetadata().has("pushNotification")){
+                        if (lastMessage.getMetadata() != null && lastMessage.getMetadata().has("pushNotification")) {
                             try {
                                 message = lastMessage.getMetadata().getString("pushNotification");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }else{
-                            message = String.format(context.getString(R.string.you_received), lastMessage.getType());
+                        } else {
+                            message = getMessagePrefix(lastMessage, context)+lastMessage.getType();
                         }
                     }
                 } else
@@ -307,6 +295,19 @@ public class Utils {
 
     public static boolean isLoggedInUser(User user) {
         return user.getUid().equals(CometChat.getLoggedInUser().getUid());
+    }
+
+    public static String getMessagePrefix(BaseMessage lastMessage, Context context) {
+        String message = "";
+        if (lastMessage.getReceiverType().equalsIgnoreCase(UIKitConstants.ReceiverTypeConstants.GROUP)) {
+            if (!isLoggedInUser(lastMessage.getSender())) {
+                message = lastMessage.getSender().getName() + ": ";
+            } else {
+                message = context.getString(R.string.you)+": ";
+            }
+        }
+        return message;
+
     }
 
     /**
@@ -816,7 +817,7 @@ public class Utils {
         return px;
     }
 
-    public static void setStatusBarColor(Context context,@ColorInt int color) {
+    public static void setStatusBarColor(Context context, @ColorInt int color) {
         if (color != 0)
             ((Activity) context).getWindow().setStatusBarColor(color);
 

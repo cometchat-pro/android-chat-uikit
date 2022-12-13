@@ -114,7 +114,7 @@ public class CometChatMessagesHeader extends RelativeLayout {
         int titleColor = a.getColor(R.styleable.CometChatMessagesHeader_titleColor, palette.getAccent());
         String subtitleStr = a.getString(R.styleable.CometChatMessagesHeader_subtitle);
         int subtitleColor = a.getColor(R.styleable.CometChatMessagesHeader_subtitleColor, 0);
-        int backIconTint = a.getColor(R.styleable.CometChatMessagesHeader_backIconTint, 0);
+        int backIconTint = a.getColor(R.styleable.CometChatMessagesHeader_backIconTint, palette.getAccent());
 
         view = LayoutInflater.from(context).inflate(R.layout.cometchat_messagelist_toolbar, null);
         toolbarCard = view.findViewById(R.id.toolbar_card);

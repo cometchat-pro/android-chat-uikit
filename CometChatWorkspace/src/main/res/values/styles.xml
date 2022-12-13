@@ -37,62 +37,67 @@
 
     <style name="Heading">
         <item name="android:fontWeight" tools:targetApi="o">500</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotobold</item>
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="Name">
         <item name="android:fontWeight" tools:targetApi="o">500</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotobold</item>
         <item name="android:textSize">17sp</item>
     </style>
 
     <style name="Title1">
         <item name="android:fontWeight" tools:targetApi="o">600</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Title2">
         <item name="android:fontWeight" tools:targetApi="o">400</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">22sp</item>
     </style>
 
     <style name="Subtitle1">
         <item name="android:fontWeight" tools:targetApi="o">400</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Subtitle2">
         <item name="android:fontWeight" tools:targetApi="o">400</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Text1">
         <item name="android:fontWeight" tools:targetApi="o">400</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">17sp</item>
     </style>
 
     <style name="Text2">
         <item name="android:fontWeight" tools:targetApi="o">500</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Caption1">
         <item name="android:fontWeight" tools:targetApi="o">500</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Caption2">
         <item name="android:fontWeight" tools:targetApi="o">500</item>
-        <item name="android:fontFamily">roboto</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
         <item name="android:textSize">11sp</item>
+    </style>
+    <style name="Emoji">
+        <item name="android:fontWeight" tools:targetApi="o">400</item>
+        <item name="android:fontFamily">@font/robotoregular</item>
+        <item name="android:textSize">30sp</item>
     </style>
 
 </resources>

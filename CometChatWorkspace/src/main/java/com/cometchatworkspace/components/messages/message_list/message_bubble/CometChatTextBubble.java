@@ -280,24 +280,24 @@ public class CometChatTextBubble extends RelativeLayout {
         }
 
 
-        if (baseMessage != null) {
-            if (baseMessage.getMetadata() != null && baseMessage.getMetadata().has("values")) {
-                try {
-                    if (Extensions.isMessageTranslated(baseMessage.getMetadata().getJSONArray("values").getJSONObject(0), ((TextMessage) baseMessage).getText())) {
-                        String translatedStr = Extensions.getTranslatedMessage(baseMessage);
-                        if (translatedMessage != null) {
-                            translatedMessage.setText(translatedStr);
-                            translatedMessage.setVisibility(View.VISIBLE);
-                            translateSubtitle.setVisibility(View.VISIBLE);
-                        }
-                        if (txtMessage != null)
-                            txtMessage.setTextSize(17);
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(context, context.getString(R.string.translation_error), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
+//        if (baseMessage != null) {
+//            if (baseMessage.getMetadata() != null && baseMessage.getMetadata().has("values")) {
+//                try {
+//                    if (Extensions.isMessageTranslated(baseMessage.getMetadata().getJSONArray("values").getJSONObject(0), ((TextMessage) baseMessage).getText())) {
+//                        String translatedStr = Extensions.getTranslatedMessage(baseMessage);
+////                        if (translatedMessage != null) {
+////                            translatedMessage.setText(translatedStr);
+////                            translatedMessage.setVisibility(View.VISIBLE);
+////                            translateSubtitle.setVisibility(View.VISIBLE);
+////                        }
+//                        if (txtMessage != null)
+//                            txtMessage.setTextSize(17);
+//                    }
+//                } catch (JSONException e) {
+//                    Toast.makeText(context, context.getString(R.string.translation_error), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
 
         if (txtMessage != null) {
             txtMessage.setText(message);

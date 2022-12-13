@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:padding="16dp"
-    android:layout_marginLeft="8dp"
     android:visibility="gone"
     tools:visibility="visible"
     android:background="@drawable/left_border"

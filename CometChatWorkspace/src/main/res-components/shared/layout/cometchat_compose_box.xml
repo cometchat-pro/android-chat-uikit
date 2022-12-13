@@ -11,12 +11,17 @@
     <RelativeLayout
         android:id="@+id/message_actions_layout"
         android:layout_width="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_height="wrap_content">
         <include layout="@layout/cometchat_edit_message_view" />
         <include layout="@layout/cometchat_reply_message_view" />
     </RelativeLayout>
     <RelativeLayout
-        android:layout_margin="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_below="@+id/message_actions_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -24,8 +29,7 @@
             android:id="@+id/flBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="2dp"
-            android:layout_marginEnd="3dp"
+            app:cardElevation="0dp"
             android:layout_marginBottom="3dp"
             app:cardCornerRadius="24dp">
             <RelativeLayout
@@ -70,9 +74,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:id="@+id/iv_emoji"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:visibility="visible"
+                        android:src="@drawable/cc_smileys"
+                        android:padding="8dp"
+                        android:background="@android:color/transparent"/>
+                    <ImageView
                         android:id="@+id/ivSticker"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:src="@drawable/ic_sticker"
                         android:padding="8dp"
                         android:background="@android:color/transparent"/>
@@ -90,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="Send Button"
                         android:padding="8dp"
-                        android:src="@drawable/ic_send"
+                        android:src="@drawable/cc_ic_send"
                         android:visibility="gone"
                         tools:ignore="RedundantDescriptionCheck"
                         tools:visibility="visible" />

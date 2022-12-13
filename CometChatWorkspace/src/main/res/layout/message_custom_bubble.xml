@@ -20,7 +20,7 @@
         android:maxWidth="270dp"
         android:padding="10dp"
         android:text="@string/custom_message"
-        android:textColor="@color/textColorWhite"
+        android:textColor="@color/accent"
         android:textColorHighlight="@color/colorSecondary"
         android:textColorLink="@color/dark_blue"
         tools:text="@tools:sample/lorem" />

@@ -58,9 +58,8 @@ public class Extensions {
             HashMap<String, JSONObject> extensionList = extensionCheck(baseMessage);
             if (extensionList != null && extensionList.containsKey("imageModeration")) {
                 JSONObject imageModeration = extensionList.get("imageModeration");
-                if (imageModeration.has(Extensions.imageModeration)) {
-                    JSONObject imageModeration_ = imageModeration.getJSONObject(Extensions.imageModeration);
-                    String unsafe = imageModeration_.getString("unsafe");
+                if (imageModeration.has("unsafe")) {
+                    String unsafe = imageModeration.getString("unsafe");
                     result = unsafe.equals("yes");
                 }
             }

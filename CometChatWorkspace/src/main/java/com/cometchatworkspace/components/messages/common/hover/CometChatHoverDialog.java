@@ -160,59 +160,59 @@ public class CometChatHoverDialog {
     }
     private void setupOptions() {
         if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_TEXT)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("text");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("text");
             textBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                textBubble.messageAlignment(Alignment.RIGHT);
             textBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_IMAGE)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("image");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("image");
             imageBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                imageBubble.messageAlignment(Alignment.RIGHT);
             imageBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_VIDEO)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("video");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("video");
             videoBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                videoBubble.messageAlignment(Alignment.RIGHT);
             videoBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_AUDIO)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("audio");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("audio");
             audioBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                audioBubble.messageAlignment(Alignment.RIGHT);
             audioBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_FILE)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("file");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("file");
             fileBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                fileBubble.messageAlignment(Alignment.RIGHT);
             fileBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.whiteboard)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("whiteboard");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("whiteboard");
             whiteboardBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                whiteboardBubble.messageAlignment(Alignment.RIGHT);
             whiteboardBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.document)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("document");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("document");
             documentBubble.setVisibility(View.VISIBLE);
             documentBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.sticker)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("sticker");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("sticker");
             stickerBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
                 stickerBubble.messageAlignment(Alignment.RIGHT);
             stickerBubble.messageObject(baseMessage);
         } else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.poll)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("poll");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("poll");
             pollBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                pollBubble.messageAlignment(Alignment.RIGHT);
             pollBubble.messageObject(baseMessage);
         }  else if (baseMessage.getType().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.location)) {
-            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("location");
+//            messageTemplate = CometChatMessagesConfigurations.getMessageTemplateById("location");
             locationBubble.setVisibility(View.VISIBLE);
             if (isLoggedInUser)
 //                locationBubble.messageAlignment(Alignment.RIGHT);

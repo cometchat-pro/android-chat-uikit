@@ -27,10 +27,12 @@ import com.cometchat.pro.models.User;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.groups.CometChatGroupEvents;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.ClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerTouchListener;
@@ -68,9 +70,9 @@ public class CometChatBannedMemberList extends MaterialCardView {
     private FontUtils fontUtils;
     private onErrorCallBack onErrorCallBack;
 
-    private final String errorMessageFont = null;
+    private int errorStateTextAppearance = 0;
     private final int errorMessageColor = 0;
-    private String error_text = null;
+    private String errorText = null;
     private String empty_text = null;
 
     private String searchKeyword = null;
@@ -84,6 +86,9 @@ public class CometChatBannedMemberList extends MaterialCardView {
 
 
     private GroupMember groupMember; // to get the swiped member
+
+    private Palette palette;
+    private Typography typography;
 
     public CometChatBannedMemberList(Context context) {
         super(context);
@@ -108,6 +113,9 @@ public class CometChatBannedMemberList extends MaterialCardView {
         this.context = context;
         view = View.inflate(context, R.layout.cometchat_list, null);
         fontUtils = FontUtils.getInstance(context);
+        palette = Palette.getInstance(context);
+        typography = Typography.getInstance();
+        errorStateTextAppearance = typography.getText1();
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
                 R.styleable.CometChatBannedMemberList,
@@ -122,7 +130,7 @@ public class CometChatBannedMemberList extends MaterialCardView {
         isHideError = a.getBoolean(R.styleable.CometChatBannedMemberList_hideError, false);
         searchKeyword = a.getString(R.styleable.CometChatBannedMemberList_searchKeyword);
         empty_text = a.getString(R.styleable.CometChatBannedMemberList_empty_text);
-        error_text = a.getString(R.styleable.CometChatBannedMemberList_error_text);
+        errorText = a.getString(R.styleable.CometChatBannedMemberList_error_text);
         limit = a.getInt(R.styleable.CometChatBannedMemberList_limit, 30);
         allowBanUnbanMembers = a.getBoolean(R.styleable.CometChatBannedMemberList_allowBanUnbanMembers, true);
 
@@ -205,7 +213,7 @@ public class CometChatBannedMemberList extends MaterialCardView {
             @Override
             public void onSuccess(String successMessage) {
                 for (CometChatGroupEvents e : CometChatGroupEvents.groupEvents.values()) {
-                    e.onGroupMemberUnban(groupMember,loggedInUser,group_);
+                    e.onGroupMemberUnban(groupMember, loggedInUser, group_);
                 }
                 groupBannedMembersViewModel.remove(groupMember);
                 groupMember = null;
@@ -252,12 +260,19 @@ public class CometChatBannedMemberList extends MaterialCardView {
         if (appearance != 0)
             noListText.setTextAppearance(context, appearance);
     }
+
+    public void errorStateTextAppearance(int errorStateTextAppearance) {
+        if (errorStateTextAppearance != 0)
+            this.errorStateTextAppearance = errorStateTextAppearance;
+    }
+
     public void setBackground(int[] colorArray, GradientDrawable.Orientation orientation) {
         GradientDrawable gd = new GradientDrawable(
                 orientation,
                 colorArray);
         setBackground(gd);
     }
+
     /**
      * @setEmptyView is method allows you to set layout show when the list is empty
      * if user want to set Empty layout other wise it will load default layout
@@ -373,11 +388,11 @@ public class CometChatBannedMemberList extends MaterialCardView {
     }
 
     private void hideError() {
-        String error_message;
-        if (error_text != null)
-            error_message = error_text;
+        String errorMessage;
+        if (errorText != null)
+            errorMessage = errorText;
         else
-            error_message = getContext().getString(R.string.error_cant_load_group);
+            errorMessage = getContext().getString(R.string.error_cant_load_group);
 
         if (!isHideError && errorView != null) {
             custom_layout.removeAllViews();
@@ -387,9 +402,23 @@ public class CometChatBannedMemberList extends MaterialCardView {
             if (!isHideError) {
                 custom_layout.setVisibility(GONE);
                 if (getContext() != null) {
-                    new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, getContext().getString(R.string.try_again), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
+                    new CometChatDialog(context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            palette.getAccent700(),
+                            errorMessage,
+                            "",
+                            getContext().getString(R.string.try_again),
+                            getResources().getString(R.string.cancel),
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0, new OnDialogButtonClickListener() {
                         @Override
-                        public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 alertDialog.dismiss();
                                 makeBannedMemberList();

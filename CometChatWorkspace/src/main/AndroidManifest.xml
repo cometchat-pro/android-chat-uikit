@@ -49,16 +49,16 @@
         <activity android:name=".components.messages.common.extensions.Reactions.CometChatReactionInfoActivity" android:exported="false" />
         <activity android:name=".components.messages.common.media_view.CometChatMediaViewActivity" android:exported="false" />
         <activity android:name=".components.messages.common.message_information.CometChatMessageInfoActivity" android:exported="false" />
-        <activity
-            android:name=".components.calls.callManager.CometChatStartCallActivity"
-            android:exported="false"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true" />
+<!--        <activity-->
+<!--            android:name=".components.calls.callManager.CometChatStartCallActivity"-->
+<!--            android:exported="false"-->
+<!--            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:supportsPictureInPicture="true" />-->
         <activity
             android:name=".components.messages.common.forward_message.CometChatForwardMessageActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -73,7 +73,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".components.messages.message_list.CometChatMessagesActivity" android:exported="false"/>
+            android:name=".components.messages.message_list.CometChatMessagesActivity" android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+        />
 
         <meta-data
             android:name="com.cometchatworkspace"

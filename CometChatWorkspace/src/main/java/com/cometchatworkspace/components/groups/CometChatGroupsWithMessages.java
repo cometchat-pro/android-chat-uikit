@@ -8,12 +8,20 @@ import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.GroupMember;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.components.messages.message_list.CometChatMessagesActivity;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.ComposerConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.HeaderConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageListConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CometChatGroupsWithMessages extends CometChatGroups {
 
     private Context context;
+    private List<CometChatConfigurations> messageConfig = new ArrayList<>();
 
     public CometChatGroupsWithMessages(Context context) {
         super(context);
@@ -44,65 +52,19 @@ public class CometChatGroupsWithMessages extends CometChatGroups {
         CometChatGroupEvents.addGroupListener("CometChatGroupsWithMessages", new CometChatGroupEvents() {
             @Override
             public void onItemClick(Group group, int position) {
-
+                if (context != null && group.isJoined())
+                    CometChatMessagesActivity.launch(context, group,messageConfig);
             }
 
             @Override
             public void onGroupCreate(Group group) {
                 if (context != null)
-                    CometChatMessagesActivity.launch(context, group);
+                    CometChatMessagesActivity.launch(context, group,messageConfig);
             }
-
-            @Override
-            public void onError(CometChatException error) {
-
-            }
-
-            @Override
-            public void onGroupDelete(Group group) {
-
-            }
-
-            @Override
-            public void onGroupMemberLeave(User leftUser, Group leftGroup) {
-
-            }
-
-            @Override
-            public void onGroupMemberChangeScope(User updatedBy, User updatedUser, String scopeChangedTo, String scopeChangedFrom, Group group) {
-
-            }
-
-            @Override
-            public void onGroupMemberBan(User bannedUser, User bannedBy, Group bannedFrom) {
-
-            }
-
-            @Override
-            public void onGroupMemberAdd(User addedBy, List<User> usersAdded, Group group) {
-
-            }
-
-            @Override
-            public void onGroupMemberKick(User kickedUser, User kickedBy, Group kickedFrom) {
-
-            }
-
-            @Override
-            public void onGroupMemberUnban(User unbannedUser, User unbannedBy, Group unBannedFrom) {
-
-            }
-
             @Override
             public void onGroupMemberJoin(User joinedUser, Group joinedGroup) {
-
                 if (context != null)
-                    CometChatMessagesActivity.launch(context, joinedGroup);
-
-            }
-
-            @Override
-            public void onOwnershipChange(Group group, GroupMember member) {
+                    CometChatMessagesActivity.launch(context, joinedGroup,messageConfig);
 
             }
         });
@@ -112,5 +74,22 @@ public class CometChatGroupsWithMessages extends CometChatGroups {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         CometChatGroupEvents.removeListener();
+    }
+    public void setConfiguration(CometChatConfigurations configuration){
+        if (configuration instanceof CometChatMessagesConfigurations ||
+                configuration instanceof MessageBubbleConfiguration ||
+                configuration instanceof HeaderConfiguration ||
+                configuration instanceof MessageListConfiguration ||
+                configuration instanceof ComposerConfiguration) {
+            messageConfig.add(configuration);
+        } else {
+            super.setConfiguration(configuration);
+        }
+    }
+
+    public void setConfiguration(List<CometChatConfigurations> configurations) {
+        for (CometChatConfigurations cometChatConfigurations : configurations) {
+            setConfiguration(cometChatConfigurations);
+        }
     }
 }

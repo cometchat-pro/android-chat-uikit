@@ -115,7 +115,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvSeprator"
+        android:id="@+id/tv_separator"
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:layout_alignParentBottom="true"

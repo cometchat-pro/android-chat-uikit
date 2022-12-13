@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_height="wrap_content"
+    android:id="@+id/bottom_layout"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:elevation="4dp"
+    android:orientation="vertical"
     android:padding="8dp">
+
     <RelativeLayout
-        android:layout_margin="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
         <TextView
             android:id="@+id/title"
@@ -27,39 +28,40 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/shimmer_circle"
-            android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:focusable="true"
             android:maxWidth="30dp"
             android:maxHeight="30dp"
             android:padding="8dp"
-            android:src="@drawable/ic_list_bulleted_white_24dp" />
+            android:src="@drawable/cc_ic_grid"
+            android:tint="@color/primary" />
     </RelativeLayout>
+
     <HorizontalScrollView
-        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
         <LinearLayout
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
             android:id="@+id/initial_reactions"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" />
 
     </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView"
-        android:padding="8dp"
-        android:background="@drawable/action_sheet_background"
         android:clipChildren="true"
         android:clipToPadding="true"
-        android:nestedScrollingEnabled="true"
         android:layoutAnimation="@anim/layout_animation"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
+        android:nestedScrollingEnabled="true"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 </LinearLayout>
 
 

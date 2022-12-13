@@ -48,7 +48,7 @@ import java.util.List;
 public class CometChatMessagesActivity extends AppCompatActivity {
 
     private static final String TAG = "CometChatMessageListAct";
-
+    private boolean isConfigured=false;
     private static List<CometChatConfigurations> messageConfigurations;
 
     CometChatMessages fragment = new CometChatMessages();
@@ -117,6 +117,7 @@ public class CometChatMessagesActivity extends AppCompatActivity {
              if (group!=null)
                  fragment.setGroup(group);
 
+
 //             Bundle bundle = new Bundle();
 //             bundle.putString(UIKitConstants.IntentStrings.AVATAR, getIntent().getStringExtra(UIKitConstants.IntentStrings.AVATAR));
 //             bundle.putString(UIKitConstants.IntentStrings.NAME, getIntent().getStringExtra(UIKitConstants.IntentStrings.NAME));
@@ -146,14 +147,33 @@ public class CometChatMessagesActivity extends AppCompatActivity {
 //              fragment.setArguments(bundle);
              getSupportFragmentManager().beginTransaction().replace(R.id.chat_fragment, fragment).commit();
 
+
               getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
                   @Override
                   public void onFragmentActivityCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @Nullable Bundle savedInstanceState) {
                       super.onFragmentActivityCreated(fm, f, savedInstanceState);
-                      if (messageConfiguration!=null)
-                          fragment.setConfiguration(messageConfiguration);
-                      if (messageConfigurations!=null && !messageConfigurations.isEmpty())
-                          fragment.setConfiguration(messageConfigurations);
+                      Log.e("check_sizeq", "onFragmentCreated: " );
+
+//                      if (messageConfiguration!=null)
+//                          fragment.setConfiguration(messageConfiguration);
+//                      if (messageConfigurations!=null && !messageConfigurations.isEmpty())
+//                          fragment.setConfiguration(messageConfigurations);
+                  }
+
+                  @Override
+                  public void onFragmentViewCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @NonNull View v, @Nullable Bundle savedInstanceState) {
+                      super.onFragmentViewCreated(fm, f, v, savedInstanceState);
+                      Log.e("check_sizeq", "onFragmentViewCreated: " );
+                      if(!isConfigured) {
+                          if (messageConfiguration != null) {
+                              fragment.setConfiguration(messageConfiguration);
+                              isConfigured = true;
+                          }
+                          if (messageConfigurations != null && !messageConfigurations.isEmpty()) {
+                              fragment.setConfiguration(messageConfigurations);
+                              isConfigured = true;
+                          }
+                      }
                   }
               },false);
 

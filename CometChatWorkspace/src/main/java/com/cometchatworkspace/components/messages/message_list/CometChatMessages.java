@@ -12,10 +12,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,9 +36,11 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.CometChat;
@@ -59,8 +61,10 @@ import com.cometchatworkspace.components.messages.CometChatMessageEvents;
 import com.cometchatworkspace.components.messages.MessageStatus;
 import com.cometchatworkspace.components.messages.common.extensions.ExtensionResponseListener;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
+import com.cometchatworkspace.components.messages.composer.CometChatMessageComposer;
+import com.cometchatworkspace.components.messages.emojiKeyboard.CometChatEmojiKeyboard;
+import com.cometchatworkspace.components.messages.emojiKeyboard.EmojiKeyboardStyle;
 import com.cometchatworkspace.components.messages.header.CometChatMessagesHeader;
-import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageInputData;
 import com.cometchatworkspace.components.messages.message_list.utils.LocationUtils;
 import com.cometchatworkspace.components.messages.message_list.utils.polls.PollsUtils;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
@@ -68,8 +72,6 @@ import com.cometchatworkspace.components.shared.primaryComponents.configurations
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.HeaderConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageListConfiguration;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
-import com.cometchatworkspace.components.messages.template.TemplateUtils;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
@@ -78,8 +80,8 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatSnackBar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionSheet;
-import com.cometchatworkspace.components.messages.composer.CometChatComposer;
 import com.cometchatworkspace.components.messages.composer.listener.Events;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatReactionDialog;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.listener.OnReactionClickListener;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
@@ -147,10 +149,10 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
 
     private CometChatMessagesHeader cometchatMessageHeader;
 
-    private static CometChatMessageList cometChatMessageList;
+    private CometChatMessageList cometChatMessageList;
 
     private LinearLayout bottomLayout;
-    private CometChatComposer composeBox;
+    private CometChatMessageComposer composeBox;
 
     private LinearLayout blockUserLayout;
     private MaterialButton unblockBtn;
@@ -177,7 +179,6 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
     boolean hideDeleteMessage;
 
     private BaseMessage repliedMessage;
-    private CometChatSoundManager soundManager;
     private LocationUtils locationUtils;
     private int count = 0;
 
@@ -193,14 +194,17 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
     private boolean groupChatEnabled = true;
     private CometChatConfigurations config;
 
+    //Style
+    private EmojiKeyboardStyle emojiKeyboardStyle;
+
     public CometChatMessages() {
         // Required empty public constructor
     }
 
-    public static void updateList(BaseMessage message) {
-        if (cometChatMessageList != null)
-            cometChatMessageList.onMessageReceived(message);
-    }
+//    public static void updateList(BaseMessage message) {
+//        if (cometChatMessageList != null)
+//            cometChatMessageList.onMessageReceived(message);
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -290,10 +294,23 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
      * @param view
      */
     private void initViewComponent(View view) {
-        soundManager = new CometChatSoundManager(getContext());
         setHasOptionsMenu(true);
         locationUtils = new LocationUtils();
         CometChatError.init(getContext());
+        //drawable for emojiKeyboard
+        Drawable drawable = getContext().getDrawable(R.drawable.cc_action_item_top_curve);
+        drawable.setTint(palette.getAccent900());
+        //setting up style object of emoji keyboard
+        emojiKeyboardStyle = new EmojiKeyboardStyle()
+                .setSeparatorColor(palette.getAccent100())
+                .setCloseButtonTint(palette.getAccent100())
+                .setTitleColor(palette.getAccent())
+                .setTitleAppearance(typography.getName())
+                .setCategoryIconTint(palette.getAccent600())
+                .setSelectedCategoryIconTint(palette.getPrimary())
+                .setSectionHeaderColor(palette.getAccent700())
+                .setSectionHeaderAppearance(typography.getSubtitle1())
+                .setBackground(drawable);
 
         bottomLayout = view.findViewById(R.id.bottom_layout);
         composeBox = view.findViewById(R.id.message_box);
@@ -301,6 +318,7 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
         composeBox.placeHolderColor(palette.getAccent600());
         composeBox.hideMicrophone(true);
         cometChatMessageList = view.findViewById(R.id.message_list);
+
         RelativeLayout relativeLayout = view.findViewById(R.id.message_parent);
         if (palette.getGradientBackground() != null)
             relativeLayout.setBackground(palette.getGradientBackground());
@@ -378,7 +396,7 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
         blockUserLayout = view.findViewById(R.id.blocked_user_layout);
 
         cometchatMessageHeader = view.findViewById(R.id.chatList_toolbar);
-//        List<CometChatOptions> options = new ArrayList();
+        List<CometChatOptions> options = new ArrayList();
 //        options.add(new CometChatOptions(
 //                UIKitConstants.UserOptions.audioCall,
 //                null,
@@ -388,11 +406,14 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
 //                null,
 //                R.drawable.ic_videocall));
 
-//        options.add(new CometChatOptions(
-//                UIKitConstants.UserOptions.viewDetails,
-//                null,
-//                R.drawable.ic_info));
-//        cometchatMessageHeader.options(options);
+//        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+//        emojiKeyboard.show(fm, "cmzc");
+
+        options.add(new CometChatOptions(
+                UIKitConstants.UserOptions.viewDetails,
+                null,
+                R.drawable.ic_info));
+        cometchatMessageHeader.options(options);
 
         if (CometChatConstants.RECEIVER_TYPE_GROUP.equals(type)) {
             if (group != null)
@@ -422,7 +443,6 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
                 baseMessage = message;
                 if (status == MessageStatus.IN_PROGRESS) {
                     if (cometChatMessageList != null) {
-                        soundManager.play(Sound.outgoingMessage);
                         cometChatMessageList.add(message);
                         cometChatMessageList.scrollToBottom();
                     }
@@ -430,13 +450,15 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
                     if (cometChatMessageList != null) {
                         cometChatMessageList.updateOptimisticMessage(message);
                         cometChatMessageList.scrollToBottom();
+                        composeBox.playSound();
+
                     }
                 }
             }
 
 
             @Override
-            public void onMessageError(CometChatException e) {
+            public void onMessageError(CometChatException e, BaseMessage message) {
                 if (e.getCode().equalsIgnoreCase("ERROR_INTERNET_UNAVAILABLE")) {
                     CometChatSnackBar.show(context, cometChatMessageList,
                             context.getString(R.string.no_internet_available), CometChatSnackBar.ERROR);
@@ -477,8 +499,10 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
             }
 
             @Override
-            public void onMessageDelete(BaseMessage baseMessage) {
-                cometChatMessageList.deleteMessage(baseMessage);
+            public void onMessageDelete(BaseMessage baseMessage, @MessageStatus int status) {
+                if (status == MessageStatus.IN_PROGRESS) {
+                    cometChatMessageList.deleteMessage(baseMessage);
+                }
             }
 
             @Override
@@ -502,17 +526,34 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
             public void onMessageReact(BaseMessage message, Reaction emoji) {
                 baseMessage = message;
                 if (emoji.getName().equals("add_emoji")) {
-                    CometChatReactionDialog reactionDialog = new CometChatReactionDialog();
-                    reactionDialog.setOnEmojiClick(new OnReactionClickListener() {
+//                    CometChatReactionDialog reactionDialog = new CometChatReactionDialog();
+//                    reactionDialog.setOnEmojiClick(new OnReactionClickListener() {
+//                        @Override
+//                        public void onEmojiClicked(Reaction emojicon) {
+//                            sendReaction(emojicon);
+//                            reactionDialog.dismiss();
+//                        }
+//                    });
+//                    reactionDialog.show(((FragmentActivity) context).getSupportFragmentManager(), "ReactionDialog");
+                    CometChatEmojiKeyboard emojiKeyboard = new CometChatEmojiKeyboard(getContext());
+                    emojiKeyboard.setStyle(emojiKeyboardStyle);
+                    emojiKeyboard.show();
+                    emojiKeyboard.setOnClick(new CometChatEmojiKeyboard.onClick() {
                         @Override
-                        public void onEmojiClicked(Reaction emojicon) {
-                            sendReaction(emojicon);
-                            reactionDialog.dismiss();
+                        public void onClick(String emoji) {
+                            Log.e(TAG, "onClick:emoji " + emoji);
+                            sendReaction(emoji);
+                            emojiKeyboard.dismiss();
+                        }
+
+                        @Override
+                        public void onLongClick(String emoji) {
+
                         }
                     });
-                    reactionDialog.show(((FragmentActivity) context).getSupportFragmentManager(), "ReactionDialog");
+
                 } else {
-                    sendReaction(emoji);
+                    sendReaction(emoji.getName());
                 }
             }
 
@@ -546,14 +587,14 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
 
 
     private void setComposeBoxListener() {
-        CometChatComposer.addListener("Messages", new Events() {
+        CometChatMessageComposer.addListener("Messages", new Events() {
             @Override
             public void onKeyboardMediaSelected(InputContentInfoCompat inputContentInfo) {
                 Log.e(TAG, "onEditTextMediaSelected: Path=" + inputContentInfo.getLinkUri().getPath()
                         + "\nHost=" + inputContentInfo.getLinkUri().getFragment());
                 String messageType = inputContentInfo.getLinkUri().toString().substring(inputContentInfo.getLinkUri().toString().lastIndexOf('.'));
                 MediaMessage mediaMessage = new MediaMessage(Id, CometChatConstants.MESSAGE_TYPE_IMAGE, type);
-                List<Attachment> attachments= new ArrayList<>();
+                List<Attachment> attachments = new ArrayList<>();
                 Attachment attachment = new Attachment();
                 attachment.setFileUrl(inputContentInfo.getLinkUri().toString());
                 attachment.setFileMimeType(inputContentInfo.getDescription().getMimeType(0));
@@ -691,20 +732,20 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
             public void onCustomUserAction(CometChatMessageTemplate template) {
                 if (template != null) {
                     if (type.equalsIgnoreCase(CometChatConstants.RECEIVER_TYPE_USER))
-                        template.getClickListener().onClick(user,context);
+                        template.getClickListener().onClick(user, context);
                     else
-                        template.getClickListener().onClick(group,context);
+                        template.getClickListener().onClick(group, context);
                 }
             }
         });
     }
 
-    private void sendReaction(Reaction reaction) {
+    private void sendReaction(String reaction) {
 
         JSONObject body = new JSONObject();
         try {
             body.put("msgId", baseMessage.getId());
-            body.put("emoji", reaction.getName());
+            body.put("emoji", reaction);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1363,9 +1404,27 @@ public class CometChatMessages extends Fragment implements View.OnClickListener 
              * Here we will set the CometchatMessages Configurations i.e to enable or disable
              * chat for 1-1 or group chats
              */
-
             userChatEnabled = messageConfigurations.isUserChatEnabled();
             groupChatEnabled = messageConfigurations.isGroupChatEnabled();
+
+            if (cometChatMessageList != null) {
+                if (messageConfigurations.getMessageTypes() != null) {
+                    cometChatMessageList.setMessageTypes(messageConfigurations.getMessageTypes());
+                }
+                if (messageConfigurations.getExcludeMessageTypes() != null && !messageConfigurations.getExcludeMessageTypes().isEmpty()) {
+                    cometChatMessageList.excludeMessageTypes(messageConfigurations.getExcludeMessageTypes());
+                }
+
+            }
+            if (composeBox != null) {
+                if (messageConfigurations.getMessageTypes() != null) {
+                    composeBox.setMessageTypes(messageConfigurations.getMessageTypes());
+                }
+                if (messageConfigurations.getExcludeMessageTypes() != null && !messageConfigurations.getExcludeMessageTypes().isEmpty()) {
+                    composeBox.excludeMessageTypes(messageConfigurations.getExcludeMessageTypes());
+                }
+
+            }
             if (messageConfigurations.getBackgroundDrawable() != null)
                 background(messageConfigurations.getBackgroundDrawable());
         } else if (configuration instanceof ComposerConfiguration) {

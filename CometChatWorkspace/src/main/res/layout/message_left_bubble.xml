@@ -27,7 +27,7 @@
             android:layout_below="@+id/tv_user"
             android:layout_width="wrap_content"
             android:id="@+id/bubble_container"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="116dp"
             app:cardElevation="0dp"
             android:elevation="0dp"
             android:layout_marginStart="10dp"
@@ -41,12 +41,18 @@
                     android:id="@+id/message_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
+                <include
+                    android:id="@+id/translate_view"
+                    layout="@layout/translate_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    />
                 <com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction
                     android:id="@+id/reactions_group"
                     app:messageReaction_gravity="end"
                     app:borderRadius="64"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

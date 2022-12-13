@@ -191,8 +191,9 @@ public class CometChatCallActionBubble extends RelativeLayout {
         }
 
         //CustomView
-        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
-                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.callAction);
+//        CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
+//                .getMessageTemplateById(CometChatMessageTemplate.DefaultList.callAction);
+        CometChatMessageTemplate messageTemplate=null;
         if(messageTemplate!=null)
             layoutId = messageTemplate.getView();
 //        dataView = messageTemplate.getDataView();

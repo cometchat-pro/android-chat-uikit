@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.BindingMethod;
 import androidx.databinding.BindingMethods;
@@ -43,9 +44,11 @@ import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.Sound;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.ClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerTouchListener;
@@ -68,7 +71,6 @@ import org.json.JSONObject;
  * Modified on  - 23rd March 2022
  */
 
-@BindingMethods(value = {@BindingMethod(type = CometChatConversationList.class, attribute = "app:conversationlist", method = "setConversationList")})
 public class CometChatConversationList extends MaterialCardView {
 
     private final Context context;
@@ -112,14 +114,17 @@ public class CometChatConversationList extends MaterialCardView {
 
     private TextView noListText;
     private FontUtils fontUtils;
-
-    private String errorMessageFont = null;
+    private boolean enableSoundForMessages = true;
+    private @RawRes
+    int customIncomingMessageSound = 0;
+    private int errorStateTextAppearance = 0;
     private int errorMessageColor = 0;
     private String error_text = null;
     private String empty_text = null;
     private View errorView = null;
     private OnItemClickListener<Conversation> onItemClickListener;
-
+    private Palette palette;
+    private Typography typography;
     public CometChatConversationList(@NonNull Context context) {
         super(context);
         this.context = context;
@@ -145,9 +150,6 @@ public class CometChatConversationList extends MaterialCardView {
             conversationViewModel = new CometChatConversationListViewModel(context, this);
     }
 
-    /**
-     * This
-     */
 
     private void initComponentView() {
         view = View.inflate(context, R.layout.cometchat_list, null);
@@ -156,7 +158,9 @@ public class CometChatConversationList extends MaterialCardView {
                 attrs,
                 R.styleable.CometChatConversationList,
                 0, 0);
-
+        palette=Palette.getInstance(context);
+        typography=Typography.getInstance();
+        errorStateTextAppearance=typography.getText1();
         limit = a.getInt(R.styleable.CometChatConversationList_limit, 30);
         conversationListType = a.getString(R.styleable.CometChatConversationList_conversationType);
         hideError = a.getBoolean(R.styleable.CometChatConversationList_hideError, false);
@@ -196,6 +200,7 @@ public class CometChatConversationList extends MaterialCardView {
                 colorArray);
         setBackground(gd);
     }
+
     public void setStyle(Style style) {
         if (style.getBackground() != 0) {
             setCardBackgroundColor(style.getBackground());
@@ -213,9 +218,6 @@ public class CometChatConversationList extends MaterialCardView {
         if (style.getEmptyStateTextColor() != 0) {
             emptyStateTextColor(style.getEmptyStateTextColor());
         }
-        if (style.getErrorStateTextFont() != null) {
-            errorStateTextFont(style.getErrorStateTextFont());
-        }
         if (style.getErrorStateTextColor() != 0) {
             errorStateTextColor(style.getErrorStateTextColor());
         }
@@ -228,7 +230,13 @@ public class CometChatConversationList extends MaterialCardView {
             noListText.setText(getResources().getString(R.string.no_chats));
 
     }
+    public void enableSoundForMessages(boolean enableSoundForMessages) {
+        this.enableSoundForMessages = enableSoundForMessages;
+    }
 
+    public void setCustomIncomingMessageSound(@RawRes int customIncomingMessageSound) {
+        this.customIncomingMessageSound = customIncomingMessageSound;
+    }
     public void emptyStateTextColor(int color) {
         if (color != 0)
             noListText.setTextColor(color);
@@ -244,8 +252,10 @@ public class CometChatConversationList extends MaterialCardView {
             noListText.setTextAppearance(context, appearance);
 
     }
-    public void errorStateTextFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+
+    public void setErrorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void errorStateTextColor(int errorMessageColor) {
@@ -304,11 +314,11 @@ public class CometChatConversationList extends MaterialCardView {
         if (conversationViewModel != null)
             conversationViewModel.updateGroupConversation(group);
     }
+
     public void updateConversationForSentMessages(BaseMessage baseMessage) {
         if (conversationViewModel != null)
             conversationViewModel.updateConversationForSentMessages(baseMessage);
     }
-
 
 
     /**
@@ -386,12 +396,14 @@ public class CometChatConversationList extends MaterialCardView {
      * @see Conversation
      */
     public void refreshSingleConversation(BaseMessage message, boolean isActionMessage) {
-        Conversation newConversation = CometChatHelper.getConversationFromMessage(message);
-        JSONObject metadata = message.getMetadata();
-        if (metadata != null && metadata.has("incrementUnreadCount")) {
-            soundManager.play(Sound.incomingMessageFromOther);
+        if(message!=null) {
+            Conversation newConversation = CometChatHelper.getConversationFromMessage(message);
+            JSONObject metadata = message.getMetadata();
+            if (metadata != null && metadata.has("incrementUnreadCount")) {
+                soundManager.play(Sound.incomingMessageFromOther);
+            }
+            update(newConversation, isActionMessage);
         }
-        update(newConversation, isActionMessage);
     }
 
     public void withUserAndGroupTags(boolean userAndGroupTags) {
@@ -694,13 +706,13 @@ public class CometChatConversationList extends MaterialCardView {
             @Override
             public void onMessageEdited(BaseMessage message) {
                 if (recyclerView != null)
-                    refreshSingleConversation(message, true);
+                    refreshSingleConversation(message, false);
             }
 
             @Override
             public void onMessageDeleted(BaseMessage message) {
                 if (recyclerView != null)
-                    refreshSingleConversation(message, true);
+                    refreshSingleConversation(message, false);
             }
 
             @Override
@@ -777,7 +789,7 @@ public class CometChatConversationList extends MaterialCardView {
             if (isRemove)
                 remove(conversation);
             else
-                update(conversation, false);
+                update(conversation, true);
             checkNoConversation();
         }
     }
@@ -809,15 +821,16 @@ public class CometChatConversationList extends MaterialCardView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+//        soundManager.pause();
         onPause();
     }
 
     private void hideError() {
-        String error_message;
+        String errorMessage;
         if (error_text != null)
-            error_message = error_text;
+            errorMessage = error_text;
         else
-            error_message = getContext().getString(R.string.error_cant_load_conversation);
+            errorMessage = getContext().getString(R.string.error_cant_load_conversation);
 
 
         if (!hideError && errorView != null) {
@@ -828,9 +841,27 @@ public class CometChatConversationList extends MaterialCardView {
             custom_layout.setVisibility(GONE);
             if (!hideError) {
                 if (getContext() != null) {
-                    new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, getContext().getString(R.string.try_again), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
+
+
+                    new CometChatDialog(
+                            context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            palette.getAccent700(),
+                            errorMessage,
+                            "",
+                            getContext().getString(R.string.try_again),
+                            getResources().getString(R.string.cancel),
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0,
+                            new OnDialogButtonClickListener() {
                         @Override
-                        public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 alertDialog.dismiss();
                                 makeConversationList();

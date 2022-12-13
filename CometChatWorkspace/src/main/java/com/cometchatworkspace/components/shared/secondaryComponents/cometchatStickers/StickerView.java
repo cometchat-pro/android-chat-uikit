@@ -21,7 +21,7 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStickers.listener.StickerClickListener;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatStickers.model.Sticker;
-import com.facebook.react.fabric.mounting.mountitems.PreAllocateViewMountItem;
+//import com.facebook.react.fabric.mounting.mountitems.PreAllocateViewMountItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

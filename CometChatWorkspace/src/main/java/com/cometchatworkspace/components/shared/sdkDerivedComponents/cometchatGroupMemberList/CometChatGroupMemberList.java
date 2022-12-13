@@ -27,10 +27,12 @@ import com.cometchatworkspace.R;
 
 import com.cometchatworkspace.components.groups.CometChatGroupEvents;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.ClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerTouchListener;
@@ -70,9 +72,9 @@ public class CometChatGroupMemberList extends MaterialCardView {
     private FontUtils fontUtils;
     private onErrorCallBack onErrorCallBack;
 
-    private  String errorMessageFont = null;
+    private int errorStateTextAppearance = 0;
     private  int errorMessageColor = 0;
-    private String error_text = null;
+    private String errorText = null;
     private String empty_text = null;
 
     private List<String> scopes = new ArrayList<>();
@@ -84,7 +86,8 @@ public class CometChatGroupMemberList extends MaterialCardView {
 
     private Group group_;
     private final User loggedInUser = CometChat.getLoggedInUser();
-
+    private Palette palette;
+    private Typography typography;
 
     private GroupMember groupMember; // to get the swiped member
 
@@ -111,6 +114,9 @@ public class CometChatGroupMemberList extends MaterialCardView {
         this.context = context;
         view = View.inflate(context, R.layout.cometchat_list, null);
         fontUtils = FontUtils.getInstance(context);
+        palette=Palette.getInstance(context);
+        typography=Typography.getInstance();
+        errorStateTextAppearance=typography.getText1();
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
                 R.styleable.CometChatGroupMemberList,
@@ -125,7 +131,7 @@ public class CometChatGroupMemberList extends MaterialCardView {
         isHideError = a.getBoolean(R.styleable.CometChatGroupMemberList_hideError, false);
         searchKeyword = a.getString(R.styleable.CometChatGroupMemberList_searchKeyword);
         empty_text = a.getString(R.styleable.CometChatGroupMemberList_empty_text);
-        error_text = a.getString(R.styleable.CometChatGroupMemberList_error_text);
+        errorText = a.getString(R.styleable.CometChatGroupMemberList_error_text);
         limit = a.getInt(R.styleable.CometChatGroupMemberList_limit, 30);
         allowKickMember = a.getBoolean(R.styleable.CometChatGroupMemberList_allowKickMember, true);
         allowBanMember = a.getBoolean(R.styleable.CometChatGroupMemberList_AllowBanMember, true);
@@ -242,8 +248,9 @@ public class CometChatGroupMemberList extends MaterialCardView {
         }
 
     }
-    public void errorStateTextFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void errorStateTextColor(int errorMessageColor) {
@@ -251,7 +258,7 @@ public class CometChatGroupMemberList extends MaterialCardView {
     }
 
     public void errorStateText(String error_text) {
-        this.error_text = error_text;
+        this.errorText = error_text;
     }
     private void handleKick() {
         if (groupMember != null) {
@@ -446,13 +453,13 @@ public class CometChatGroupMemberList extends MaterialCardView {
     }
 
     private void hideError(String error, int num) {
-        String error_message;
+        String errorMessage;
         if (error != null)
-            error_message = error;
-        else if (error_text != null)
-            error_message = error_text;
+            errorMessage = error;
+        else if (errorText != null)
+            errorMessage = errorText;
         else
-            error_message = getContext().getString(R.string.error_cant_load_group_members);
+            errorMessage = getContext().getString(R.string.error_cant_load_group_members);
 
         if (!isHideError && errorView != null) {
             custom_layout.removeAllViews();
@@ -468,9 +475,25 @@ public class CometChatGroupMemberList extends MaterialCardView {
                     negativeButton = "";
                 }
                 if (getContext() != null) {
-                    new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, positiveButton, "", negativeButton, new OnAlertDialogButtonClickListener() {
+
+                    new CometChatDialog(context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            palette.getAccent700(),
+                            errorMessage,
+                            "",
+                            positiveButton,
+                            negativeButton,
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0,
+                            new OnDialogButtonClickListener() {
                         @Override
-                        public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 if (num == 0)
                                     makeGroupMemberList();

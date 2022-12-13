@@ -28,10 +28,12 @@ import com.cometchatworkspace.components.groups.CometChatJoinProtectedGroup;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.ClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerTouchListener;
@@ -82,10 +84,12 @@ public class CometChatGroupList extends MaterialCardView {
 
     private FontUtils fontUtils;
 
-    private String errorMessageFont = null;
+    private int errorStateTextAppearance = 0;
     private int errorMessageColor = 0;
     private String error_text = null;
     private String empty_text = null;
+    private Palette palette;
+    private Typography typography;
 
     public CometChatGroupList(Context context) {
         super(context);
@@ -106,6 +110,9 @@ public class CometChatGroupList extends MaterialCardView {
 
     private void initViewComponent(Context context, AttributeSet attributeSet, int defStyleAttr) {
         this.context = context;
+        palette = palette.getInstance(context);
+        typography = Typography.getInstance();
+        errorStateTextAppearance = typography.getText1();
         view = View.inflate(context, R.layout.cometchat_list, null);
         fontUtils = FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
@@ -168,9 +175,6 @@ public class CometChatGroupList extends MaterialCardView {
             emptyTextColor(style.getEmptyStateTextColor());
         }
 
-        if (style.getErrorStateTextFont() != null) {
-            errorMessageFont = style.getErrorStateTextFont();
-        }
         if (style.getErrorStateTextColor() != 0) {
             errorMessageColor = style.getErrorStateTextColor();
         }
@@ -198,6 +202,7 @@ public class CometChatGroupList extends MaterialCardView {
                 colorArray);
         setBackground(gd);
     }
+
     /**
      * @setEmptyView is method allows you to set layout show when the list is empty
      * if user want to set Empty layout other wise it will load default layout
@@ -376,8 +381,9 @@ public class CometChatGroupList extends MaterialCardView {
         }
     }
 
-    public void errorStateTextFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void errorStateTextColor(int errorMessageColor) {
@@ -389,13 +395,13 @@ public class CometChatGroupList extends MaterialCardView {
     }
 
     private void hideError(String message, boolean isJoinGroupError) {
-        String error_message;
+        String errorMessage;
         if (message != null)
-            error_message = getResources().getString(R.string.something_went_wrong);
+            errorMessage = getResources().getString(R.string.something_went_wrong);
         else if (error_text != null)
-            error_message = error_text;
+            errorMessage = error_text;
         else
-            error_message = getContext().getString(R.string.error_cant_load_group);
+            errorMessage = getContext().getString(R.string.error_cant_load_group);
 
         if (!isHideError && errorView != null) {
             custom_layout.removeAllViews();
@@ -411,18 +417,34 @@ public class CometChatGroupList extends MaterialCardView {
                     negativeButton = "";
                 }
                 if (getContext() != null) {
-                    new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, positiveButton, "", negativeButton, new OnAlertDialogButtonClickListener() {
-                        @Override
-                        public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
-                            if (which == DialogInterface.BUTTON_POSITIVE) {
-                                if (!isJoinGroupError)
-                                    makeGroupList();
-                                alertDialog.dismiss();
-                            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                                alertDialog.dismiss();
-                            }
-                        }
-                    }, 0, false);
+                    new CometChatDialog(
+                            context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            palette.getAccent700(),
+                            errorMessage,
+                            "",
+                            positiveButton,
+                            negativeButton,
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0,
+                            new OnDialogButtonClickListener() {
+                                @Override
+                                public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
+                                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                                        if (!isJoinGroupError)
+                                            makeGroupList();
+                                        alertDialog.dismiss();
+                                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                        alertDialog.dismiss();
+                                    }
+                                }
+                            }, 0, false);
                 }
             }
         }
@@ -510,26 +532,27 @@ public class CometChatGroupList extends MaterialCardView {
     private void clickEvents() {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new ClickListener() {
             @Override
-            public void onClick(View var1, int var2) {
-                Group group = (Group) var1.getTag(R.string.group);
+            public void onClick(View view, int pos) {
+                Group group = (Group) view.getTag(R.string.group);
                 if (group != null) {
                     if (!group.isJoined()) {
                         if (UIKitConstants.GroupTypeConstants.PUBLIC.equals(group.getGroupType())) {
                             joinGroup(group);
                         } else if (UIKitConstants.GroupTypeConstants.PASSWORD.equals(group.getGroupType())) {
-                            CometChatGroupActivity.launch(getContext(), CometChatJoinProtectedGroup.class,group);
-                        }
-                    } else {
-                        for (CometChatGroupEvents events : CometChatGroupEvents.groupEvents.values()) {
-                            events.onGroupMemberJoin(CometChat.getLoggedInUser(), group);
+                            CometChatGroupActivity.launch(getContext(), CometChatJoinProtectedGroup.class, group);
                         }
                     }
+//                    else {
+//                        for (CometChatGroupEvents events : CometChatGroupEvents.groupEvents.values()) {
+//                            events.onGroupMemberJoin(CometChat.getLoggedInUser(), group);
+//                        }
+//                    }
                 }
                 for (CometChatGroupEvents events : CometChatGroupEvents.groupEvents.values()) {
-                    events.onItemClick(group, var2);
+                    events.onItemClick(group, pos);
                 }
                 if (onItemClickListener != null)
-                    onItemClickListener.OnItemClick(group, var2);
+                    onItemClickListener.OnItemClick(group, pos);
 
             }
 
@@ -653,9 +676,8 @@ public class CometChatGroupList extends MaterialCardView {
     }
 
 
-
     public void setConfiguration(CometChatConfigurations configuration) {
-            groupListViewModel.setConfiguration(configuration);
+        groupListViewModel.setConfiguration(configuration);
     }
 
     public void setConfiguration(List<CometChatConfigurations> configurations) {
