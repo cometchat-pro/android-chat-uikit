@@ -6,7 +6,7 @@
     <string name="user" translatable="false">user</string>
     <string name="group">group</string>
     <string name="conversation" translatable="false">conversation</string>
-    <string name="replyTxt" translatable="false">reply</string>
+    <string name="reply_txt" translatable="false">reply</string>
     <string name="call" translatable="false">Call</string>
     <string name="baseMessage" translatable="false">baseMessage</string>
     <string name="sticker" translatable="false">sticker</string>
@@ -182,6 +182,7 @@
     <string name="no_internet_available">No Internet Available</string>
     <string name="you_have_blocked_by">You have been blocked by </string>
     <string name="you_ve_blocked">"You've blocked "</string>
+    <string name="cc_no_message">"No messages here yet…"</string>
 
     <!--Extension Error-->
     <string name="extension_not_found">The extension with provided id does not exist</string>
@@ -270,5 +271,6 @@
     <string name="blocked_user">Blocked Users</string>
     <string name="open_document">Open Document</string>
     <string name="translated_message">Translated Message</string>
+    <string name="emoji">emoji</string>
 
 </resources>

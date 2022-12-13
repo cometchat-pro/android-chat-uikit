@@ -4,19 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +25,7 @@ import com.cometchatworkspace.R;
 
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatCallActionBubble;
-import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatCustomBubble;
+import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatPlaceHolderBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatGroupActionBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatAudioBubble;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.CometChatFileBubble;
@@ -47,14 +42,13 @@ import com.cometchatworkspace.components.messages.message_list.message_bubble.Co
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.Alignment;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageInputData;
+import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.AvatarConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageReceiptConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
-import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMessageReceipt;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.MediaMessage;
 import com.cometchat.pro.models.MessageReceipt;
@@ -62,7 +56,6 @@ import com.cometchat.pro.models.TextMessage;
 import com.cometchat.pro.models.User;
 
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 
 import org.json.JSONException;
@@ -75,7 +68,7 @@ import java.util.List;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
 import com.cometchatworkspace.resources.utils.sticker_header.StickyHeaderAdapter;
 import com.cometchatworkspace.components.messages.common.media_view.CometChatMediaViewActivity;
-import com.cometchatworkspace.components.calls.CallUtils;
+//import com.cometchatworkspace.components.calls.CallUtils;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.MediaUtils;
 import com.cometchatworkspace.resources.utils.Utils;
@@ -117,7 +110,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int RIGHT_CALL_MESSAGE = 235;
 
     private final List<BaseMessage> messageList = new ArrayList<>();
-
+    private List<CometChatMessageTemplate> messageTemplateList=new ArrayList<>();
     private static final int LEFT_TEXT_MESSAGE = 1;
 
     private static final int RIGHT_TEXT_MESSAGE = 2;
@@ -194,7 +187,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean isLeftAligned;
 
     private MessageInputData sentMessageInputData;
-    private MessageInputData receiverMessageInputData;
+    private MessageInputData receivedMessageInputData;
     private float leftMessageRadius = 10, rightMessageRadius = 10;
     private AvatarConfiguration avatarConfig;
     private MessageReceiptConfiguration messageReceiptConfig;
@@ -573,9 +566,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatPollBubble.voteTextColor(palette.getAccent600());
         viewHolder.cometChatPollBubble.optionsTextColor(palette.getAccent800());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius > -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -629,6 +627,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatConferenceBubble.backgroundColor(palette.getSecondary());
         viewHolder.cometChatConferenceBubble.titleColor(palette.getAccent800());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
                 if (leftMessageRadius > -1)
@@ -674,26 +677,26 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             @Override
             public void onClick(BaseMessage baseMessage) {
-                if (((CustomMessage) baseMessage).getCustomData() != null) {
-                    if (CometChat.getActiveCall() == null)
-                        CallUtils.startDirectCall(context, Utils.getDirectCallData(baseMessage));
-                    else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                        alert.setTitle(context.getResources().getString(R.string.ongoing_call))
-                                .setMessage(context.getResources().getString(R.string.ongoing_call_message))
-                                .setPositiveButton(context.getResources().getString(R.string.join), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CallUtils.joinOnGoingCall(context, CometChat.getActiveCall());
-                                    }
-                                }).setNegativeButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).create().show();
-                    }
-                }
+//                if (((CustomMessage) baseMessage).getCustomData() != null) {
+//                    if (CometChat.getActiveCall() == null)
+//                        CallUtils.startDirectCall(context, Utils.getDirectCallData(baseMessage));
+//                    else {
+//                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+//                        alert.setTitle(context.getResources().getString(R.string.ongoing_call))
+//                                .setMessage(context.getResources().getString(R.string.ongoing_call_message))
+//                                .setPositiveButton(context.getResources().getString(R.string.join), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        CallUtils.joinOnGoingCall(context, CometChat.getActiveCall());
+//                                    }
+//                                }).setNegativeButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                    }
+//                                }).create().show();
+//                    }
+//                }
             }
 
             @Override
@@ -719,9 +722,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.documentMessageBubble.backgroundColor(palette.getSecondary());
         viewHolder.documentMessageBubble.titleColor(palette.getAccent800());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -777,9 +785,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatWhiteboardBubble.backgroundColor(palette.getSecondary());
         viewHolder.cometChatWhiteboardBubble.titleColor(palette.getAccent800());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -846,9 +859,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatLocationBubble.titleColor(palette.getAccent800());
         viewHolder.cometChatLocationBubble.subtitleColor(palette.getAccent600());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius > -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -925,6 +943,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatAudioBubble.titleColor(palette.getAccent800());
         viewHolder.cometChatAudioBubble.subtitleColor(palette.getAccent600());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
                 if (leftMessageRadius != -1)
@@ -1004,6 +1027,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.cometChatFileBubble.titleColor(palette.getAccent800());
         viewHolder.cometChatFileBubble.subtitleColor(palette.getAccent600());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
                 if (leftMessageRadius != -1)
@@ -1088,10 +1116,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         BaseMessage baseMessage = messageList.get(i);
         viewHolder.cometChatMessageBubble.backgroundColor(palette.getSecondary());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
 //            viewHolder.cometChatImageBubble.setImageUrl("data:image/png;base64,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");
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -1150,7 +1183,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-
     /**
      * This method is called whenever viewType of item is sticker. It is used to bind StickerMessageViewHolder
      * contents with CustomMessage at a given position.
@@ -1171,9 +1203,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.cometChatMessageBubble.cornerRadius(rightMessageCornerRadius);
 
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -1213,7 +1250,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-
     private void setVideoData(VideoMessageViewHolder viewHolder, int i) {
         if (isLeftAligned)
             viewHolder.cometChatMessageBubble.messageAlignment(Alignment.LEFT);
@@ -1224,9 +1260,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.cometChatMessageBubble.cornerRadius(rightMessageCornerRadius);
 
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -1264,7 +1305,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         });
     }
-
 
     private void setDeleteData(DeleteMessageViewHolder viewHolder, int i) {
         BaseMessage baseMessage = messageList.get(i);
@@ -1307,7 +1347,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.cometChatTextBubble.textColor(palette.getAccent400());
         }
     }
-
 
     /**
      * This method is called whenever viewType of item is Action. It is used to bind
@@ -1397,9 +1436,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         BaseMessage baseMessage = messageList.get(i);
         viewHolder.cometChatMessageBubble.backgroundColor(palette.getSecondary());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -1412,6 +1456,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 viewHolder.cometChatTextBubble.textColor(palette.getAccent900());
                 setMessageBubbleInputData(viewHolder.cometChatMessageBubble, sentMessageInputData);
                 viewHolder.cometChatTextBubble.backgroundColor(palette.getPrimary());
+                viewHolder.cometChatMessageBubble.backgroundColor(palette.getPrimary());
                 if (rightMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(rightMessageRadius);
                 if (rightMessageCornerRadius != null)
@@ -1449,7 +1494,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-
     private void setCustomData(CustomMessageViewHolder viewHolder, int i) {
 
         if (isLeftAligned)
@@ -1458,9 +1502,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         BaseMessage baseMessage = messageList.get(i);
         viewHolder.cometChatMessageBubble.backgroundColor(palette.getSecondary());
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receiverMessageInputData);
+                setMessageBubbleInputData(viewHolder.cometChatMessageBubble, receivedMessageInputData);
                 if (leftMessageRadius != -1)
                     viewHolder.cometChatMessageBubble.cornerRadius(leftMessageRadius);
                 if (leftMessageCornerRadius != null)
@@ -1507,7 +1556,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-
     private void setLinkData(LinkMessageViewHolder viewHolder, int i) {
         if (isLeftAligned)
             viewHolder.cometChatMessageBubble.messageAlignment(Alignment.LEFT);
@@ -1518,6 +1566,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (rightMessageCornerRadius != null)
             viewHolder.cometChatMessageBubble.cornerRadius(rightMessageCornerRadius);
         if (baseMessage != null) {
+            CometChatMessageTemplate template=getMessageTemplateById(baseMessage.getType());
+            if(template!=null) {
+                viewHolder.cometChatMessageBubble.setCustomView(template.getView());
+                viewHolder.cometChatMessageBubble.setActivity(template.getActivity());
+            }
             viewHolder.cometChatMessageBubble.messageObject(baseMessage);
             if (!baseMessage.getSender().getUid().equals(loggedInUser.getUid())) {
                 viewHolder.cometChatMessageBubble.backgroundColor(context.getColor(R.color.message_bubble_grey));
@@ -1576,7 +1629,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else
             longselectedItemList.add(baseMessage);
     }
-
 
     @Override
     public int getItemCount() {
@@ -1817,7 +1869,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param baseMessage is a object of BaseMessage. It is new message which will be updated.
      */
     public void updateMessage(BaseMessage baseMessage) {
-
         if (messageList.contains(baseMessage)) {
             int index = messageList.indexOf(baseMessage);
             BaseMessage oldMessage = messageList.get(index);
@@ -1851,12 +1902,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void clearLongClickSelectedItem() {
         isLongClickEnabled = false;
         longselectedItemList.clear();
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     public BaseMessage getLastMessage() {
         if (messageList.size() > 0) {
-            Log.e(TAG, "getLastMessage: " + messageList.get(messageList.size() - 1));
             return messageList.get(messageList.size() - 1);
         } else
             return null;
@@ -1884,12 +1934,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         bubble.messageInputData(messageInputData);
     }
 
-    public void sentMessageInputData(MessageInputData messageInputData) {
+    public void setSentMessageInputData(MessageInputData messageInputData) {
         sentMessageInputData = messageInputData;
     }
 
-    public void receiverMessageInputData(MessageInputData messageInputData) {
-        receiverMessageInputData = messageInputData;
+    public void setReceivedMessageInputData(MessageInputData messageInputData) {
+        receivedMessageInputData = messageInputData;
     }
 
 
@@ -1909,10 +1959,23 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (config.getMessageReceiptConfiguration() != null)
                 messageReceiptConfig = config.getMessageReceiptConfiguration();
             if (config.getSentMessageInputData() != null)
-                sentMessageInputData(config.getSentMessageInputData());
+                setSentMessageInputData(config.getSentMessageInputData());
             if (config.getReceiverMessageInputData() != null)
-                receiverMessageInputData(config.getReceiverMessageInputData());
+                setReceivedMessageInputData(config.getReceiverMessageInputData());
         }
+    }
+    private CometChatMessageTemplate getMessageTemplateById(String id) {
+        for (CometChatMessageTemplate cometChatMessageTemplate : messageTemplateList) {
+            if (cometChatMessageTemplate.getId() != null) {
+                if (cometChatMessageTemplate.getId().equalsIgnoreCase(id)) {
+                    return cometChatMessageTemplate;
+                }
+            }
+        }
+        return null;
+    }
+    public void setMessageTemplateList(List<CometChatMessageTemplate> cometChatMessageTemplates){
+        this.messageTemplateList=cometChatMessageTemplates;
     }
 
     class ImageMessageViewHolder extends RecyclerView.ViewHolder {
@@ -2012,7 +2075,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class CustomMessageViewHolder extends RecyclerView.ViewHolder {
 
-        private CometChatCustomBubble customBubble;
+        private CometChatPlaceHolderBubble customBubble;
         private CometChatMessageBubble cometChatMessageBubble;
         private final int type;
 

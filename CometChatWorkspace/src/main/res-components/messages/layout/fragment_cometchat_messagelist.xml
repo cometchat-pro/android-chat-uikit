@@ -38,12 +38,11 @@
         android:layout_height="wrap_content">
         <include layout="@layout/cometchat_block_user_message_view"/>
 
-        <com.cometchatworkspace.components.messages.composer.CometChatComposer
+        <com.cometchatworkspace.components.messages.composer.CometChatMessageComposer
             android:id="@+id/message_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-
 
     <FrameLayout
         android:id="@+id/reactions_container"

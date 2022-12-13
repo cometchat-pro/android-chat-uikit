@@ -28,8 +28,8 @@ import com.cometchatworkspace.components.shared.sdkDerivedComponents.cometchatGr
 import com.cometchatworkspace.resources.utils.CometChatError;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 
 import java.util.HashMap;
@@ -230,9 +230,25 @@ public class CometChatTransferOwnership extends CometChatListBase {
 
     private void showError() {
         if (getContext() != null) {
-            new CustomAlertDialogHelper(context, null, 0, getContext().getString(R.string.something_went_wrong), null, getContext().getString(R.string.try_again), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
+            new CometChatDialog(
+                    context,
+                    0,
+                    typography.getText1(),
+                    typography.getText2(),
+                    palette.getAccent900(),
+                    0,
+                    palette.getAccent700(),
+                    getContext().getString(R.string.something_went_wrong),
+                    "",
+                    getContext().getString(R.string.try_again),
+                    getResources().getString(R.string.cancel),
+                    "",
+                    palette.getPrimary(),
+                    palette.getPrimary(),
+                    0,
+                    new OnDialogButtonClickListener() {
                 @Override
-                public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         alertDialog.dismiss();
                         transferOwnership();

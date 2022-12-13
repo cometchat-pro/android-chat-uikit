@@ -19,6 +19,7 @@ import com.cometchatworkspace.components.shared.primaryComponents.configurations
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageListConfiguration;
 
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +28,6 @@ public class CometChatConversationsWithMessages extends CometChatConversations {
     private Context context;
 
     private List<CometChatConfigurations> messageConfig = new ArrayList<>();
-    private List<CometChatConfigurations> conversationConfig = new ArrayList<>();
-
     public CometChatConversationsWithMessages(Context context) {
         super(context);
         this.context = context;
@@ -59,7 +58,6 @@ public class CometChatConversationsWithMessages extends CometChatConversations {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        super.setConfiguration(conversationConfig);
         CometChatConversationEvents.addListener("CometChatConversationsWithMessages", new CometChatConversationEvents() {
             @Override
             public void onItemClick(Conversation conversation, int position) {
@@ -70,50 +68,8 @@ public class CometChatConversationsWithMessages extends CometChatConversations {
                     userIntent(user);
                 }
             }
-
-            @Override
-            public void onDeleteConversation(Conversation conversation) {
-                super.onDeleteConversation(conversation);
-            }
-
-            @Override
-            public void onStartConversation() {
-                super.onStartConversation();
-            }
-
-            @Override
-            public void onItemLongClick(Conversation conversation, int position) {
-                super.onItemLongClick(conversation, position);
-            }
-
-            @Override
-            public void onError(CometChatException exception) {
-                super.onError(exception);
-            }
         });
-        CometChatMessageEvents.addListener("CometChatConversationsWithMessages", new CometChatMessageEvents() {
 
-            @Override
-            public void onMessageSent(BaseMessage baseMessage, int status) {
-                if (status==MessageStatus.SUCCESS) {
-                    if (cometchatConversationList != null) {
-                        cometchatConversationList.refreshSingleConversation(baseMessage, false);
-                    }
-                }
-            }
-
-            @Override
-            public void onMessageError(CometChatException e) {
-
-            }
-
-            @Override
-            public void onMessageRead(BaseMessage baseMessage) {
-                if (cometchatConversationList != null) {
-                    cometchatConversationList.refreshSingleConversation(baseMessage,false);
-                }
-            }
-        });
     }
 
     @Override
@@ -122,8 +78,7 @@ public class CometChatConversationsWithMessages extends CometChatConversations {
         CometChatConversationEvents.removeListener();
     }
 
-    @Override
-    public void setConfiguration(CometChatConfigurations configuration) {
+    public void setConfiguration(CometChatConfigurations configuration){
         if (configuration instanceof CometChatMessagesConfigurations ||
                 configuration instanceof MessageBubbleConfiguration ||
                 configuration instanceof HeaderConfiguration ||
@@ -131,11 +86,10 @@ public class CometChatConversationsWithMessages extends CometChatConversations {
                 configuration instanceof ComposerConfiguration) {
             messageConfig.add(configuration);
         } else {
-            conversationConfig.add(configuration);
+            super.setConfiguration(configuration);
         }
     }
 
-    @Override
     public void setConfiguration(List<CometChatConfigurations> configurations) {
         for (CometChatConfigurations cometChatConfigurations : configurations) {
             setConfiguration(cometChatConfigurations);

@@ -4,7 +4,6 @@ import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchatworkspace.components.messages.CometChatMessageEvents;
 import com.cometchatworkspace.components.messages.MessageStatus;
-import com.cometchatworkspace.components.messages.message_list.CometChatMessageList;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 
 public class CometChatUIKitHelper {
@@ -15,21 +14,21 @@ public class CometChatUIKitHelper {
         }
     }
 
-    public static void onMessageError(CometChatException e) {
+    public static void onMessageError(CometChatException e,BaseMessage baseMessage) {
         for (CometChatMessageEvents event : CometChatMessageEvents.messageEvents.values()) {
-            event.onMessageError(e);
+            event.onMessageError(e, baseMessage);
         }
     }
 
     public static void onMessageEdit(BaseMessage baseMessage, @MessageStatus int status) {
         for (CometChatMessageEvents event : CometChatMessageEvents.messageEvents.values()) {
-            event.onMessageSent(baseMessage,status);
+            event.onMessageEdit(baseMessage,status);
         }
     }
 
-    public static void onMessageDelete(BaseMessage baseMessage) {
+    public static void onMessageDelete(BaseMessage baseMessage, @MessageStatus int status) {
         for (CometChatMessageEvents event : CometChatMessageEvents.messageEvents.values()) {
-            event.onMessageDelete(baseMessage);
+            event.onMessageDelete(baseMessage,status);
         }
     }
 

@@ -4,11 +4,6 @@ import android.widget.ImageView;
 
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
-import com.cometchat.pro.exceptions.CometChatException;
-import com.cometchat.pro.models.BaseMessage;
-
-import com.cometchatworkspace.components.messages.MessageStatus;
-import com.cometchatworkspace.components.messages.composer.CometChatComposer;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
 
 public abstract class Events {

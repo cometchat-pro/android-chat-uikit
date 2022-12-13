@@ -49,7 +49,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class CometChatCustomBubble extends RelativeLayout {
+public class CometChatPlaceHolderBubble extends RelativeLayout {
 
     FontUtils fontUtils;
     private final User loggedInUser = CometChat.getLoggedInUser();
@@ -77,22 +77,22 @@ public class CometChatCustomBubble extends RelativeLayout {
 
     private int layoutId;
 
-    public CometChatCustomBubble(Context context) {
+    public CometChatPlaceHolderBubble(Context context) {
         super(context);
         initComponent(context,null);
     }
 
-    public CometChatCustomBubble(Context context, AttributeSet attrs) {
+    public CometChatPlaceHolderBubble(Context context, AttributeSet attrs) {
         super(context, attrs);
         initComponent(context,attrs);
     }
 
-    public CometChatCustomBubble(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CometChatPlaceHolderBubble(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initComponent(context,attrs);
     }
 
-    public CometChatCustomBubble(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CometChatPlaceHolderBubble(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initComponent(context,attrs);
     }

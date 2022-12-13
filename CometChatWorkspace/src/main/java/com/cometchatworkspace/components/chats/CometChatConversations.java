@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.exceptions.CometChatException;
+import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.Conversation;
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.GroupMember;
@@ -31,6 +32,8 @@ import com.cometchat.pro.models.User;
 
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.groups.CometChatGroupEvents;
+import com.cometchatworkspace.components.messages.CometChatMessageEvents;
+import com.cometchatworkspace.components.messages.MessageStatus;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.ConversationListConfiguration;
@@ -43,8 +46,8 @@ import com.cometchatworkspace.components.users.CometChatUserEvents;
 import com.cometchatworkspace.resources.utils.CometChatError;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.recycler_touch.RecyclerViewSwipeListener;
 
 import java.util.HashMap;
@@ -80,10 +83,8 @@ public class CometChatConversations extends CometChatListBase {
     private Palette palette;
 
     private Typography typography;
-    private final User loggedInUser = CometChat.getLoggedInUser();
+    private User loggedInUser;
 
-    private String errorFont = null;
-    private int errorColor = 0;
     private boolean hideStartConversation, hideDeleteConversation = false;
     private Drawable startConversationIcon;
     private int startConversationIconColor;
@@ -187,7 +188,8 @@ public class CometChatConversations extends CometChatListBase {
         setStatusColor(palette.getBackground());
 
         cometchatConversationList = view.findViewById(R.id.cometchat_conversation_list);
-
+        if (CometChat.isInitialized() && CometChat.getLoggedInUser() != null)
+            loggedInUser = CometChat.getLoggedInUser();
         super.showBackButton(showBackButton);
         super.setTitle(title);
         super.backIcon(backButtonIcon);
@@ -214,7 +216,6 @@ public class CometChatConversations extends CometChatListBase {
         super.addListView(view);
 //        hideStartConversation(hideStartConversation);
         CometChatError.init(getContext());
-
 
         super.addEventListener(new OnEventListener() {
             @Override
@@ -274,34 +275,22 @@ public class CometChatConversations extends CometChatListBase {
                 }
             }
         };
+
         swipeHelper.attachToRecyclerView(cometchatConversationList.getRecyclerView());
         hideDeleteConversation(hideDeleteConversation);
 
+        setUserEvents();
+        setGroupEvents();
+
+    }
+
+    private void setGroupEvents() {
         CometChatGroupEvents.addGroupListener("conversations", new CometChatGroupEvents() {
-            @Override
-            public void onItemClick(Group group, int position) {
-
-            }
-
-            @Override
-            public void onGroupCreate(Group group) {
-
-            }
-
-            @Override
-            public void onError(CometChatException error) {
-
-            }
 
             @Override
             public void onGroupMemberLeave(User leftUser, Group leftGroup) {
                 if (leftUser.equals(loggedInUser) && cometchatConversationList != null)
                     cometchatConversationList.removeGroupConversation(leftGroup);
-            }
-
-            @Override
-            public void onGroupMemberChangeScope(User updatedBy, User updatedUser, String scopeChangedTo, String scopeChangedFrom, Group group) {
-
             }
 
             @Override
@@ -327,20 +316,10 @@ public class CometChatConversations extends CometChatListBase {
             }
 
             @Override
-            public void onGroupMemberUnban(User unbannedUser, User unbannedBy, Group unBannedFrom) {
-
-            }
-
-            @Override
             public void onGroupMemberJoin(User joinedUser, Group joinedGroup) {
                 if (cometchatConversationList != null && joinedGroup != null) {
                     cometchatConversationList.updateGroupConversation(joinedGroup);
                 }
-            }
-
-            @Override
-            public void onOwnershipChange(Group group, GroupMember member) {
-
             }
 
             @Override
@@ -349,7 +328,12 @@ public class CometChatConversations extends CometChatListBase {
                     cometchatConversationList.removeGroupConversation(group);
             }
         });
+
+    }
+
+    private void setUserEvents() {
         CometChatUserEvents.addUserListener("CometChatConversation", new CometChatUserEvents() {
+
             @Override
             public void onError(CometChatException error) {
 
@@ -374,6 +358,54 @@ public class CometChatConversations extends CometChatListBase {
             @Override
             public void onUserUnblock(User user) {
 
+            }
+        });
+
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        CometChatMessageEvents.addListener("CometChatConversationsWithMessages", new CometChatMessageEvents() {
+            @Override
+            public void onMessageSent(BaseMessage baseMessage, int status) {
+                if (status == MessageStatus.SUCCESS) {
+                    if (cometchatConversationList != null) {
+                        cometchatConversationList.refreshSingleConversation(baseMessage, false);
+                    }
+                }
+            }
+
+            @Override
+            public void onMessageError(CometChatException e, BaseMessage message) {
+                if (cometchatConversationList != null && message != null) {
+                    cometchatConversationList.refreshSingleConversation(message, false);
+                }
+            }
+
+            @Override
+            public void onMessageRead(BaseMessage baseMessage) {
+                if (cometchatConversationList != null && baseMessage != null) {
+                    cometchatConversationList.refreshSingleConversation(baseMessage, false);
+                }
+            }
+
+            @Override
+            public void onMessageEdit(BaseMessage baseMessage, int status) {
+                if (status == MessageStatus.SUCCESS) {
+                    if (cometchatConversationList != null && baseMessage != null) {
+                        cometchatConversationList.refreshSingleConversation(baseMessage, false);
+                    }
+                }
+            }
+
+            @Override
+            public void onMessageDelete(BaseMessage baseMessage,@MessageStatus int status) {
+                if (status == MessageStatus.SUCCESS) {
+                    if (cometchatConversationList != null && baseMessage != null) {
+                        cometchatConversationList.refreshSingleConversation(baseMessage, false);
+                    }
+                }
             }
         });
     }
@@ -487,19 +519,30 @@ public class CometChatConversations extends CometChatListBase {
             }
             String finalConversationUid = conversationUid;
             String finalType = type;
-            new CustomAlertDialogHelper(getContext(), errorFont, errorColor,
+
+
+            new CometChatDialog(context,
+                    0,
+                    typography.getText1(),
+                    typography.getText2(),
+                    palette.getAccent900(),
+                    0,
+                    palette.getAccent700(),
                     context.getString(R.string.delete_conversation_message),
-                    null,
-                    context.getString(R.string.yes),
                     "",
-                    context.getString(R.string.no),
-                    new OnAlertDialogButtonClickListener() {
+                    getContext().getString(R.string.yes),
+                    getResources().getString(R.string.no),
+                    "",
+                    palette.getPrimary(),
+                    palette.getPrimary(),
+                    0,
+                    new OnDialogButtonClickListener() {
                         @Override
                         public void onButtonClick(AlertDialog alertDialog,
-                                                  View v,
                                                   int which,
                                                   int popupId) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
+                                alertDialog.dismiss();
                                 ProgressDialog progressDialog = ProgressDialog.show(getContext(),
                                         null, context.getString(R.string.deleting_conversation));
                                 CometChat.deleteConversation(
@@ -510,7 +553,6 @@ public class CometChatConversations extends CometChatListBase {
                                                 Handler handler = new Handler();
                                                 handler.postDelayed(new Runnable() {
                                                     public void run() {
-                                                        alertDialog.dismiss();
                                                         progressDialog.dismiss();
                                                     }
                                                 }, 1500);
@@ -579,7 +621,9 @@ public class CometChatConversations extends CometChatListBase {
     /**
      * This method is used to set the type of ConversationList i.e User or Group
      *
-     * @param conversationListType -  It is a String object and here we can pass                             <b>CometChatConstant.CONVERSATION_TYPE_USER</b> or                             <b>CometChatConstant.CONVERSATION_TYPE_GROUP</b>
+     * @param conversationListType -  It is a String object and here we can pass
+     *  <b>CometChatConstant.CONVERSATION_TYPE_USER</b> or
+     *  <b>CometChatConstant.CONVERSATION_TYPE_GROUP</b>
      */
     public void setConversationType(String conversationListType) {
         this.conversationListType = conversationListType;
@@ -684,8 +728,8 @@ public class CometChatConversations extends CometChatListBase {
             cometchatConversationList.setHideError(((ConversationListConfiguration) configuration).isHideError());
             cometchatConversationList.withUserAndGroupTags(((ConversationListConfiguration) configuration).isUserAndGroupTags());
             cometchatConversationList.setTags(((ConversationListConfiguration) configuration).getTags());
-            cometchatConversationList.setUserTags(((ConversationListConfiguration)configuration).getUserTags());
-            cometchatConversationList.setGroupTags(((ConversationListConfiguration)configuration).getGroupTags());
+            cometchatConversationList.setUserTags(((ConversationListConfiguration) configuration).getUserTags());
+            cometchatConversationList.setGroupTags(((ConversationListConfiguration) configuration).getGroupTags());
             cometchatConversationList.setConversationType(((ConversationListConfiguration) configuration).getConversationType());
             cometchatConversationList.setLimit(((ConversationListConfiguration) configuration).getLimit());
 

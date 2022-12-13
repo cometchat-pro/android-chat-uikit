@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.RawRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.fragment.app.FragmentManager;
@@ -46,15 +46,21 @@ import com.cometchat.pro.models.TypingIndicator;
 import com.cometchat.pro.models.User;
 import com.cometchatworkspace.components.messages.MessageStatus;
 import com.cometchatworkspace.components.messages.CometChatMessageEvents;
+import com.cometchatworkspace.components.messages.emojiKeyboard.CometChatEmojiKeyboard;
+import com.cometchatworkspace.components.messages.emojiKeyboard.EmojiKeyboardStyle;
 import com.cometchatworkspace.components.messages.template.TemplateUtils;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatUIKitHelper;
 import com.cometchatworkspace.components.shared.primaryComponents.Style;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.ComposerConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
+import com.cometchatworkspace.components.shared.primaryComponents.soundManager.Sound;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionSheet;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionSheetStyle;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.CometChatActionSheetListener;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.OnOptionClick;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.onItemClick;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 import com.google.android.material.card.MaterialCardView;
 
@@ -69,7 +75,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionItem;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.CometChatActionSheet;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
@@ -83,23 +88,26 @@ import com.cometchatworkspace.resources.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CometChatComposer extends RelativeLayout implements View.OnClickListener {
+public class CometChatMessageComposer extends RelativeLayout implements View.OnClickListener {
 
-    private static final String TAG = CometChatComposer.class.getName();
-
-    private final User loggedInUser = CometChat.getLoggedInUser();
+    private static final String TAG = CometChatMessageComposer.class.getName();
+    private List<CometChatMessageTemplate> messageTypes = new ArrayList<>();
+    private User loggedInUser;
 
     private boolean isSendEmoji = true;
 
     private boolean isMicrophoneHidden = false;
-
-    private ActionItem galleryActionItem,cameraActionItem,audioActionItem,fileActionItem,
-            pollActionItem,stickerActionItem,documentActionItem,whiteboardActionItem,locationActionItem;
+    private boolean enableSoundForMessages = true;
+    private @RawRes
+    int customIncomingMessageSound = 0;
+    private ActionItem galleryActionItem, cameraActionItem, audioActionItem, fileActionItem,
+            pollActionItem, stickerActionItem, documentActionItem, whiteboardActionItem, locationActionItem;
 
     private boolean typingIndicatorEnabled = true;
 
     private AudioRecordView audioRecordView;
 
+    private boolean hideEmoji;
     private MediaRecorder mediaRecorder;
 
     private MediaPlayer mediaPlayer;
@@ -114,9 +122,9 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
     private String audioFileNameWithPath;
 
-    private boolean isOpen,isRecording,isPlaying,voiceMessage;
+    private boolean isOpen, isRecording, isPlaying, voiceMessage;
 
-    private ImageView ivSend, ivAttachment, ivMicrophone,ivDelete,ivSticker;
+    private ImageView ivSend, ivAttachment, ivMicrophone, ivDelete, ivSticker;
 
     private SeekBar voiceSeekbar;
 
@@ -133,7 +141,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     private RelativeLayout voiceMessageLayout;
 
     private RelativeLayout editMessageLayout;
-    private TextView editMessageTitle,editMessageSubTitle;
+    private TextView editMessageTitle, editMessageSubTitle;
     private ImageView editMessageCloseIv;
 
     private static final HashMap<String, Events> composeListener = new HashMap<>();
@@ -143,6 +151,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     private TextView replyMessage;
     private ImageView replyMedia;
     private ImageView replyClose;
+    private ImageView emojiIcon;
 
     private Context context;
 
@@ -156,7 +165,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
     public ImageView liveReactionBtn;
 
-    private String Id,name,type;
+    private String Id, name, type;
 
     private boolean isEdit;
 
@@ -164,11 +173,11 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
     private BaseMessage linkedMessage = null;
 
-    public boolean isGalleryVisible,isAudioVisible,isCameraVisible,
-            isFileVisible,isLocationVisible,isPollVisible,isStickerVisible,
-            isWhiteBoardVisible, isWriteBoardVisible, isGroupCallVisible;
+    public boolean isGalleryVisible, isAudioVisible, isCameraVisible,
+            isFileVisible, isLocationVisible, isPollVisible, isStickerVisible,
+            isWhiteBoardVisible, isWriteBoardVisible, isGroupCallVisible, hideComposeBox;
 
-    private OnOptionClick galleryClick,imageClick,audioClick,fileClick,locationClick,pollClick,stickerClick,
+    private onItemClick galleryClick, imageClick, audioClick, fileClick, locationClick, pollClick, stickerClick,
             whiteboardClick, documentClick;
     private Palette palette;
     private Typography typography;
@@ -179,47 +188,77 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     private int liveReactionIcon;
     private boolean isLiveReactionHidden = false;
     private boolean isCustomMessage;
+    private CometChatSoundManager soundManager;
+    private EmojiKeyboardStyle emojiKeyboardStyle;
+    private ActionSheetStyle actionSheetStyle;
 
-    public CometChatComposer(Context context) {
+    public CometChatMessageComposer(Context context) {
         super(context);
         if (!isInEditMode())
-            initViewComponent(context,null,-1,-1);
+            initViewComponent(context, null, -1, -1);
     }
 
-    public CometChatComposer(Context context, AttributeSet attrs) {
+    public CometChatMessageComposer(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode())
-            initViewComponent(context,attrs,-1,-1);
+            initViewComponent(context, attrs, -1, -1);
     }
 
-    public CometChatComposer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CometChatMessageComposer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!isInEditMode())
-            initViewComponent(context,attrs,defStyleAttr,-1);
+            initViewComponent(context, attrs, defStyleAttr, -1);
     }
 
-    private void initViewComponent(Context context,AttributeSet attributeSet,int defStyleAttr,int defStyleRes){
-        this.context=context;
-        palette=Palette.getInstance(context);
-        typography=Typography.getInstance();
+    private void initViewComponent(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
+        this.context = context;
+        palette = Palette.getInstance(context);
+        typography = Typography.getInstance();
         fontUtils = FontUtils.getInstance(context);
-        View view =View.inflate(context, R.layout.cometchat_compose_box,null);
+        messageTypes = TemplateUtils.getDefaultList(context);
+        soundManager = new CometChatSoundManager(context);
+        View view = View.inflate(context, R.layout.cometchat_compose_box, null);
         liveReactionIcon = R.drawable.heart_reaction;
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attributeSet, R.styleable.Composer, 0, 0);
         sendIcon = a.getDrawable(R.styleable.Composer_sendIcon);
-        sendIconColor = a.getColor(R.styleable.Composer_sendIconTint,getResources().getColor(R.color.colorPrimary));
+        sendIconColor = a.getColor(R.styleable.Composer_sendIconTint, getResources().getColor(R.color.colorPrimary));
         attachmentIcon = a.getDrawable(R.styleable.Composer_attachmentIcon);
-        attachmentIconColor = a.getColor(R.styleable.Composer_attachmentIconTint,0);
+        attachmentIconColor = a.getColor(R.styleable.Composer_attachmentIconTint, 0);
         placeHolder = a.getString(R.styleable.Composer_placeholder);
         microphoneIcon = a.getDrawable(R.styleable.Composer_microphoneIcon);
-        microphoneIconColor = a.getColor(R.styleable.Composer_microphoneIconTint,getResources().getColor(R.color.grey));
-        background = a.getColor(R.styleable.Composer_composerBackground,0);
-        cornerRadius = a.getDimension(R.styleable.Composer_corner_radius,24f);
-        placeHolderTextColor = a.getColor(R.styleable.Composer_placeholderColor,0);
+        microphoneIconColor = a.getColor(R.styleable.Composer_microphoneIconTint, getResources().getColor(R.color.grey));
+        background = a.getColor(R.styleable.Composer_composerBackground, 0);
+        cornerRadius = a.getDimension(R.styleable.Composer_corner_radius, 24f);
+        placeHolderTextColor = a.getColor(R.styleable.Composer_placeholderColor, 0);
+        if (CometChat.isInitialized() && CometChat.getLoggedInUser() != null)
+            loggedInUser = CometChat.getLoggedInUser();
         addView(view);
+        //setting default Style for emoji keyboard
+        Drawable drawable = getContext().getDrawable(R.drawable.cc_action_item_top_curve);
+        drawable.setTint(palette.getAccent900());
+        emojiKeyboardStyle = new EmojiKeyboardStyle()
+                .setSeparatorColor(palette.getAccent100())
+                .setCloseButtonTint(palette.getAccent100())
+                .setTitleColor(palette.getAccent())
+                .setTitleAppearance(typography.getName())
+                .setCategoryIconTint(palette.getAccent600())
+                .setSelectedCategoryIconTint(palette.getPrimary())
+                .setSectionHeaderColor(palette.getAccent700())
+                .setSectionHeaderAppearance(typography.getSubtitle1())
+                .setBackground(drawable);
 
+        actionSheetStyle=new ActionSheetStyle()
+                .setBackground(drawable)
+                .setTitleColor(palette.getAccent())
+                .setTitleAppearance(typography.getName())
+                .setListItemBackgroundColor(palette.getAccent50())
+                .setListItemIconTint(palette.getAccent700())
+                .setListItemTitleColor(palette.getAccent())
+                .setListItemTitleTextAppearance(typography.getSubtitle1())
+                .setLayoutModeIconTint(palette.getPrimary())
+                .setListItemSeparatorColor(palette.getAccent100());
 
-        ViewGroup viewGroup=(ViewGroup)view.getParent();
+        ViewGroup viewGroup = (ViewGroup) view.getParent();
         viewGroup.setClipChildren(false);
 
         mediaPlayer = new MediaPlayer();
@@ -239,27 +278,29 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 //        }
 
         liveReactionBtn = view.findViewById(R.id.live_reaction_btn);
-        composeBox=this.findViewById(R.id.message_box);
-        flBox=this.findViewById(R.id.flBox);
-        separator =this.findViewById(R.id.separator);
+        composeBox = this.findViewById(R.id.message_box);
+        flBox = this.findViewById(R.id.flBox);
+        separator = this.findViewById(R.id.separator);
         separator.setBackgroundColor(palette.getAccent100());
-        flBoxLayout=findViewById(R.id.flBox_layout);
-        ivMicrophone =this.findViewById(R.id.ivMic);
-        ivDelete=this.findViewById(R.id.ivDelete);
-        audioRecordView=this.findViewById(R.id.record_audio_visualizer);
-        voiceMessageLayout=this.findViewById(R.id.voiceMessageLayout);
-        recordTime=this.findViewById(R.id.record_time);
-        voiceSeekbar=this.findViewById(R.id.voice_message_seekbar);
-        ivAttachment =this.findViewById(R.id.ivArrow);
-        etComposeBox=this.findViewById(R.id.etComposeBox);
-        ivSend=this.findViewById(R.id.ivSend);
+        flBoxLayout = findViewById(R.id.flBox_layout);
+        ivMicrophone = this.findViewById(R.id.ivMic);
+        ivDelete = this.findViewById(R.id.ivDelete);
+        audioRecordView = this.findViewById(R.id.record_audio_visualizer);
+        voiceMessageLayout = this.findViewById(R.id.voiceMessageLayout);
+        recordTime = this.findViewById(R.id.record_time);
+        voiceSeekbar = this.findViewById(R.id.voice_message_seekbar);
+        ivAttachment = this.findViewById(R.id.ivArrow);
+        etComposeBox = this.findViewById(R.id.etComposeBox);
+        ivSend = this.findViewById(R.id.ivSend);
         ivSticker = this.findViewById(R.id.ivSticker);
-        ivSticker.setOnClickListener(clickView ->{
+        emojiIcon = this.findViewById(R.id.iv_emoji);
+
+        ivSticker.setOnClickListener(clickView -> {
             if (stickerClick == null) {
                 for (Events listener : composeListener.values())
                     listener.onStickerClicked();
             } else {
-                stickerClick.onClick(getReceiver(),context);
+                stickerClick.onClick(getReceiver(), context);
             }
         });
         //EditMessageLayout
@@ -292,100 +333,92 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
         ivSend.setOnClickListener(this);
         ivDelete.setOnClickListener(this);
         ivMicrophone.setOnClickListener(this);
-
+        emojiIcon.setOnClickListener(this);
 
         cometChatActionSheet = new CometChatActionSheet();
+        cometChatActionSheet.setStyle(actionSheetStyle);
         cometChatActionSheet.setEventListener(new CometChatActionSheetListener() {
             @Override
             public void onActionItemClick(ActionItem item) {
-                    if (item.getText().equalsIgnoreCase(context.getString(R.string.create_poll)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_POLL)) {
-                        if (pollClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onPollActionClicked();
-                        } else {
-                            pollClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.photo_video_library)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.VIDEO)) {
-                        if (galleryClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onGalleryActionClicked();
-                        } else {
-                            galleryClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.take_a_photo)) ||
-                                item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.IMAGE)) {
-                        if (imageClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onCameraActionClicked();
-                        } else {
-                            imageClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_files)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.FILE)) {
-                        if (fileClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onFileActionClicked();
-                        } else {
-                            fileClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_audio_files)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.AUDIO)) {
-                        if (audioClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onAudioActionClicked();
-                        } else {
-                            audioClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_location)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_LOCATION)) {
-                        if (locationClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onLocationActionClicked();
-                        } else {
-                            locationClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_whiteboard)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_WHITEBOARD)) {
-                        if (whiteboardClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onWhiteboardClicked();
-                        } else {
-                            whiteboardClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_writeboard)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_DOCUMENT)) {
-                        if (documentClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onDocumentClicked();
-                        } else {
-                            documentClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_sticker)) ||
-                            item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_STICKER)) {
-                        if (stickerClick == null) {
-                            for (Events listener : composeListener.values())
-                                listener.onStickerClicked();
-                        } else {
-                            stickerClick.onClick(getReceiver(),context);
-                        }
-                    }
-                    else {
-                        CometChatMessageTemplate template =
-                                CometChatMessagesConfigurations.getMessageTemplateById(item.getId());
+                if (item.getText().equalsIgnoreCase(context.getString(R.string.create_poll)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_POLL)) {
+                    if (pollClick == null) {
                         for (Events listener : composeListener.values())
-                            listener.onCustomUserAction(template);
+                            listener.onPollActionClicked();
+                    } else {
+                        pollClick.onClick(getReceiver(), context);
                     }
-                    hideActionSheet();
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.photo_video_library)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.VIDEO)) {
+                    if (galleryClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onGalleryActionClicked();
+                    } else {
+                        galleryClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.take_a_photo)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.IMAGE)) {
+                    if (imageClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onCameraActionClicked();
+                    } else {
+                        imageClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_files)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.FILE)) {
+                    if (fileClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onFileActionClicked();
+                    } else {
+                        fileClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_audio_files)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.AUDIO)) {
+                    if (audioClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onAudioActionClicked();
+                    } else {
+                        audioClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_location)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_LOCATION)) {
+                    if (locationClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onLocationActionClicked();
+                    } else {
+                        locationClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_whiteboard)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_WHITEBOARD)) {
+                    if (whiteboardClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onWhiteboardClicked();
+                    } else {
+                        whiteboardClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.share_writeboard)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_DOCUMENT)) {
+                    if (documentClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onDocumentClicked();
+                    } else {
+                        documentClick.onClick(getReceiver(), context);
+                    }
+                } else if (item.getText().equalsIgnoreCase(context.getString(R.string.send_sticker)) ||
+                        item.getId().equalsIgnoreCase(UIKitConstants.MessageTypeConstants.EXTENSION_STICKER)) {
+                    if (stickerClick == null) {
+                        for (Events listener : composeListener.values())
+                            listener.onStickerClicked();
+                    } else {
+                        stickerClick.onClick(getReceiver(), context);
+                    }
+                } else {
+                    CometChatMessageTemplate template =
+                            getMessageTemplateById(item.getId());
+                    for (Events listener : composeListener.values())
+                        listener.onCustomUserAction(template);
+                }
+                hideActionSheet();
             }
 
         });
@@ -405,11 +438,11 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().isEmpty()) {
-                    hideSend(false);
+                    showSendButton(true);
                     ivMicrophone.setVisibility(View.GONE);
                     liveReactionBtn.setVisibility(View.GONE);
                 } else {
-                    hideSend(true);
+                    showSendButton(false);
                     liveReactionBtn.setVisibility(View.VISIBLE);
                 }
 
@@ -450,7 +483,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 //            flBox.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
 //            ivAttachment.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
 //        }
-        if (palette.getPrimary()!=0) {
+        if (palette.getPrimary() != 0) {
             int settingsColor = palette.getPrimary();
             ivSend.setImageTintList(ColorStateList.valueOf(settingsColor));
         }
@@ -460,8 +493,8 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 for (CometChatMessageEvents e : CometChatMessageEvents.messageEvents.values()) {
-                    Reaction reaction = new Reaction("heart",liveReactionIcon);
-                    e.onLiveReaction("live_reaction",reaction);
+                    Reaction reaction = new Reaction("heart", liveReactionIcon);
+                    e.onLiveReaction("live_reaction", reaction);
                 }
             }
         });
@@ -485,9 +518,53 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
         stickerActionItem = new ActionItem(context.getString(R.string.send_sticker),
                 R.drawable.ic_sticker);
 
-        fetchMessageFilterConfiguration();
+        fetchMessageFilter();
         checkIfAttachmentIsVisible();
         a.recycle();
+    }
+
+    //To play sound when message is sent
+    public void playSound() {
+        if (enableSoundForMessages) {
+            soundManager.play(Sound.outgoingMessage, customIncomingMessageSound);
+        }
+    }
+
+    private CometChatMessageTemplate getMessageTemplateById(String id) {
+        for (CometChatMessageTemplate cometChatMessageTemplate : messageTypes) {
+            if (cometChatMessageTemplate.getId() != null) {
+                if (cometChatMessageTemplate.getId().equalsIgnoreCase(id)) {
+                    return cometChatMessageTemplate;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setMessageTypes(List<CometChatMessageTemplate> cometChatMessageTemplates) {
+        if (cometChatMessageTemplates != null) {
+            if (!cometChatMessageTemplates.isEmpty()) {
+                messageTypes = cometChatMessageTemplates;
+            } else {
+                messageTypes = new ArrayList<>();
+            }
+            fetchMessageFilter();
+        }
+    }
+
+    public void excludeMessageTypes(List<String> excludeMessageTypes) {
+        if (excludeMessageTypes != null && !excludeMessageTypes.isEmpty() && !messageTypes.isEmpty()) {
+            List<CometChatMessageTemplate> list = new ArrayList<>();
+            list.addAll(messageTypes);
+            for (CometChatMessageTemplate template : messageTypes) {
+                if (excludeMessageTypes.contains(template.getId())) {
+                    list.remove(template);
+                }
+            }
+            messageTypes.clear();
+            messageTypes.addAll(list);
+        }
+        fetchMessageFilter();
     }
 
     private AppEntity getReceiver() {
@@ -512,28 +589,36 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                 !isAudioVisible &&
                 !isLocationVisible &&
                 !isStickerVisible &&
-                !isWhiteBoardVisible && !isWriteBoardVisible &&!isCustomMessage) {
+                !isWhiteBoardVisible && !isWriteBoardVisible && !isCustomMessage) {
             ivAttachment.setVisibility(GONE);
         }
     }
 
+    public void enableSoundForMessages(boolean enableSoundForMessages) {
+        this.enableSoundForMessages = enableSoundForMessages;
+    }
+
+    public void setCustomIncomingMessageSound(@RawRes int customIncomingMessageSound) {
+        this.customIncomingMessageSound = customIncomingMessageSound;
+    }
+
     public void attachmentIcon(Drawable icon) {
-        if (icon!=null && ivAttachment!=null)
+        if (icon != null && ivAttachment != null)
             ivAttachment.setImageDrawable(icon);
     }
 
     public void attachmentIcon(int icon) {
-        if (icon!=0 && ivAttachment !=null)
+        if (icon != 0 && ivAttachment != null)
             ivAttachment.setImageResource(icon);
     }
 
     public void attachmentIconTint(@ColorInt int color) {
-        if (color!=0 && ivAttachment !=null)
+        if (color != 0 && ivAttachment != null)
             ivAttachment.setImageTintList(ColorStateList.valueOf(color));
     }
 
     public void hideAttachment(boolean b) {
-        if (ivAttachment !=null) {
+        if (ivAttachment != null) {
             if (b)
                 ivAttachment.setVisibility(View.GONE);
             else
@@ -542,23 +627,23 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public void sendIcon(Drawable sendIcon) {
-        if (sendIcon!=null && ivSend!=null)
+        if (sendIcon != null && ivSend != null)
             ivSend.setImageDrawable(sendIcon);
     }
 
     public void sendIcon(int sendIcon) {
-        if (sendIcon!=0 && ivSend!=null)
+        if (sendIcon != 0 && ivSend != null)
             ivSend.setImageResource(sendIcon);
     }
 
     public void sendIconTint(@ColorInt int color) {
-        if (color!=0 && ivSend!=null)
+        if (color != 0 && ivSend != null)
             ivSend.setImageTintList(ColorStateList.valueOf(color));
     }
 
-    private void hideSend(boolean b) {
-        if (ivSend!=null) {
-            if (b) {
+    private void showSendButton(boolean b) {
+        if (ivSend != null) {
+            if (!b) {
                 ivSend.setVisibility(GONE);
             } else
                 ivSend.setVisibility(VISIBLE);
@@ -566,16 +651,17 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public void microphoneIcon(Drawable micIcon) {
-        if (micIcon!=null && ivMicrophone!=null)
+        if (micIcon != null && ivMicrophone != null)
             ivMicrophone.setImageDrawable(micIcon);
     }
+
     public void microphoneIcon(int micIcon) {
-        if (micIcon!=0 && ivMicrophone !=null)
+        if (micIcon != 0 && ivMicrophone != null)
             ivMicrophone.setImageResource(micIcon);
     }
 
     public void microphoneIconTint(@ColorInt int color) {
-        if (color!=0 && ivMicrophone !=null)
+        if (color != 0 && ivMicrophone != null)
             ivMicrophone.setImageTintList(ColorStateList.valueOf(color));
     }
 
@@ -589,21 +675,22 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public void placeHolder(String placeHolder) {
-        if (etComposeBox!=null && placeHolder!=null)
+        if (etComposeBox != null && placeHolder != null)
             etComposeBox.setHint(placeHolder);
     }
 
     public void placeHolderColor(@ColorInt int color) {
-        if (etComposeBox!=null && color!=0)
+        if (etComposeBox != null && color != 0)
             etComposeBox.setHintTextColor(color);
     }
 
     public void placeHolderFont(String font) {
-        if (etComposeBox!=null)
+        if (etComposeBox != null)
             etComposeBox.setTypeface(fontUtils.getTypeFace(font));
     }
+
     public void textColor(@ColorInt int color) {
-        if (color!=0 && etComposeBox!=null)
+        if (color != 0 && etComposeBox != null)
             etComposeBox.setTextColor(color);
     }
 
@@ -612,7 +699,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public void background(@ColorInt int color) {
-        if (color!=0) {
+        if (color != 0) {
             if (flBox != null) {
                 flBoxLayout.setBackgroundColor(color);
             }
@@ -620,13 +707,13 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public void background(Drawable drawable) {
-        if (drawable!=null && flBox!=null)
+        if (drawable != null && flBox != null)
             flBoxLayout.setBackground(drawable);
     }
 
     public void liveReactionIcon(int icon) {
         liveReactionIcon = icon;
-        if (liveReactionBtn!=null && icon!=0) {
+        if (liveReactionBtn != null && icon != 0) {
             liveReactionBtn.setImageResource(icon);
         }
     }
@@ -637,7 +724,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
     public void hideLiveReaction(boolean b) {
         isLiveReactionHidden = b;
-        if (liveReactionBtn!=null) {
+        if (liveReactionBtn != null) {
             if (b)
                 liveReactionBtn.setVisibility(View.GONE);
             else
@@ -680,7 +767,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             linkedMessage = baseMessage;
             isReply = true;
             replyTitle.setText(baseMessage.getSender().getName());
-            replyMessage.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            replyMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             replyMedia.setVisibility(View.VISIBLE);
             if (baseMessage.getType().equals(CometChatConstants.MESSAGE_TYPE_TEXT)) {
 //                boolean isSentimentNegative = Extensions.checkSentiment(baseMessage);
@@ -721,7 +808,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                             Utils.getAddress(context, jsonObject.getDouble("latitude"),
                                     jsonObject.getDouble("longitude")));
                     replyMessage.setText(messageStr);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (baseMessage.getType().equals(UIKitConstants.IntentStrings.STICKERS)) {
@@ -734,9 +821,9 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             } else if (baseMessage.getType().equals(UIKitConstants.IntentStrings.POLLS)) {
                 try {
                     JSONObject jsonObject = ((CustomMessage) baseMessage).getCustomData();
-                    String messageStr = String.format(context.getString(R.string.shared_a_polls),jsonObject.getString("question"));
+                    String messageStr = String.format(context.getString(R.string.shared_a_polls), jsonObject.getString("question"));
                     replyMessage.setText(messageStr);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (baseMessage.getType().equals(UIKitConstants.IntentStrings.WHITEBOARD)) {
@@ -749,7 +836,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
             } else if (baseMessage.getType().equals(UIKitConstants.IntentStrings.GROUP_CALL)) {
                 replyMessage.setText(context.getString(R.string.has_shared_group_call));
-                replyMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_selected,0,0,0);
+                replyMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_selected, 0, 0, 0);
             }
             ivMicrophone.setVisibility(GONE);
             ivSend.setVisibility(View.VISIBLE);
@@ -776,11 +863,11 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     public static void addListener(String id, Events composeActionListener) {
-        composeListener.put(id,composeActionListener);
+        composeListener.put(id, composeActionListener);
     }
 
     public void hideActionSheet() {
-        if(cometChatActionSheet!=null && cometChatActionSheet.getFragmentManager()!=null)
+        if (cometChatActionSheet != null && cometChatActionSheet.getFragmentManager() != null)
             cometChatActionSheet.dismiss();
     }
 
@@ -809,7 +896,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     }
 
     private void endTypingTimer() {
-        if (typingTimer!=null) {
+        if (typingTimer != null) {
             typingTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -821,7 +908,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        if (view.getId()==R.id.ivDelete) {
+        if (view.getId() == R.id.ivDelete) {
             stopRecording(true);
             stopPlayingAudio();
             voiceMessageLayout.setVisibility(GONE);
@@ -836,7 +923,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             ivDelete.setVisibility(GONE);
             ivSend.setVisibility(View.GONE);
         }
-        if (view.getId()==R.id.ivSend){
+        if (view.getId() == R.id.ivSend) {
             if (!voiceMessage) {
                 sendTextMessage(linkedMessage);
             } else {
@@ -858,20 +945,20 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             }
 
         }
-        if(view.getId()==R.id.ivArrow) {
+        if (view.getId() == R.id.ivArrow) {
 //            if (isOpen) {
 //               closeActionContainer();
 //            } else {
 //                openActionContainer();
 //            }
 
-            FragmentManager fm = ((AppCompatActivity)getContext()).getSupportFragmentManager();
+            FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
             String mode = ActionSheet.LayoutMode.listMode;
             cometChatActionSheet.setLayoutMode(mode);
             cometChatActionSheet.show(fm, cometChatActionSheet.getTag());
         }
-        if (view.getId()==R.id.ivMic) {
-            if (Utils.hasPermissions(context, Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (view.getId() == R.id.ivMic) {
+            if (Utils.hasPermissions(context, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                 if (isOpen) {
 //                    closeActionContainer();
@@ -900,19 +987,36 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ((Activity)context).requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    ((Activity) context).requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             UIKitConstants.RequestCode.RECORD);
                 }
             }
         }
-        if (view.getId()==R.id.iv_message_close) {
+        if (view.getId() == R.id.iv_message_close) {
             isEdit = false;
             editMessageLayout.setVisibility(GONE);
             for (Events composeActionListener : composeListener.values())
                 composeActionListener.onViewClosed();
         }
+        if (view.getId() == R.id.iv_emoji) {
+            CometChatEmojiKeyboard emojiKeyboard = new CometChatEmojiKeyboard(getContext());
+            emojiKeyboard.setStyle(emojiKeyboardStyle);
+            emojiKeyboard.show();
+            emojiKeyboard.setOnClick(new CometChatEmojiKeyboard.onClick() {
+                @Override
+                public void onClick(String emoji) {
+                    etComposeBox.setText(emoji + "");
+                    emojiKeyboard.dismiss();
+                }
 
-        if (view.getId()==R.id.iv_reply_close) {
+                @Override
+                public void onLongClick(String emoji) {
+
+                }
+            });
+        }
+
+        if (view.getId() == R.id.iv_reply_close) {
             for (Events composeActionListener : composeListener.values())
                 composeActionListener.onViewClosed();
 //            if (cometChatMessageList !=null) {
@@ -954,7 +1058,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             if (!isSendEmoji) {
                 if (filterEmojiMessage.trim().isEmpty()) {
                     Toast.makeText(getContext(), "Emoji Support is not enabled",
-                                Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG).show();
                     return;
                 }
             }
@@ -1000,8 +1104,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
             @Override
             public void onError(CometChatException e) {
-                for (CometChatMessageEvents events : CometChatMessageEvents.messageEvents.values())
-                    events.onMessageError(e);
+                CometChatUIKitHelper.onMessageError(e, baseMessage);
             }
         });
 
@@ -1010,11 +1113,12 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
     /**
      * This method is used to send reply message by link previous message with new message.
      * It can also used to send new message by setting baseMessage as null and isReplyMessage as false.
-     * @param baseMessage is a linked message
-     * @param message is a String. It will be new message sent as reply.
+     *
+     * @param baseMessage    is a linked message
+     * @param message        is a String. It will be new message sent as reply.
      * @param isReplyMessage is a boolean used to identify if the message is reply message or not.
      */
-    private void sendMessage(BaseMessage baseMessage, String message,boolean isReplyMessage) {
+    private void sendMessage(BaseMessage baseMessage, String message, boolean isReplyMessage) {
         isReply = false;
         try {
             TextMessage textMessage;
@@ -1025,15 +1129,15 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 
             textMessage.setCategory(CometChatConstants.CATEGORY_MESSAGE);
             textMessage.setSender(loggedInUser);
-            textMessage.setSentAt(System.currentTimeMillis()/1000);
-            textMessage.setMuid(System.currentTimeMillis()+"");
+            textMessage.setSentAt(System.currentTimeMillis() / 1000);
+            textMessage.setMuid(System.currentTimeMillis() + "");
             if (isReplyMessage) {
                 JSONObject replyObject = new JSONObject();
                 replyObject.put("reply-message", baseMessage.getRawMessage());
                 textMessage.setMetadata(replyObject);
             }
             for (CometChatMessageEvents listener : CometChatMessageEvents.messageEvents.values()) {
-                listener.onMessageSent(textMessage,MessageStatus.IN_PROGRESS);
+                listener.onMessageSent(textMessage, MessageStatus.IN_PROGRESS);
             }
 
 //            if (cometChatMessageList != null) {
@@ -1048,7 +1152,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                 public void onSuccess(TextMessage textMessage) {
                     if (isReplyMessage) {
                         for (CometChatMessageEvents listener : CometChatMessageEvents.messageEvents.values()) {
-                            listener.onMessageReply(textMessage,MessageStatus.SUCCESS);
+                            listener.onMessageReply(textMessage, MessageStatus.SUCCESS);
                         }
                     } else {
                         for (CometChatMessageEvents listener : CometChatMessageEvents.messageEvents.values()) {
@@ -1080,21 +1184,21 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
 //                    }
                 }
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void startRecord() {
-            etComposeBox.setVisibility(GONE);
-            recordTime.setBase(SystemClock.elapsedRealtime());
-            recordTime.start();
-            ivAttachment.setVisibility(GONE);
-            voiceSeekbar.setVisibility(GONE);
-            voiceMessageLayout.setVisibility(View.VISIBLE);
-            audioRecordView.recreate();
-            audioRecordView.setVisibility(View.VISIBLE);
-            startRecording();
+        etComposeBox.setVisibility(GONE);
+        recordTime.setBase(SystemClock.elapsedRealtime());
+        recordTime.start();
+        ivAttachment.setVisibility(GONE);
+        voiceSeekbar.setVisibility(GONE);
+        voiceMessageLayout.setVisibility(View.VISIBLE);
+        audioRecordView.recreate();
+        audioRecordView.setVisibility(View.VISIBLE);
+        startRecording();
     }
 
     private void startPlayingAudio(String path) {
@@ -1106,12 +1210,12 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             }
 
             mediaPlayer.reset();
-            if (Utils.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (Utils.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 mediaPlayer.setDataSource(path);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
             } else {
-                ((Activity)context).requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                ((Activity) context).requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         UIKitConstants.RequestCode.READ_STORAGE);
             }
 
@@ -1159,6 +1263,7 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
         if (mediaPlayer != null)
             mediaPlayer.stop();
     }
+
     private void startRecording() {
         try {
             mediaRecorder = new MediaRecorder();
@@ -1180,12 +1285,13 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                     try {
                         currentMaxAmp = mediaRecorder != null ? mediaRecorder.getMaxAmplitude() : 0;
                         audioRecordView.update(currentMaxAmp);
-                        if (mediaRecorder==null)
+                        if (mediaRecorder == null)
                             timer = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }}, 0, 100);
+                }
+            }, 0, 100);
             mediaRecorder.start();
 
         } catch (Exception e) {
@@ -1213,33 +1319,32 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
             if (keyboardVisible) {
 //                cometChatMessageList.scrollToBottom();
                 liveReactionBtn.setVisibility(View.GONE);
-                hideSend(false);
+                showSendButton(true);
             } else {
                 if (isEdit || isReply || !getText().isEmpty()) {
                     liveReactionBtn.setVisibility(View.GONE);
-                    hideSend(false);
+                    showSendButton(true);
                 } else {
-                   if (!isLiveReactionHidden)
-                       liveReactionBtn.setVisibility(View.VISIBLE);
-                   hideSend(true);
+                    if (!isLiveReactionHidden)
+                        liveReactionBtn.setVisibility(View.VISIBLE);
+                    showSendButton(false);
                 }
             }
         });
     }
 
-    public void typingIndicator(boolean isEnabled) {
+    public void enableTypingIndicator(boolean isEnabled) {
         typingIndicatorEnabled = isEnabled;
     }
 
-    public void fetchMessageFilterConfiguration() {
-        List<CometChatMessageTemplate> list = CometChatMessagesConfigurations.getMessageFilterList();
+    private void fetchMessageFilter() {
+        resetBooleans();
         List<ActionItem> listOfItems = new ArrayList<>();
-        if (list.isEmpty()) {
-            list = TemplateUtils.getDefaultList(context);
-        }
-        for (CometChatMessageTemplate template : list) {
-            if(template.getId()!=null) {
-                if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.video)) {
+        for (CometChatMessageTemplate template : messageTypes) {
+            if (template.getId() != null) {
+                if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.text)) {
+                    hideComposeBox = false;
+                } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.video)) {
                     isGalleryVisible = true;
                     if (template.getName() != null)
                         galleryActionItem.setTitle(template.getName());
@@ -1337,46 +1442,86 @@ public class CometChatComposer extends RelativeLayout implements View.OnClickLis
                         stickerActionItem.setId(template.getId());
                     if (template.getClickListener() != null)
                         stickerClick = template.getClickListener();
-                    listOfItems.add(stickerActionItem);
                 } else if (!template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.text)
                         && !template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.callAction)
                         && !template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.groupCall)
                         && !template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.groupAction)) {
-                    isCustomMessage=true;
+                    isCustomMessage = true;
                     ActionItem customItem = new ActionItem(template.getName(), template.getIcon());
                     customItem.setId(template.getId());
                     listOfItems.add(customItem);
+
                 }
             }
         }
+        showSticker(isStickerVisible);
+        hideComposeBox(hideComposeBox);
         cometChatActionSheet.setList(listOfItems);
     }
+
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (timer!=null)
+        if (timer != null)
             timer.cancel();
+    }
+
+    private void resetBooleans() {
+        hideComposeBox = true;
+        isGalleryVisible = false;
+        isAudioVisible = false;
+        isCameraVisible = false;
+        isFileVisible = false;
+        isLocationVisible = false;
+        isPollVisible = false;
+        isStickerVisible = false;
+        isWhiteBoardVisible = false;
+        isWriteBoardVisible = false;
+        isGroupCallVisible = false;
+    }
+
+    private void showSticker(boolean show) {
+        isStickerVisible = show;
+        if (isStickerVisible)
+            ivSticker.setVisibility(VISIBLE);
+        else
+            ivSticker.setVisibility(GONE);
+    }
+
+    public void hideEmoji(boolean hide) {
+        this.hideEmoji = hide;
+        if (hide)
+            emojiIcon.setVisibility(GONE);
+        else
+            emojiIcon.setVisibility(VISIBLE);
+    }
+
+    private void hideComposeBox(boolean hide) {
+        if (hide)
+            etComposeBox.setVisibility(GONE);
+        else
+            etComposeBox.setVisibility(VISIBLE);
     }
 
     public void setConfiguration(CometChatConfigurations configuration) {
         if (configuration instanceof ComposerConfiguration) {
-            ComposerConfiguration composerConfiguration = (ComposerConfiguration)configuration;
+            ComposerConfiguration composerConfiguration = (ComposerConfiguration) configuration;
             hideLiveReaction(composerConfiguration.isLiveReactionHidden());
-            if (composerConfiguration.getLiveReactionIcon()>0)
+            if (composerConfiguration.getLiveReactionIcon() > 0)
                 liveReactionIcon(composerConfiguration.getLiveReactionIcon());
             hideAttachment(composerConfiguration.isAttachmentHidden());
-            if (composerConfiguration.getAttachmentIcon()>0)
+            if (composerConfiguration.getAttachmentIcon() > 0)
                 attachmentIcon(composerConfiguration.getAttachmentIcon());
             hideMicrophone(composerConfiguration.isMicrophoneHidden());
-            if (composerConfiguration.getMicrophoneIcon()>0)
+            if (composerConfiguration.getMicrophoneIcon() > 0)
                 microphoneIcon(composerConfiguration.getMicrophoneIcon());
             setStyle(composerConfiguration.getStyle());
         }
     }
 
     public void setStyle(Style style) {
-        if (style!=null) {
+        if (style != null) {
             if (style.getGradientBackground() != null) {
                 background(style.getGradientBackground());
             }

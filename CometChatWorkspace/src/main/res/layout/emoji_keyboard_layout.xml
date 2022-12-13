@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/emoji_parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/scroll_down_button"
+        android:layout_width="50dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="6dp"
+        app:cardBackgroundColor="@color/accent100"
+        app:cardCornerRadius="2dp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="18dp"
+        android:text="Select Reaction"
+        android:textAppearance="@style/Name" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emoji_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="254dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/transparent"
+        android:overScrollMode="never" />
+
+    <TextView
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/accent100" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/category_tab"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:visibility="visible"
+        app:tabGravity="fill"
+        app:tabIndicator="@null"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorGravity="bottom"
+        app:tabMaxWidth="51dp"
+        app:tabMode="scrollable" />
+</LinearLayout>

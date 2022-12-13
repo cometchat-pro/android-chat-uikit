@@ -1,35 +1,31 @@
 package com.cometchatworkspace.components.messages.message_list.message_bubble;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
+
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Color;
+
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+
 import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.models.Attachment;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.models.CustomMessage;
 import com.cometchat.pro.models.MediaMessage;
@@ -42,11 +38,9 @@ import com.cometchatworkspace.components.messages.message_list.message_bubble.ut
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageBubbleListener;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageInputData;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.TimeAlignment;
-import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.AvatarConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
+
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageReceiptConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
@@ -54,9 +48,10 @@ import com.cometchatworkspace.components.shared.secondaryComponents.CometChatMes
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAvatar.CometChatAvatar;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatDate.CometChatDate;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.CometChatMessageReaction;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.MessageReactionsStyle;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 import com.cometchatworkspace.resources.utils.FontUtils;
-import com.cometchatworkspace.resources.utils.Utils;
+
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 
@@ -72,18 +67,20 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
 
     private MaterialCardView bubble;
     private RelativeLayout cvMessageBubble;
-
+    private LinearLayout linearLayout;
     private CometChatAvatar ivUser;
     private TextView tvUser;
 
     private CometChatDate txtTime;
     private CometChatMessageReceipt messageReceipt;
     private View receiptLayout;
-
+    private View translateView;
     private TextView divider;
     private TextView tvThreadReplyCount;
 
     private CometChatMessageReaction reactionLayout;
+
+    private AppCompatActivity activity = null; //to perform any logic on data for custom View
 
     private String alignment = Alignment.RIGHT;
 
@@ -95,14 +92,17 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
     private Typography typography;
 
     private int borderColor = 0;
-
+    private TextView translatedMessage;
+    private TextView translateSubtitle;
     private int borderWidth = 0;
 
     private String url;
 
     private View childView;
 
-    private int layoutId=0;
+    private int layoutId = 0;
+
+    private MessageReactionsStyle messageReactionsStyle;
 
     public CometChatMessageBubble(Context context) {
         super(context);
@@ -127,7 +127,7 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
     private void initComponent(Context context, AttributeSet attributeSet) {
         this.context = context;
         palette = Palette.getInstance(context);
-        typography= Typography.getInstance();
+        typography = Typography.getInstance();
         fontUtils = FontUtils.getInstance(context);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attributeSet,
@@ -180,12 +180,20 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
         txtTime = view.findViewById(R.id.time);
         messageReceipt = view.findViewById(R.id.receiptsIcon);
         receiptLayout = view.findViewById(R.id.receipt_layout);
+        translateView = view.findViewById(R.id.translate_view);
         ivUser = view.findViewById(R.id.iv_user);
         ivUser.setBackgroundColor(palette.getAccent700());
         ivUser.setTextColor(palette.getAccent900());
         tvThreadReplyCount = view.findViewById(R.id.thread_reply_count);
         divider = view.findViewById(R.id.divider);
         reactionLayout = view.findViewById(R.id.reactions_group);
+        if (alignment.equalsIgnoreCase(Alignment.RIGHT))
+            linearLayout = view.findViewById(R.id.linear_lay);
+
+
+        //Translate
+//        translatedMessage = view.findViewById(R.id.translate_message);
+//        translateSubtitle = view.findViewById(R.id.translate_subtitle);
         reactionLayout.setReactionEventListener(new CometChatMessageReaction.OnReactionClickListener() {
             @Override
             public void onReactionClick(Reaction reaction, int baseMessageID) {
@@ -193,6 +201,7 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
                     messageBubbleListener.onReactionClick(reaction, baseMessageID);
             }
         });
+
     }
 
     public void messageInputData(MessageInputData messageInputData) {
@@ -226,7 +235,7 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
     }
 
     public void cornerRadius(ShapeAppearanceModel shapeAppearanceModel) {
-        if (bubble!=null)
+        if (bubble != null)
             bubble.setShapeAppearanceModel(shapeAppearanceModel);
     }
 
@@ -339,7 +348,11 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
         if (count != 0) {
             divider.setVisibility(View.VISIBLE);
             tvThreadReplyCount.setVisibility(View.VISIBLE);
-            tvThreadReplyCount.setText(baseMessage.getReplyCount() + " " + context.getResources().getString(R.string.replies));
+            if (baseMessage != null)
+                tvThreadReplyCount.setText(baseMessage.getReplyCount() + " " + context.getResources().getString(R.string.replies));
+            else
+                tvThreadReplyCount.setText(count + " " + context.getResources().getString(R.string.replies));
+
         } else {
             divider.setVisibility(View.GONE);
             tvThreadReplyCount.setVisibility(View.GONE);
@@ -352,8 +365,8 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
     }
 
     public void messageTimeAlignment(TimeAlignment timeAlignment) {
+        LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
         if (timeAlignment == TimeAlignment.TOP) {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
             params.addRule(RelativeLayout.END_OF, R.id.tv_user);
             params.addRule(RelativeLayout.ALIGN_START, 0);
             params.addRule(RelativeLayout.BELOW, 0);
@@ -365,7 +378,6 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
             messageBubbleParam.bottomMargin = 8;
 //            receiptLayout.setLayoutParams(params);
         } else {
-            LayoutParams params = (LayoutParams) receiptLayout.getLayoutParams();
             params.addRule(RelativeLayout.BELOW, R.id.thread_reply_count);
 //            receiptLayout.setLayoutParams(params);
         }
@@ -381,57 +393,85 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
             messageReceipt.setVisibility(visible);
     }
 
+    public void setCustomView(int layoutId) {
+        if (layoutId != 0)
+            this.layoutId = layoutId;
+    }
+
+    public void setActivity(AppCompatActivity activity) {
+        if (activity != null)
+            this.activity = activity;
+    }
+
     public void messageObject(BaseMessage baseMessage) {
         this.baseMessage = baseMessage;
+        if(alignment.equalsIgnoreCase(Alignment.RIGHT) && baseMessage instanceof TextMessage){
+            messageReactionsStyle=new MessageReactionsStyle()
+                    .setActiveBackground(palette.getAccent900())
+                    .setTextColor(palette.getAccent700())
+                    .setBackground(palette.getPrimary())
+                    .setBorderColor(palette.getAccent900())
+                    .setAddReactionIconBackground(palette.getAccent100())
+                    .setAddReactionIconTint(palette.getAccent900())
+                    .setBorderWidth(1);
+        }else{
+            messageReactionsStyle=new MessageReactionsStyle()
+                    .setActiveBackground(palette.getPrimary())
+                    .setTextColor(palette.getAccent700())
+                    .setBackground(palette.getAccent900())
+                    .setBorderColor(palette.getAccent100())
+                    .setAddReactionIconBackground(palette.getAccent100())
+                    .setAddReactionIconTint(palette.getAccent700())
+                    .setBorderWidth(1);
+        }
+
         messageReceipt.messageObject(baseMessage);
         txtTime.setDate(baseMessage.getSentAt(), "hh:mm a");
         txtTime.setTransparentBackground(true);
         if (childView != null && cvMessageBubble != null) {
             if (childView.getParent() != null)
                 ((ViewGroup) childView.getParent()).removeView(childView);
-            //CustomView
-            CometChatMessageTemplate messageTemplate = CometChatMessagesConfigurations
-                    .getMessageTemplateById(baseMessage.getType());
-            if(messageTemplate!=null)
-                layoutId = messageTemplate.getView();
-//        dataView = messageTemplate.getDataView();
-            if (layoutId != 0) {
-                LayoutInflater inflater = LayoutInflater.from(context);
-                ViewDataBinding binding = DataBindingUtil.inflate(inflater,layoutId,null,false);
-                if(messageTemplate !=null && messageTemplate.getActivity()!=null){
-                    binding.setVariable(BR.activity,messageTemplate.getActivity());
-                }
-                if (baseMessage instanceof MediaMessage)
-                    binding.setVariable(BR.message, baseMessage);
-                else if (baseMessage instanceof TextMessage)
-                    binding.setVariable(BR.message, baseMessage);
-                else if (baseMessage instanceof CustomMessage)
-                    binding.setVariable(BR.message, baseMessage);
-                View customView = binding.getRoot();
-//            View customView = LayoutInflater.from(context).inflate(layoutId, null);
-                cvMessageBubble.removeAllViewsInLayout();
-                if (customView.getParent() != null)
-                    ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
-                cvMessageBubble.addView(customView);
-                customView.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        if(messageBubbleListener !=null) {
-                            messageBubbleListener.onLongCLick(baseMessage);
-                        }
-                        return true;
-                    }
-                });
-                customView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(messageBubbleListener !=null) {
-                            messageBubbleListener.onClick(baseMessage);
-                        }
-                    }
-                });
-            } else {
 
+            if (layoutId != 0) {
+                try {
+                    LayoutInflater inflater = LayoutInflater.from(context);
+                    ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, null, false);
+                    if (activity != null) {
+                        binding.setVariable(BR.activity, activity);
+                    }
+                    if (baseMessage instanceof MediaMessage)
+                        binding.setVariable(BR.message, baseMessage);
+                    else if (baseMessage instanceof TextMessage)
+                        binding.setVariable(BR.message, baseMessage);
+                    else if (baseMessage instanceof CustomMessage)
+                        binding.setVariable(BR.message, baseMessage);
+                    View customView = binding.getRoot();
+//            View customView = LayoutInflater.from(context).inflate(layoutId, null);
+                    cvMessageBubble.removeAllViewsInLayout();
+                    if (customView.getParent() != null)
+                        ((ViewGroup) customView.getParent()).removeAllViewsInLayout();
+                    cvMessageBubble.addView(customView);
+                    customView.setOnLongClickListener(new OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            if (messageBubbleListener != null) {
+                                messageBubbleListener.onLongCLick(baseMessage);
+                            }
+                            return true;
+                        }
+                    });
+                    customView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (messageBubbleListener != null) {
+                                messageBubbleListener.onClick(baseMessage);
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
                 cvMessageBubble.addView(childView);
                 if (childView instanceof CometChatTextBubble && baseMessage instanceof TextMessage) {
                     CometChatTextBubble textBubble = (CometChatTextBubble) childView;
@@ -480,6 +520,7 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
             tvUser.setText(baseMessage.getSender().getName());
         if (ivUser != null)
             ivUser.setAvatar(baseMessage.getSender());
+        reactionLayout.setStyle(messageReactionsStyle);
         reactionLayout.setMessage(baseMessage);
         if (cvMessageBubble != null) {
             cvMessageBubble.setOnClickListener(view -> {
@@ -497,8 +538,53 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
                 }
             });
         }
+        checkForTranslation(baseMessage);
+        this.baseMessage = null;
+    }
+
+    private void checkForTranslation(BaseMessage baseMessage) {
+
+        if (baseMessage != null) {
+            if (baseMessage.getMetadata() != null && baseMessage.getMetadata().has("values")) {
+                try {
+                    if (Extensions.isMessageTranslated(baseMessage.getMetadata().getJSONArray("values").getJSONObject(0), ((TextMessage) baseMessage).getText())) {
+                        String translatedStr = Extensions.getTranslatedMessage(baseMessage);
+
+                        if (translatedStr != null && !translatedStr.isEmpty()) {
+                            translateView.setVisibility(VISIBLE);
+                            TextView translatedMessage = translateView.findViewById(R.id.translate_message);
+                            TextView translateSubtitle = translateView.findViewById(R.id.translate_subtitle);
+                            translatedMessage.setText(translatedStr);
+
+                            if (alignment.equalsIgnoreCase(Alignment.RIGHT)) {
+                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                params.gravity = Gravity.LEFT;
+                                cvMessageBubble.setLayoutParams(params);
+                                translatedMessage.setTextColor(palette.getAccent900());
+                                translateSubtitle.setTextColor(palette.getAccent900());
+                                bubble.setCardBackgroundColor(getResources().getColor(R.color.primary));
+                            }else {
+                                translatedMessage.setTextColor(palette.getAccent());
+                                translateSubtitle.setTextColor(palette.getAccent());
+                            }
+
+                        } else {
+                            translateView.setVisibility(GONE);
+                        }
+                    }
+                } catch (JSONException e) {
+                    translateView.setVisibility(GONE);
+                    Toast.makeText(context, context.getString(R.string.translation_error), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                translateView.setVisibility(GONE);
+            }
+        } else {
+            translateView.setVisibility(GONE);
+        }
 
     }
+
 
     public void setMessageBubbleListener(MessageBubbleListener listener) {
         messageBubbleListener = listener;
@@ -523,7 +609,7 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
 
     public void setConfiguration(CometChatConfigurations configuration) {
         if (configuration instanceof AvatarConfiguration) {
-            AvatarConfiguration config = (AvatarConfiguration)configuration;
+            AvatarConfiguration config = (AvatarConfiguration) configuration;
             setAvatarConfig(config);
         } else if (configuration instanceof MessageReceiptConfiguration) {
             MessageReceiptConfiguration config = (MessageReceiptConfiguration) configuration;
@@ -532,33 +618,33 @@ public class CometChatMessageBubble extends RelativeLayout implements MessageBub
     }
 
     private void setMessageReceiptConfig(MessageReceiptConfiguration config) {
-        if (config.getDeliveredIcon()!=null)
+        if (config.getDeliveredIcon() != null)
             messageReceipt.messageDeliveredIcon(config.getDeliveredIcon());
-        if (config.getSentIcon()!=null)
+        if (config.getSentIcon() != null)
             messageReceipt.messageSentIcon(config.getSentIcon());
-        if (config.getReadIcon()!=null)
+        if (config.getReadIcon() != null)
             messageReceipt.messageReadIcon(config.getReadIcon());
-        if (config.getInProgressIcon()!=null)
+        if (config.getInProgressIcon() != null)
             messageReceipt.messageProgressIcon(config.getInProgressIcon());
-        if (config.getWidth()!=-1 && config.getHeight()!=-1) {
+        if (config.getWidth() != -1 && config.getHeight() != -1) {
             LayoutParams params = new RelativeLayout.LayoutParams(
-                    (int)config.getWidth(),
-                    (int)config.getHeight());
+                    (int) config.getWidth(),
+                    (int) config.getHeight());
             messageReceipt.setLayoutParams(params);
         }
     }
 
     private void setAvatarConfig(AvatarConfiguration config) {
-        if (config.getCornerRadius()!=-1)
+        if (config.getCornerRadius() != -1)
             ivUser.setCornerRadius(config.getCornerRadius());
-        if (config.getBorderWidth()!=-1)
+        if (config.getBorderWidth() != -1)
             ivUser.setBorderWidth(config.getBorderWidth());
-        if (config.getOuterViewWidth()!=-1)
+        if (config.getOuterViewWidth() != -1)
             ivUser.setOuterViewSpacing(config.getOuterViewWidth());
-        if (config.getHeight()!=-1 && config.getWidth()!=-1) {
+        if (config.getHeight() != -1 && config.getWidth() != -1) {
             RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
-                    (int)config.getWidth(),
-                    (int)config.getHeight());
+                    (int) config.getWidth(),
+                    (int) config.getHeight());
             ivUser.setLayoutParams(param);
         }
     }

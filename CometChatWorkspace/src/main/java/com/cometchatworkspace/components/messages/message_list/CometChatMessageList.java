@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -14,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +26,9 @@ import android.widget.Toast;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.annotation.StringDef;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,15 +54,17 @@ import com.cometchatworkspace.components.messages.MessageStatus;
 import com.cometchatworkspace.components.messages.message_list.adapter.MessageAdapter;
 import com.cometchatworkspace.components.messages.message_list.message_bubble.utils.MessageInputData;
 import com.cometchatworkspace.components.messages.template.CometChatMessageTemplate;
+import com.cometchatworkspace.components.shared.primaryComponents.CometChatUIKitHelper;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageBubbleConfiguration;
 import com.cometchatworkspace.components.shared.primaryComponents.configurations.MessageListConfiguration;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
+import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
 import com.cometchatworkspace.components.messages.template.TemplateUtils;
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
 import com.cometchatworkspace.components.messages.common.forward_message.CometChatForwardMessageActivity;
-import com.cometchatworkspace.components.shared.primaryComponents.configurations.CometChatMessagesConfigurations;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.CometChatSoundManager;
 import com.cometchatworkspace.components.shared.primaryComponents.soundManager.Sound;
 import com.cometchatworkspace.components.shared.secondaryComponents.CometChatSnackBar;
@@ -63,13 +72,15 @@ import com.cometchatworkspace.components.shared.secondaryComponents.cometchatAct
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionSheet;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.CometChatActionSheet;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.CometChatActionSheetListener;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.OnOptionClick;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.onItemClick;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSmartReplies.CometChatSmartReplies;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSmartReplies.SmartRepliesStyle;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
 import com.cometchatworkspace.resources.utils.CometChatError;
 import com.cometchatworkspace.resources.utils.MediaUtils;
-import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.cometchatworkspace.resources.utils.sticker_header.StickyHeaderDecoration;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -103,8 +114,21 @@ public class CometChatMessageList extends RelativeLayout implements
         MessageAdapter.OnMessageLongClick {
 
     private static final String TAG = "MessageList";
-
-    private static final int LIMIT = 30;
+    private final int TRANSLATE_ERROR = 1;
+    private final int FETCH_ERROR = 2;
+    private final int DELETE_ERROR = 3;
+    private int limit = 30;
+    private boolean unreadOnly;
+    private boolean hideMessagesFromBlockedUsers;
+    private boolean hideDeleteMessage;
+    private boolean withTag;
+    private boolean hideReply;
+    private boolean enableSoundForMessages = true;
+    private boolean hideError;
+    private @RawRes
+    int customIncomingMessageSound = 0;
+    private List<String> tags = new ArrayList<>();
+    private MessageInputData sentMessageInputData, receivedMessageInputData;
 
     private String name;
 
@@ -118,9 +142,20 @@ public class CometChatMessageList extends RelativeLayout implements
 
     private LinearLayoutManager linearLayoutManager;
 
-    private CometChatSmartReplies rvSmartReply;
+    private CometChatSmartReplies smartReplies;
 
     private ShimmerFrameLayout messageShimmer;
+
+    private LinearLayout emptyLayout, customViewLayout;
+    private TextView emptyTextView;
+
+    private RelativeLayout messageListLayout;
+
+    private int errorStateTextAppearance = 0;
+    private int errorStateTextColor = 0;
+    private String errorText = null;
+    private View errorView = null;
+    private View emptyView = null;
 
     private String Id;
 
@@ -131,16 +166,14 @@ public class CometChatMessageList extends RelativeLayout implements
     private String type;
 
     private BaseMessage baseMessage;
-
-    private final List<BaseMessage> baseMessages = new ArrayList<>();
-
     private final List<BaseMessage> messageList = new ArrayList<>();
+    private List<BaseMessage> baseMessageList = new ArrayList<>();
+    private final List<CometChatOptions> customMessageOptions = new ArrayList<>();
+    private final List<String> excludeMessageOptions = new ArrayList<>();
 
-    private final List<String> messageTypesForUser = new ArrayList<>();
-    private final List<String> messageCategoriesForUser = new ArrayList<>();
-
-    private final List<String> messageTypesForGroup = new ArrayList<>();
-    private final List<String> messageCategoriesForGroup = new ArrayList<>();
+    private List<CometChatMessageTemplate> messageTypes = new ArrayList<>();
+    private final List<String> messageTypesToRetrieve = new ArrayList<>();
+    private final List<String> messageCategoriesToRetrieve = new ArrayList<>();
 
     private View view;
 
@@ -154,7 +187,6 @@ public class CometChatMessageList extends RelativeLayout implements
 
     public int count = 0;
 
-
     private View newMessageLayout;
     private TextView newMessageLayoutText;
     private int newMessageCount = 0;
@@ -163,14 +195,13 @@ public class CometChatMessageList extends RelativeLayout implements
             translateVisible, reactionVisible, editVisible, retryVisible = false, replyPrivatelyVisible,
             sendMessagePrivatelyVisible, deleteVisible, messageInformationVisible;
 
-    private OnOptionClick<BaseMessage> translateClick, deleteClick, editClick, replyClick, sendMessagePrivatelyClick,
+    private onItemClick<BaseMessage> translateClick, deleteClick, editClick, replyClick, sendMessagePrivatelyClick,
             replyPrivatelyClick, forwardClick, shareClick, copyClick, messageInformationClick, threadClick;
 
     private ArrayList<CometChatOptions> customOption = new ArrayList<>();
     private int translateIcon, deleteIcon, editIcon, replyIcon, sendMessagePrivatelyIcon, replyPrivatelyIcon, forwardIcon,
             shareIcon, copyIcon, messageInformationIcon, threadIcon;
 
-    private boolean hideDeleteMessage;
 
     private CometChatActionSheet cometChatActionSheet;
     private static final HashMap<String, CometChatMessageEvents> messageListEvents = CometChatMessageEvents.messageEvents;
@@ -189,6 +220,8 @@ public class CometChatMessageList extends RelativeLayout implements
 
     private CometChatMessageList cometchatMessageList;
     private CometChatConfigurations messageBubbleConfig;
+    private Palette palette;
+    private Typography typography;
 
     public CometChatMessageList(Context context) {
         super(context);
@@ -219,28 +252,74 @@ public class CometChatMessageList extends RelativeLayout implements
         addView(view);
     }
 
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setCustomMessageOptions(List<CometChatOptions> options) {
+        customMessageOptions.addAll(options);
+    }
+
+    public void excludeMessageOptions(List<String> options) {
+        excludeMessageOptions.addAll(options);
+    }
+
+    public void setMessageTypes(List<CometChatMessageTemplate> cometChatMessageTemplates) {
+        if (cometChatMessageTemplates != null) {
+            if (!cometChatMessageTemplates.isEmpty()) {
+                messageTypesToRetrieve.clear();
+                messageTypes = cometChatMessageTemplates;
+            } else {
+                messageTypes = new ArrayList<>();
+            }
+            fetchMessageFilter();
+        }
+    }
+
+    public void excludeMessageTypes(List<String> excludeMessageTypes) {
+        if (excludeMessageTypes != null && !excludeMessageTypes.isEmpty() && !messageTypes.isEmpty()) {
+            messageTypesToRetrieve.clear();
+            List<CometChatMessageTemplate> list = new ArrayList<>();
+            list.addAll(messageTypes);
+            for (CometChatMessageTemplate template : messageTypes) {
+                if (excludeMessageTypes.contains(template.getId())) {
+                    list.remove(template);
+                }
+            }
+            messageTypes.clear();
+            messageTypes.addAll(list);
+            fetchMessageFilter();
+        }
+    }
+
+
     //Data Methods
 
     public void setUser(User user) {
         this.Id = user.getUid();
-//        this.avatarUrl = user.getAvatar();
         this.name = user.getName();
         this.status = user.getStatus();
-        this.type = CometChatConstants.RECEIVER_TYPE_USER;
+        this.type = UIKitConstants.ReceiverTypeConstants.USER;
         this.isBlockedByMe = user.isBlockedByMe();
-//        this.profileLink = user.getLink();
     }
 
     public void setGroup(Group group) {
         this.Id = group.getGuid();
         this.name = group.getName();
-//        this.avatarUrl = group.getIcon();
-//        this.groupDesc = group.getDescription();
-//        this.groupPassword = group.getPassword();
-//        this.groupType = group.getGroupType();
         this.loggedInUserScope = group.getScope();
-//        this.memberCount = group.getMembersCount();
-        this.type = CometChatConstants.RECEIVER_TYPE_GROUP;
+        this.type = UIKitConstants.ReceiverTypeConstants.GROUP;
+    }
+
+    public void setSentMessageInputData(MessageInputData messageInputData) {
+        sentMessageInputData = messageInputData;
+        if (messageAdapter != null && sentMessageInputData != null)
+            messageAdapter.setSentMessageInputData(sentMessageInputData);
+    }
+
+    public void setReceivedMessageInputData(MessageInputData messageInputData) {
+        receivedMessageInputData = messageInputData;
+        if (messageAdapter != null && receivedMessageInputData != null)
+            messageAdapter.setReceivedMessageInputData(receivedMessageInputData);
     }
 
     public void isBlockedByMe(boolean isBlocked) {
@@ -305,16 +384,28 @@ public class CometChatMessageList extends RelativeLayout implements
     private void initViewComponent(Context context, View view) {
 
         CometChatError.init(context);
-
+        messageTypes = TemplateUtils.getDefaultList(context);
+        fetchMessageFilter();
+        palette = Palette.getInstance(context);
+        typography = Typography.getInstance();
+        errorStateTextAppearance = typography.getText1();
+        errorStateTextColor = palette.getAccent700();
         newMessageLayout = view.findViewById(R.id.new_message_layout);
         newMessageLayoutText = view.findViewById(R.id.new_message_tv);
         newMessageLayout.setVisibility(GONE);
 
         messageShimmer = view.findViewById(R.id.shimmer_layout);
         rvChatListView = view.findViewById(R.id.rv_message_list);
+        emptyLayout = view.findViewById(R.id.empty_view);
+        customViewLayout = view.findViewById(R.id.customView_lay);
+        emptyTextView = view.findViewById(R.id.empty_text);
+        emptyTextView.setTextColor(palette.getAccent400());
+        emptyTextView.setTextAppearance(context, typography.getHeading());
+        messageListLayout = view.findViewById(R.id.message_list_layout);
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvChatListView.setLayoutManager(linearLayoutManager);
-        rvChatListView.getItemAnimator().setChangeDuration(0);
+        rvChatListView.setItemAnimator(null);
+//        rvChatListView.getItemAnimator().setChangeDuration(0);
         // Uses to fetch next list of messages if rvChatListView (RecyclerView) is scrolled in downward direction.
         rvChatListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -346,15 +437,18 @@ public class CometChatMessageList extends RelativeLayout implements
 
         });
 
-        rvSmartReply = view.findViewById(R.id.rv_smartReply);
-        rvSmartReply.setItemClickListener(new OnItemClickListener<String>() {
-            @Override
-            public void OnItemClick(String var, int position) {
-                markLastMessageAsRead();
-                rvSmartReply.setVisibility(GONE);
-                sendMessage(var);
-            }
-        });
+        smartReplies = view.findViewById(R.id.rv_smartReply);
+        SmartRepliesStyle style = new SmartRepliesStyle()
+                .setBackground(android.R.color.transparent)
+                .setTextAppearance(typography.getSubtitle1())
+                .setCloseIconTint(palette.getAccent400())
+                .setTextColor(palette.getAccent());
+        smartReplies.setStyle(style);
+        smartReplies.setElevation(0);
+        smartReplies.setOnClose(view1 ->
+                smartReplies.setVisibility(GONE)
+        );
+
     }
 
     private void markLastMessageAsRead() {
@@ -366,9 +460,7 @@ public class CometChatMessageList extends RelativeLayout implements
                         markMessageAsRead(lastMessage);
                     }
                 } else {
-                    if (lastMessage != null && lastMessage.getSender()!=null && lastMessage.getSender().getUid()!=null && lastMessage.getSender().getUid().equalsIgnoreCase(Id)) {
-
-//                        if (lastMessage.getSender().getUid().equalsIgnoreCase(Id)) {
+                    if (lastMessage != null && lastMessage.getSender() != null && lastMessage.getSender().getUid() != null && lastMessage.getSender().getUid().equalsIgnoreCase(Id)) {
                         markMessageAsRead(lastMessage);
                     }
                 }
@@ -377,87 +469,106 @@ public class CometChatMessageList extends RelativeLayout implements
 
     }
 
+    public void setUnreadOnly(boolean unreadOnly) {
+        this.unreadOnly = unreadOnly;
+    }
+
+    public void setHideMessagesFromBlockedUsers(boolean hideMessagesFromBlockedUsers) {
+        this.hideMessagesFromBlockedUsers = hideMessagesFromBlockedUsers;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+        this.withTag = true;
+    }
+
     public void hideDeleteMessage(boolean isDeleteMessageVisible) {
         hideDeleteMessage = isDeleteMessageVisible;
     }
 
-    private void fetchMessageFilterConfiguration() {
-        List<CometChatMessageTemplate> list = CometChatMessagesConfigurations.getMessageFilterList();
-        if (list.isEmpty()) {
-            list = TemplateUtils.getDefaultList(context);
-            CometChatMessagesConfigurations config = new CometChatMessagesConfigurations();
-            config.setMessageFilter(list);
-        }
-        for (CometChatMessageTemplate template : list) {
+    private void setHideReply(boolean hideReply) {
+        this.hideReply = hideReply;
+    }
+
+    private void fetchMessageFilter() {
+//        List<CometChatMessageTemplate> list =
+//                CometChatMessagesConfigurations.getMessageFilterList();
+//        if (list.isEmpty()) {
+//            list = TemplateUtils.getDefaultList(context);
+//            CometChatMessagesConfigurations config = new CometChatMessagesConfigurations();
+//            config.setMessageFilter(list);
+//        }
+
+        for (CometChatMessageTemplate template : messageTypes) {
             if (template.getId() != null) {
                 if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.text)) {
                     isText = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.text);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.text);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.text);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.text);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.video)) {
                     isVideo = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.video);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.video);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.video);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.video);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.image)) {
                     isImage = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.image);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.image);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.image);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.image);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.file)) {
                     isFile = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.file);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.file);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.file);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.file);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.audio)) {
                     isAudio = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.audio);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.audio);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.audio);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.audio);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.location)) {
                     isLocation = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.location);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.location);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.location);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.location);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.whiteboard)) {
                     isWhiteboard = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.whiteboard);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.whiteboard);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.whiteboard);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.whiteboard);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.document)) {
                     isDocument = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.document);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.document);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.document);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.document);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.poll)) {
                     isPoll = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.poll);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.poll);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.poll);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.poll);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.sticker)) {
                     isSticker = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.sticker);
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.sticker);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.sticker);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.sticker);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.callAction)) {
                     isCallAction = true;
-                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.callAction);
+//                    messageTypesForUser.add(CometChatMessageTemplate.DefaultList.callAction);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.groupAction)) {
                     isGroupAction = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.groupAction);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.groupAction);
                 } else if (template.getId().equalsIgnoreCase(CometChatMessageTemplate.DefaultList.groupCall)) {
                     isGroupCall = true;
-                    messageTypesForGroup.add(CometChatMessageTemplate.DefaultList.groupCall);
+                    messageTypesToRetrieve.add(CometChatMessageTemplate.DefaultList.groupCall);
                 } else {
-                    messageTypesForUser.add(template.getId());
-                    messageTypesForGroup.add(template.getId());
+//                    messageTypesForUser.add(template.getId());
+                    messageTypesToRetrieve.add(template.getId());
                 }
             }
             if (isText || isAudio || isVideo || isFile || isImage) {
-                messageCategoriesForUser.add(CometChatConstants.CATEGORY_MESSAGE);
-                messageCategoriesForGroup.add(CometChatConstants.CATEGORY_MESSAGE);
+//                messageCategoriesForUser.add(CometChatConstants.CATEGORY_MESSAGE);
+                messageCategoriesToRetrieve.add(CometChatConstants.CATEGORY_MESSAGE);
             }
             if (isWhiteboard || isDocument || isLocation || isPoll || isSticker || isGroupCall) {
-                messageCategoriesForUser.add(CometChatConstants.CATEGORY_CUSTOM);
-                messageCategoriesForGroup.add(CometChatConstants.CATEGORY_CUSTOM);
+//                messageCategoriesForUser.add(CometChatConstants.CATEGORY_CUSTOM);
+                messageCategoriesToRetrieve.add(CometChatConstants.CATEGORY_CUSTOM);
             }
             if (isCallAction) {
-                messageCategoriesForUser.add(CometChatConstants.CATEGORY_CALL);
-                messageCategoriesForGroup.add(CometChatConstants.CATEGORY_CALL);
+//                messageCategoriesForUser.add(CometChatConstants.CATEGORY_CALL);
+                messageCategoriesToRetrieve.add(CometChatConstants.CATEGORY_CALL);
             }
             if (isGroupAction) {
-                messageCategoriesForGroup.add(CometChatConstants.CATEGORY_ACTION);
+                messageCategoriesToRetrieve.add(CometChatConstants.CATEGORY_ACTION);
             }
         }
     }
@@ -476,44 +587,171 @@ public class CometChatMessageList extends RelativeLayout implements
      * @see MessagesRequest#fetchPrevious(CometChat.CallbackListener)
      */
     private void fetchMessage() {
-        fetchMessageFilterConfiguration();
+//        fetchMessageFilterConfiguration();
         if (messagesRequest == null) {
-            if (type != null) {
+            if (type != null && Id != null) {
 
                 if (type.equals(CometChatConstants.RECEIVER_TYPE_USER))
-                    messagesRequest = new MessagesRequest.MessagesRequestBuilder().setLimit(LIMIT)
-                            .setTypes(messageTypesForUser)
-                            .setCategories(messageCategoriesForUser)
-                            .hideReplies(true).hideDeletedMessages(hideDeleteMessage).setUID(Id).build();
+                    messagesRequest = new MessagesRequest.MessagesRequestBuilder().setLimit(limit)
+                            .setTypes(messageTypesToRetrieve)
+                            .setCategories(messageCategoriesToRetrieve).hideMessagesFromBlockedUsers(hideMessagesFromBlockedUsers).setTags(tags).setUnread(unreadOnly).withTags(withTag)
+                            .hideReplies(hideReply).hideDeletedMessages(hideDeleteMessage).setUID(Id).build();
+                else if (type.equals(CometChatConstants.RECEIVER_TYPE_GROUP))
+                    messagesRequest = new MessagesRequest.MessagesRequestBuilder().setLimit(limit)
+                            .setTypes(messageTypesToRetrieve)
+                            .setCategories(messageCategoriesToRetrieve).hideMessagesFromBlockedUsers(hideMessagesFromBlockedUsers).setTags(tags).setUnread(unreadOnly).withTags(withTag)
+                            .hideReplies(hideReply).hideDeletedMessages(hideDeleteMessage).setGUID(Id).build();
                 else
-                    messagesRequest = new MessagesRequest.MessagesRequestBuilder().setLimit(LIMIT)
-                            .setTypes(messageTypesForGroup)
-                            .setCategories(messageCategoriesForGroup)
-                            .hideReplies(true).hideDeletedMessages(hideDeleteMessage).setGUID(Id).build();
+                    return;
+            } else {
+                return;
             }
         }
         messagesRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
             @Override
             public void onSuccess(List<BaseMessage> baseMessages) {
+                baseMessageList.addAll(baseMessages);
                 isInProgress = false;
-//                List<BaseMessage> filteredMessageList = filterBaseMessages(baseMessages);
-//                initMessageAdapter(filteredMessageList);
                 initMessageAdapter(baseMessages);
                 if (baseMessages.size() != 0) {
                     stopHideShimmer();
                 }
-
                 if (baseMessages.size() == 0) {
                     stopHideShimmer();
                     isNoMoreMessages = true;
                 }
+                checkNoMessages();
             }
 
             @Override
             public void onError(CometChatException e) {
+                stopHideShimmer();
+                CometChatUIKitHelper.onMessageError(e, null);
+                hideError(FETCH_ERROR);
                 Log.d(TAG, "onError: " + e.getMessage());
+
             }
         });
+    }
+
+    private void hideError(int code) {
+        String errorMessage;
+        if (errorText != null)
+            errorMessage = errorText;
+        else
+            errorMessage = getContext().getString(R.string.something_went_wrong);
+
+        if (!hideError && errorView != null) {
+            customViewLayout.removeAllViews();
+            customViewLayout.addView(errorView);
+            customViewLayout.setVisibility(VISIBLE);
+        } else {
+            customViewLayout.setVisibility(GONE);
+            if (!hideError) {
+                if (getContext() != null) {
+                    new CometChatDialog(
+                            context,
+                            0,
+                            errorStateTextAppearance,
+                            typography.getText2(),
+                            palette.getAccent900(),
+                            0,
+                            errorStateTextColor,
+                            errorMessage,
+                            "",
+                            getContext().getString(R.string.try_again),
+                            getResources().getString(R.string.cancel),
+                            "",
+                            palette.getPrimary(),
+                            palette.getPrimary(),
+                            0,
+                            new OnDialogButtonClickListener() {
+                                @Override
+                                public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
+                                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                                        if (code == FETCH_ERROR)
+                                            fetchMessage();
+                                        else if (code == TRANSLATE_ERROR)
+                                            translateMessage(baseMessage);
+                                        else if (code == DELETE_ERROR)
+                                            deleteMessage(baseMessage);
+
+                                        alertDialog.dismiss();
+                                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                        alertDialog.dismiss();
+                                    }
+                                }
+                            }, 0, false);
+                }
+
+            }
+        }
+    }
+
+    public void setHideError(boolean hideError) {
+        this.hideError = hideError;
+    }
+
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
+    }
+
+    public void errorStateTextColor(int errorMessageColor) {
+        if (errorMessageColor != 0)
+            this.errorStateTextColor = errorMessageColor;
+    }
+
+    public void setErrorText(String errorText) {
+        this.errorText = errorText + "";
+    }
+
+    public void emptyStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            emptyTextView.setTextAppearance(context, appearance);
+
+    }
+
+    public void emptyStateText(String emptyText) {
+        if (emptyText != null)
+            emptyTextView.setText(emptyText);
+        else
+            emptyTextView.setText(getResources().getString(R.string.no_user));
+    }
+
+    public void setErrorView(int id) {
+        try {
+            errorView = View.inflate(context, id, null);
+        } catch (Exception e) {
+            errorView = null;
+        }
+    }
+
+    public void setEmptyView(int id) {
+        try {
+            emptyView = View.inflate(context, id, null);
+        } catch (Exception e) {
+            emptyView = null;
+        }
+    }
+
+    private void checkNoMessages() {
+        if (baseMessageList.size() == 0) {
+            stopHideShimmer();
+            if (emptyView != null) {
+                customViewLayout.setVisibility(VISIBLE);
+                customViewLayout.removeAllViews();
+                customViewLayout.addView(emptyView);
+                emptyLayout.setVisibility(View.GONE);
+            } else {
+                emptyLayout.setVisibility(View.VISIBLE);
+            }
+            messageListLayout.setVisibility(View.GONE);
+        } else {
+            emptyLayout.setVisibility(View.GONE);
+            messageListLayout.setVisibility(View.VISIBLE);
+            customViewLayout.setVisibility(GONE);
+        }
     }
 
     private void stopHideShimmer() {
@@ -531,6 +769,7 @@ public class CometChatMessageList extends RelativeLayout implements
     private void initMessageAdapter(List<BaseMessage> messageList) {
         if (messageAdapter == null) {
             messageAdapter = new MessageAdapter(context, messageList, this);
+            messageAdapter.setMessageTemplateList(messageTypes);
             rvChatListView.setAdapter(messageAdapter);
             stickyHeaderDecoration = new StickyHeaderDecoration(messageAdapter);
             rvChatListView.addItemDecoration(stickyHeaderDecoration, 0);
@@ -550,7 +789,7 @@ public class CometChatMessageList extends RelativeLayout implements
             messageAdapter.setLeftAligned(messageListAlignment.equalsIgnoreCase(LEFT_ALIGNED));
             messageAdapter.updateList(messageList);
         }
-        if (!isBlockedByMe && rvSmartReply.getAdapter().getItemCount() == 0) {
+        if (!isBlockedByMe) {
             BaseMessage lastMessage = messageAdapter.getLastMessage();
             checkSmartReply(lastMessage);
         }
@@ -567,21 +806,9 @@ public class CometChatMessageList extends RelativeLayout implements
 
 
     private void checkSmartReply(BaseMessage lastMessage) {
-        if (lastMessage != null && lastMessage.getSender()!=null && lastMessage.getSender().getUid()!=null &&!lastMessage.getSender().getUid().equals(loggedInUser.getUid())) {
-            if (lastMessage.getMetadata() != null) {
-                List<String> smartReplies = Extensions.getSmartReplyList(lastMessage);
-                setSmartReplyAdapter(smartReplies);
-                rvSmartReply.setVisibility(View.VISIBLE);
-            }
-        }
+        smartReplies.setVisibility(VISIBLE);
+        smartReplies.setMessageObject(lastMessage);
     }
-
-
-    private void setSmartReplyAdapter(List<String> replyList) {
-        rvSmartReply.setSmartReplyList(replyList);
-//        scrollToBottom();
-    }
-
 
     /**
      * This method is used to mark users & group message as read.
@@ -620,10 +847,18 @@ public class CometChatMessageList extends RelativeLayout implements
         }
     }
 
+    public void enableSoundForMessages(boolean enableSoundForMessages) {
+        this.enableSoundForMessages = enableSoundForMessages;
+    }
+
+    public void setCustomIncomingMessageSound(@RawRes int customIncomingMessageSound) {
+        this.customIncomingMessageSound = customIncomingMessageSound;
+    }
 
     public void onMessageReceived(BaseMessage message) {
-
-        soundManager.play(Sound.incomingMessage);
+        if (enableSoundForMessages) {
+            soundManager.play(Sound.incomingMessage, customIncomingMessageSound);
+        }
         if (message.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)) {
             if (Id != null && Id.equalsIgnoreCase(message.getSender().getUid())) {
                 setMessage(message);
@@ -635,6 +870,7 @@ public class CometChatMessageList extends RelativeLayout implements
                 setMessage(message);
             }
         }
+        checkSmartReply(message);
     }
 
     /**
@@ -659,7 +895,7 @@ public class CometChatMessageList extends RelativeLayout implements
     private void setMessage(BaseMessage message) {
         if (message.getParentMessageId() == 0) {
             if (messageAdapter != null) {
-                messageAdapter.addMessage(message);
+                add(message);
 
                 if ((messageAdapter.getItemCount() - 1) - ((LinearLayoutManager) rvChatListView.getLayoutManager()).findLastVisibleItemPosition() < 5)
                     scrollToBottom();
@@ -679,7 +915,6 @@ public class CometChatMessageList extends RelativeLayout implements
     }
 
     private void showNewMessage(int messageCount) {
-        rvSmartReply.setVisibility(GONE);
         newMessageLayout.setVisibility(View.VISIBLE);
         if (messageCount == 1)
             newMessageLayoutText.setText(messageCount + " " + context.getString(R.string.new_message));
@@ -1028,6 +1263,7 @@ public class CometChatMessageList extends RelativeLayout implements
             }
         }
         cometChatActionSheet.setList(itemList);
+
         cometChatActionSheet.showReactions(CometChat.isExtensionEnabled("reactions"));
 
         cometChatActionSheet.setLayoutMode(actionSheetMode);
@@ -1058,10 +1294,10 @@ public class CometChatMessageList extends RelativeLayout implements
 
             @Override
             public void onActionItemClick(ActionItem actionItem) {
-                if (actionItem.getId()
-                        .equalsIgnoreCase(UIKitConstants.DefaultOptions.REPLY)) {
+                if (UIKitConstants.DefaultOptions.REPLY
+                        .equalsIgnoreCase(actionItem.getId())) {
                     if (replyClick != null)
-                        replyClick.onClick(baseMessage,context);
+                        replyClick.onClick(baseMessage, context);
                     else {
                         for (CometChatMessageEvents messageListEvent : messageListEvents.values()) {
                             messageListEvent.onMessageReply(baseMessage, MessageStatus.IN_PROGRESS);
@@ -1071,7 +1307,7 @@ public class CometChatMessageList extends RelativeLayout implements
                 } else if (actionItem.getText()
                         .equalsIgnoreCase(context.getString(R.string.start_thread))) {
                     if (threadClick != null)
-                        threadClick.onClick(baseMessage,context);
+                        threadClick.onClick(baseMessage, context);
                     else {
                         for (CometChatMessageEvents messageListEvent : messageListEvents.values()) {
                             messageListEvent.onStartThread(baseMessage, cometchatMessageList);
@@ -1085,44 +1321,40 @@ public class CometChatMessageList extends RelativeLayout implements
                     }
                     dismissActionSheet();
                     if (forwardClick != null)
-                        forwardClick.onClick(baseMessage,context);
+                        forwardClick.onClick(baseMessage, context);
                 } else if (actionItem.getId()
                         .equalsIgnoreCase(UIKitConstants.DefaultOptions.DELETE)) {
-                    for (CometChatMessageEvents messageListEvent : messageListEvents.values()) {
-                        messageListEvent.onMessageDelete(baseMessage);
-                    }
+                    CometChatUIKitHelper.onMessageDelete(baseMessage,MessageStatus.IN_PROGRESS);
                     dismissActionSheet();
                     if (deleteClick != null)
-                        deleteClick.onClick(baseMessage,context);
+                        deleteClick.onClick(baseMessage, context);
                 } else if (actionItem.getId()
                         .equalsIgnoreCase(UIKitConstants.DefaultOptions.EDIT)) {
-                    for (CometChatMessageEvents messageListEvent : messageListEvents.values()) {
-                        messageListEvent.onMessageEdit(baseMessage, MessageStatus.IN_PROGRESS);
-                    }
+                    CometChatUIKitHelper.onMessageEdit(baseMessage, MessageStatus.IN_PROGRESS);
                     dismissActionSheet();
                     if (editClick != null)
-                        editClick.onClick(baseMessage,context);
+                        editClick.onClick(baseMessage, context);
                 } else if (actionItem.getText()
                         .equalsIgnoreCase(context.getString(R.string.reply_message_privately))) {
                     if (replyPrivatelyClick != null)
-                        replyPrivatelyClick.onClick(baseMessage,context);
+                        replyPrivatelyClick.onClick(baseMessage, context);
                     else {
                         for (CometChatMessageEvents e : messageListEvents.values()) {
                             e.onReplyMessagePrivately(baseMessage, cometchatMessageList);
                         }
                     }
                     dismissActionSheet();
-                } else if (actionItem.getText()
-                        .equalsIgnoreCase(context.getString(R.string.retry))) {
+                } else if (context.getString(R.string.retry)
+                        .equalsIgnoreCase(actionItem.getText())) {
                     if (baseMessage != null) {
-                        messageAdapter.remove(baseMessage);
+                        remove(baseMessage);
                         if (baseMessage.getType().equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_TEXT))
                             sendMessage(((TextMessage) baseMessage).getText());
                     }
                 } else if (actionItem.getId()
                         .equalsIgnoreCase(UIKitConstants.DefaultOptions.COPY)) {
                     if (copyClick != null)
-                        copyClick.onClick(baseMessage,context);
+                        copyClick.onClick(baseMessage, context);
                     else
                         copyMessage(baseMessage);
                     dismissActionSheet();
@@ -1131,15 +1363,19 @@ public class CometChatMessageList extends RelativeLayout implements
 
                 } else if (actionItem.getId().equalsIgnoreCase(UIKitConstants.DefaultOptions.TRANSLATE)) {
                     if (translateClick != null)
-                        translateClick.onClick(baseMessage,context);
-                    else
+                        translateClick.onClick(baseMessage, context);
+                    else {
                         translateMessage(baseMessage);
+                    }
                     dismissActionSheet();
                 } else {
                     if (!customOption.isEmpty()) {
                         for (CometChatOptions options : customOption) {
-                            if (options.getOnClick() != null)
-                                options.getOnClick().onClick(baseMessage,context);
+                            if (options.getId() != null && actionItem.getId() != null && actionItem.getId().equalsIgnoreCase(options.getId())) {
+                                if (options.getOnClick() != null)
+                                    options.getOnClick().onClick(baseMessage, context);
+                                break;
+                            }
                         }
                         dismissActionSheet();
                     }
@@ -1342,6 +1578,8 @@ public class CometChatMessageList extends RelativeLayout implements
     }
 
     public void remove(BaseMessage baseMessage) {
+        baseMessageList.remove(baseMessage);
+        checkNoMessages();
         if (messageAdapter != null)
             messageAdapter.remove(baseMessage);
     }
@@ -1357,20 +1595,21 @@ public class CometChatMessageList extends RelativeLayout implements
         CometChat.deleteMessage(baseMessage.getId(), new CometChat.CallbackListener<BaseMessage>() {
             @Override
             public void onSuccess(BaseMessage baseMessage) {
-                for (CometChatMessageEvents listener : CometChatMessageEvents.messageEvents.values()) {
-                    listener.onMessageSent(baseMessage, MessageStatus.SUCCESS);
-                }
                 if (messageAdapter != null) {
                     if (hideDeleteMessage)
-                        messageAdapter.remove(baseMessage);
+                        remove(baseMessage);
                     else
                         messageAdapter.updateMessage(baseMessage);
                 }
+                CometChatUIKitHelper.onMessageDelete(baseMessage,MessageStatus.SUCCESS);
             }
 
             @Override
             public void onError(CometChatException e) {
+                Log.e("awseedesd", "delete_onError: " + e.getMessage());
                 Log.d(TAG, "onError: " + e.getMessage());
+                CometChatUIKitHelper.onMessageError(e, baseMessage);
+                hideError(DELETE_ERROR);
             }
         });
     }
@@ -1409,22 +1648,18 @@ public class CometChatMessageList extends RelativeLayout implements
             scrollToBottom();
         }
 
-        rvSmartReply.setVisibility(GONE);
+        smartReplies.setVisibility(GONE);
         CometChat.sendMessage(textMessage, new CometChat.CallbackListener<TextMessage>() {
             @Override
             public void onSuccess(TextMessage textMessage) {
                 if (messageAdapter != null)
                     messageAdapter.updateMessageFromMuid(textMessage);
-                for (CometChatMessageEvents e : CometChatMessageEvents.messageEvents.values()) {
-                    e.onMessageSent(textMessage, MessageStatus.SUCCESS);
-                }
+                CometChatUIKitHelper.onMessageSent(textMessage, MessageStatus.SUCCESS);
             }
 
             @Override
             public void onError(CometChatException e) {
-                for (CometChatMessageEvents event : CometChatMessageEvents.messageEvents.values()) {
-                    event.onMessageError(e);
-                }
+                CometChatUIKitHelper.onMessageError(e, textMessage);
                 if (!e.getCode().equalsIgnoreCase("ERR_BLOCKED_BY_EXTENSION")) {
                     if (messageAdapter == null) {
                         Log.e(TAG, "onError: MessageAdapter is null");
@@ -1440,16 +1675,38 @@ public class CometChatMessageList extends RelativeLayout implements
 
     }
 
+    private CometChatMessageTemplate getMessageTemplateById(String id) {
+        for (CometChatMessageTemplate cometChatMessageTemplate : messageTypes) {
+            if (cometChatMessageTemplate.getId() != null) {
+                if (cometChatMessageTemplate.getId().equalsIgnoreCase(id)) {
+                    return cometChatMessageTemplate;
+                }
+            }
+        }
+        return null;
+    }
 
     private void fetchOptions() {
         resetOptions();
         CometChatMessageTemplate messageTemplate =
-                CometChatMessagesConfigurations.getMessageTemplateById(baseMessage.getType());
+                getMessageTemplateById(baseMessage.getType());
         if (messageTemplate != null) {
-            List<CometChatOptions> options = messageTemplate.getOptions();
-            if(options!=null) {
+            if (!customMessageOptions.isEmpty()) {
+                messageTemplate.getOptions().addAll(customMessageOptions);
+            }
+            List<CometChatOptions> options = new ArrayList<>();
+            if (messageTemplate.getOptions() != null)
+                options.addAll(messageTemplate.getOptions());
+            if (!excludeMessageOptions.isEmpty()) {
+                for (CometChatOptions option : messageTemplate.getOptions()) {
+                    if (option.getId() != null && excludeMessageOptions.contains(option.getId())) {
+                        options.remove(option);
+                    }
+                }
+            }
+            if (options != null) {
                 for (CometChatOptions item : options) {
-                    if (item!=null && item.getId() != null) {
+                    if (item != null && item.getId() != null) {
                         if (item.getId().equalsIgnoreCase(UIKitConstants.DefaultOptions.TRANSLATE)) {
                             translateVisible = true;
                             translateIcon = item.getIcon();
@@ -1539,6 +1796,7 @@ public class CometChatMessageList extends RelativeLayout implements
 
     private void translateMessage(BaseMessage baseMessage) {
         try {
+            Log.e(TAG, "translateMessage: "+baseMessage.getId());
             String localeLanguage = Locale.getDefault().getLanguage();
             JSONObject body = new JSONObject();
             JSONArray languages = new JSONArray();
@@ -1572,11 +1830,8 @@ public class CometChatMessageList extends RelativeLayout implements
 
                         @Override
                         public void onError(CometChatException e) {
-                            CometChatSnackBar.show(context, rvChatListView,
-                                    context.getString(R.string.something_went_wrong), CometChatSnackBar.WARNING);
-                            for (CometChatMessageEvents events : CometChatMessageEvents.messageEvents.values()) {
-                                events.onMessageError(e);
-                            }
+                            CometChatUIKitHelper.onMessageError(e, baseMessage);
+                            hideError(TRANSLATE_ERROR);
                         }
                     });
         } catch (Exception e) {
@@ -1607,8 +1862,16 @@ public class CometChatMessageList extends RelativeLayout implements
     }
 
     public void updateOptimisticMessage(BaseMessage baseMessage) {
-        if (messageAdapter != null)
-            messageAdapter.updateMessageFromMuid(baseMessage);
+        if (baseMessage != null) {
+            if (messageAdapter != null)
+                messageAdapter.updateMessageFromMuid(baseMessage);
+            if (!baseMessageList.isEmpty() && baseMessageList.contains(baseMessage)) {
+                baseMessageList.set(baseMessageList.indexOf(baseMessage), baseMessage);
+            } else {
+                baseMessageList.add(baseMessage);
+            }
+            checkNoMessages();
+        }
     }
 
     public void highLightMessage(int id) {
@@ -1701,43 +1964,36 @@ public class CometChatMessageList extends RelativeLayout implements
         CometChat.addMessageListener(TAG, new CometChat.MessageListener() {
             @Override
             public void onTextMessageReceived(TextMessage message) {
-                Log.d(TAG, "onTextMessageReceived: " + message.toString());
                 onMessageReceived(message);
             }
 
             @Override
             public void onMediaMessageReceived(MediaMessage message) {
-                Log.d(TAG, "onMediaMessageReceived: " + message.toString());
                 onMessageReceived(message);
             }
 
             @Override
             public void onCustomMessageReceived(CustomMessage message) {
-                Log.d(TAG, "onCustomMessageReceived: " + message.toString());
                 onMessageReceived(message);
             }
 
             @Override
             public void onMessagesDelivered(MessageReceipt messageReceipt) {
-                Log.d(TAG, "onMessagesDelivered: " + messageReceipt.toString());
                 setMessageReceipt(messageReceipt);
             }
 
             @Override
             public void onMessagesRead(MessageReceipt messageReceipt) {
-                Log.e(TAG, "onMessagesRead: " + messageReceipt.toString());
                 setMessageReceipt(messageReceipt);
             }
 
             @Override
             public void onMessageEdited(BaseMessage message) {
-                Log.d(TAG, "onMessageEdited: " + message.toString());
                 updateMessage(message);
             }
 
             @Override
             public void onMessageDeleted(BaseMessage message) {
-                Log.d(TAG, "onMessageDeleted: ");
                 if (hideDeleteMessage)
                     remove(message);
                 else

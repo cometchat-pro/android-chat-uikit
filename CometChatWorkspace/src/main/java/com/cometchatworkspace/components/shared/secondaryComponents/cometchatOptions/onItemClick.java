@@ -2,6 +2,6 @@ package com.cometchatworkspace.components.shared.secondaryComponents.cometchatOp
 
 import android.content.Context;
 
-public interface OnOptionClick<T> {
+public interface onItemClick<T> {
      void onClick(T t, Context context);
 }

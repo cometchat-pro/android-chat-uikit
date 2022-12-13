@@ -1,39 +1,46 @@
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
     android:layout_width="match_parent"
-    app:cardElevation="0dp"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    android:backgroundTint="@color/accent100"
     app:cardCornerRadius="8dp"
-    android:layout_height="wrap_content">
-    <LinearLayout android:clickable="true"
-        android:focusable="true"
-        android:layout_gravity="center"
-        android:padding="8dp"
-        android:orientation="vertical"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="8dp">
+
         <com.google.android.material.card.MaterialCardView
-            android:layout_gravity="center"
             android:id="@+id/iconBackground"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardElevation="0dp"
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp">
+
             <ImageView
-                android:layout_margin="8dp"
                 android:id="@+id/icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 app:tint="@color/accent700" />
         </com.google.android.material.card.MaterialCardView>
+
         <TextView
-            android:textStyle="bold"
             android:id="@+id/text"
-            android:lines="2"
-            android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lines="2"
+            android:textStyle="bold" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

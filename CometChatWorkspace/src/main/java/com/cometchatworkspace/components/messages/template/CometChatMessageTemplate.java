@@ -1,13 +1,9 @@
 package com.cometchatworkspace.components.messages.template;
 
-import android.app.Activity;
-import android.view.View;
-
 import androidx.annotation.StringDef;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cometchat.pro.constants.CometChatConstants;
-import com.cometchat.pro.models.AppEntity;
 import com.cometchat.pro.models.BaseMessage;
 
 import java.util.ArrayList;
@@ -15,9 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.CometChatOptions;
-import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.OnOptionClick;
+import com.cometchatworkspace.components.shared.secondaryComponents.cometchatOptions.onItemClick;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
-import com.cometchatworkspace.resources.utils.item_clickListener.OnItemClickListener;
 
 public class CometChatMessageTemplate {
     private String id;
@@ -26,7 +21,7 @@ public class CometChatMessageTemplate {
     private String description;
     private String name;
     private int view; //In Progress
-    private OnOptionClick<Object> clickListener;
+    private onItemClick<Object> clickListener;
     private BaseMessage baseMessage;
     private List<CometChatOptions> options;
     private String receiverId;
@@ -142,12 +137,12 @@ public class CometChatMessageTemplate {
         return this;
     }
 
-    public OnOptionClick getClickListener() {
+    public onItemClick getClickListener() {
         return clickListener;
     }
 
     public CometChatMessageTemplate setActionClick(
-            OnOptionClick<Object> clickListener) {
+            onItemClick<Object> clickListener) {
         this.clickListener = clickListener;
         return this;
     }

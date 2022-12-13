@@ -16,9 +16,11 @@ import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.StyleRes;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.cometchatworkspace.R;
 import com.cometchatworkspace.components.messages.common.extensions.Extensions;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatReaction.model.Reaction;
@@ -69,6 +71,10 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 
     private ActionSheetAdapter adapter;
 
+    private LinearLayout bottomLayout;
+
+    private ActionSheetStyle actionSheetStyle;
+
     private int initialReactions = 6;
 
     @Override
@@ -97,6 +103,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 //            view = inflater.inflate(R.layout.cometchat_action_sheet_grid,container,false);
 //        else
         view = inflater.inflate(R.layout.cometchat_action_sheet_list, container, false);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -143,21 +150,22 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             @Override
             public void onClick(View var1, int var2) {
                 ActionItem item = (ActionItem) var1.getTag(R.string.action_item);
-                if (cometChatActionSheetListener!=null)
+                if (cometChatActionSheetListener != null)
                     cometChatActionSheetListener.onActionItemClick(item);
             }
         }));
 
+        setStyle(actionSheetStyle);
         return view;
     }
 
     private void changeLayoutMode() {
         if (isGridLayout) {
-            layoutModeButton.setImageResource(R.drawable.ic_list_bulleted_white_24dp);
+            layoutModeButton.setImageResource(R.drawable.cc_ic_grid);
             isGridLayout = false;
             recyclerViewLayout.setLayoutManager(new LinearLayoutManager(getContext()));
         } else {
-            layoutModeButton.setImageResource(R.drawable.ic_grid_white_24dp);
+            layoutModeButton.setImageResource(R.drawable.ic_list_bulleted_white_24dp);
             isGridLayout = true;
             recyclerViewLayout.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
         }
@@ -194,11 +202,12 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
             });
         }
         ImageView addEmojiView = new ImageView(getContext());
-        addEmojiView.setImageDrawable(getResources().getDrawable(R.drawable.ic_reactions));
+        addEmojiView.setImageDrawable(getResources().getDrawable(R.drawable.cc_ic_add_reactions));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                (int) Utils.dpToPx(getContext(), 36), (int) Utils.dpToPx(getContext(), 36));
+                (int) Utils.dpToPx(getContext(), 32), (int) Utils.dpToPx(getContext(), 38));
         layoutParams.topMargin = 8;
         layoutParams.leftMargin = 16;
+        layoutParams.bottomMargin = 8;
         addEmojiView.setLayoutParams(layoutParams);
         reactionsLayout.addView(addEmojiView);
         addEmojiView.setOnClickListener(new View.OnClickListener() {
@@ -212,14 +221,20 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
     }
 
     public void setTitle(String str) {
-        if (title != null)
+        if (title != null && str != null)
             title.setText(str);
     }
 
 
     public void setTitleFont(String font) {
-        if (title != null)
+        if (title != null && font != null)
             title.setTypeface(fontUtils.getTypeFace(font));
+    }
+
+    private void setTitleAppearance(@StyleRes int appearance) {
+        if (title != null && appearance != 0)
+            title.setTextAppearance(getContext(), appearance);
+
     }
 
     public void setTitleColor(@ColorInt int color) {
@@ -228,7 +243,13 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
     }
 
     public void setBackground(@ColorInt int color) {
-        bottomSheet.setBackgroundColor(color);
+        if (bottomLayout != null)
+            bottomLayout.setBackgroundColor(color);
+    }
+
+    public void setBackground(Drawable drawable) {
+        if (bottomLayout != null)
+            bottomLayout.setBackground(drawable);
     }
 
     public void setLayoutMode(@ActionSheet.LayoutMode String mode) {
@@ -257,6 +278,11 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
     public void setLayoutModeIconTint(@ColorInt int color) {
         if (color != 0 && layoutModeButton != null)
             layoutModeButton.setImageTintList(ColorStateList.valueOf(color));
+    }
+
+    public void setLayoutModeIconBackgroundColor(@ColorInt int color) {
+        if (color != 0 && layoutModeButton != null)
+            layoutModeButton.setBackgroundColor(color);
     }
 
     public void hideLayoutMode(boolean isHidden) {
@@ -291,6 +317,35 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
 //    set(background: UIColor)
 //    set(cornerRadius: CGFloat)
 
+    public void setStyle(ActionSheetStyle actionSheetStyle) {
+        this.actionSheetStyle=actionSheetStyle;
+        if (actionSheetStyle != null) {
+            if (actionSheetStyle.getDrawableBackground() != null) {
+                setBackground(actionSheetStyle.getDrawableBackground());
+            } else if (actionSheetStyle.getBackground() != 0) {
+                setBackground(actionSheetStyle.getBackground());
+            }
+            if (actionSheetStyle.getTitleColor() != 0) {
+                setTitleColor(actionSheetStyle.getTitleColor());
+            }
+            if (actionSheetStyle.getTitleFont() != null) {
+                setTitleFont(actionSheetStyle.getTitleFont());
+            }
+            if (actionSheetStyle.getTitleAppearance() != 0) {
+                setTitleAppearance(actionSheetStyle.getTitleAppearance());
+            }
+            if (actionSheetStyle.getLayoutModeIconTint() != 0) {
+                setLayoutModeIconTint(actionSheetStyle.getLayoutModeIconTint());
+            }
+            if (actionSheetStyle.getLayoutModeIconBackgroundColor() != 0) {
+                setLayoutModeIconBackgroundColor(actionSheetStyle.getLayoutModeIconBackgroundColor());
+            }
+            if (adapter != null) {
+                adapter.setStyle(actionSheetStyle);
+            }
+
+        }
+    }
 
     public void setList(List<ActionItem> list) {
         Bundle bundle = getArguments();
@@ -307,6 +362,7 @@ public class CometChatActionSheet extends BottomSheetDialogFragment {
         bundle.putBoolean("reactionVisible", isVisible);
         setArguments(bundle);
     }
+
     public void initialReaction(int count) {
         initialReactions = count;
     }

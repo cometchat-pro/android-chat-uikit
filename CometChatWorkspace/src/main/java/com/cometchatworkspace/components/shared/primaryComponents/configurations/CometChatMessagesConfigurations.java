@@ -16,8 +16,9 @@ import com.cometchatworkspace.components.messages.template.CometChatMessageTempl
 
 
 public class CometChatMessagesConfigurations extends CometChatConfigurations {
-    private static List<CometChatMessageTemplate> cometChatMessageTemplates = new ArrayList<>();
-    private boolean isDeleteMessageHidden,isUserChatEnabled,isGroupChatEnabled;
+    private  List<CometChatMessageTemplate> cometChatMessageTemplates = new ArrayList<>();
+    private  List<String> excludeMessageTypes = new ArrayList<>();
+    private boolean isDeleteMessageHidden=false,isUserChatEnabled=true,isGroupChatEnabled=true;
     private Drawable backgroundDrawable;
     private int backgroundColor;
     /**
@@ -30,20 +31,29 @@ public class CometChatMessagesConfigurations extends CometChatConfigurations {
         return this;
     }
 
-    public static List<CometChatMessageTemplate> getMessageFilterList() {
+    public CometChatMessagesConfigurations excludeMessageTypes(List<String> excludeMessageType){
+        this.excludeMessageTypes=excludeMessageType;
+        return this;
+    }
+
+    public List<String> getExcludeMessageTypes() {
+        return excludeMessageTypes;
+    }
+
+    public  List<CometChatMessageTemplate> getMessageTypes() {
         return cometChatMessageTemplates;
     }
 
-    public static CometChatMessageTemplate getMessageTemplateById(String id) {
-        for (CometChatMessageTemplate cometChatMessageTemplate : cometChatMessageTemplates) {
-            if (cometChatMessageTemplate.getId() != null){
-                if (cometChatMessageTemplate.getId().equalsIgnoreCase(id)) {
-                    return cometChatMessageTemplate;
-                }
-             }
-        }
-        return null;
-    }
+//    public static CometChatMessageTemplate getMessageTemplateById(String id) {
+//        for (CometChatMessageTemplate cometChatMessageTemplate : cometChatMessageTemplates) {
+//            if (cometChatMessageTemplate.getId() != null){
+//                if (cometChatMessageTemplate.getId().equalsIgnoreCase(id)) {
+//                    return cometChatMessageTemplate;
+//                }
+//             }
+//        }
+//        return null;
+//    }
 
     public CometChatMessagesConfigurations hideDeletedMessage(boolean isHidden) {
         isDeleteMessageHidden= isHidden;

@@ -17,6 +17,7 @@
             android:id="@+id/alert_title"
             android:visibility="gone"
             android:maxLines="1"
+            android:textStyle="bold"
             android:layout_marginBottom="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

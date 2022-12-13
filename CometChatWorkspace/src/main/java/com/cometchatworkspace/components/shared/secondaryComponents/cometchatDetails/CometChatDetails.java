@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -39,13 +37,11 @@ import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSec
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatActionSheet.ActionItem;
 import com.cometchatworkspace.components.shared.secondaryComponents.cometchatSharedMedia.CometChatSharedMedia;
 import com.cometchatworkspace.components.users.CometChatUserEvents;
-import com.cometchatworkspace.components.users.CometChatUsers;
 import com.cometchatworkspace.resources.constants.UIKitConstants;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,8 +75,8 @@ public class CometChatDetails extends CometChatListBase {
     public static final String LEAVE_GROUP = "leave_group";
     public static final String DELETE_EXIT_GROUP = "delete_exit_group";
 
-    //for user to set error text,font and color according to his/her choice
-    private String errorMessageFont = null;
+    //for user to set error text,appearance and color according to his/her choice
+    private int errorStateTextAppearance = 0;
     private int errorMessageColor = 0;
     private String errorText = null;
     private boolean hideError = false;
@@ -136,6 +132,8 @@ public class CometChatDetails extends CometChatListBase {
         this.context = context;
         palette = Palette.getInstance(context);
         typography = Typography.getInstance();
+        errorStateTextAppearance = typography.getText1();
+        errorMessageColor = palette.getAccent700();
         view = View.inflate(context, R.layout.cometchat_details, null);
         cometChatSectionList = view.findViewById(R.id.sectionList);
         cometChatDataItem = view.findViewById(R.id.dataItem);
@@ -204,13 +202,15 @@ public class CometChatDetails extends CometChatListBase {
         });
         super.addListView(view);
     }
+
     public void setStatusColor(int color) {
         Utils.setStatusBarColor(context, color);
 
     }
 
-    public void setErrorMessageFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void setErrorMessageColor(int errorMessageColor) {
@@ -410,15 +410,15 @@ public class CometChatDetails extends CometChatListBase {
             cometChatGroupActivity.addParameters(UIKitConstants.IntentStrings.ALLOW_BAN_UNBAN_MEMBERS, allowBanUnbanMembers);
             cometChatGroupActivity.addParameters(UIKitConstants.IntentStrings.ALLOW_KICK_MEMBERS, allowKickMembers);
             cometChatGroupActivity.addParameters(UIKitConstants.IntentStrings.ALLOW_PROMOTE_DEMOTE_MEMBERS, allowPromoteDemoteMembers);
-            CometChatGroupActivity.launch(context,CometChatGroupMembers.class,group);
+            CometChatGroupActivity.launch(context, CometChatGroupMembers.class, group);
         } else if (group != null && actionItem.getId() != null &&
                 actionItem.getId().equalsIgnoreCase(ADD_GROUP_MEMBERS)) {
-            CometChatGroupActivity.launch(context, CometChatAddMembers.class,group);
+            CometChatGroupActivity.launch(context, CometChatAddMembers.class, group);
         } else if (group != null && actionItem.getId() != null &&
                 actionItem.getId().equalsIgnoreCase(BANNED_GROUP_MEMBERS)) {
             CometChatGroupActivity groupActivity = new CometChatGroupActivity();
-            groupActivity.addParameters(UIKitConstants.IntentStrings.ALLOW_BAN_UNBAN_MEMBERS,allowBanUnbanMembers);
-            groupActivity.launchComponent(context,CometChatBannedMembers.class,group);
+            groupActivity.addParameters(UIKitConstants.IntentStrings.ALLOW_BAN_UNBAN_MEMBERS, allowBanUnbanMembers);
+            groupActivity.launchComponent(context, CometChatBannedMembers.class, group);
         } else if (group != null && actionItem.getId() != null && actionItem.getId().equalsIgnoreCase(LEAVE_GROUP)) {
             if (!isOwner) {
                 leaveGroupDialog(group.getGuid(), pos);
@@ -432,17 +432,33 @@ public class CometChatDetails extends CometChatListBase {
 
     private void deleteGroupDialog(String guid, int pos) {
         if (getContext() != null) {
-            new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, getResources().getString(R.string.delete_group_text), null, null, getContext().getString(R.string.delete_and_exit), "", getResources().getString(R.string.cancel), palette.getError(), 0, 0, new OnAlertDialogButtonClickListener() {
-                @Override
-                public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        deleteGroup(guid, pos);
-                        alertDialog.dismiss();
-                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                        alertDialog.dismiss();
-                    }
-                }
-            }, 0, false);
+
+            new CometChatDialog(context,
+                    0,
+                    errorStateTextAppearance,
+                    typography.getText2(),
+                    palette.getAccent900(),
+                    0,
+                    errorMessageColor,
+                    getResources().getString(R.string.delete_group_text),
+                    "",
+                    getContext().getString(R.string.delete_and_exit),
+                    getResources().getString(R.string.cancel),
+                    "",
+                    palette.getPrimary(),
+                    palette.getPrimary(),
+                    0,
+                    new OnDialogButtonClickListener() {
+                        @Override
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                deleteGroup(guid, pos);
+                                alertDialog.dismiss();
+                            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                alertDialog.dismiss();
+                            }
+                        }
+                    }, 0, false);
         }
 
     }
@@ -450,17 +466,33 @@ public class CometChatDetails extends CometChatListBase {
     private void leaveGroupDialog(String guid, int pos) {
 
         if (getContext() != null) {
-            new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, getResources().getString(R.string.leave_group_text), null, null, getContext().getString(R.string.leave_group), "", getResources().getString(R.string.cancel), palette.getError(), 0, 0, new OnAlertDialogButtonClickListener() {
-                @Override
-                public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        leaveGroup(guid, pos);
-                        alertDialog.dismiss();
-                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                        alertDialog.dismiss();
-                    }
-                }
-            }, 0, false);
+
+            new CometChatDialog(context,
+                    0,
+                    errorStateTextAppearance,
+                    typography.getText2(),
+                    palette.getAccent900(),
+                    0,
+                    errorMessageColor,
+                    getResources().getString(R.string.leave_group_text),
+                    "",
+                    getContext().getString(R.string.leave_group),
+                    getResources().getString(R.string.cancel),
+                    "",
+                    palette.getPrimary(),
+                    palette.getPrimary(),
+                    0,
+                    new OnDialogButtonClickListener() {
+                        @Override
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                leaveGroup(guid, pos);
+                                alertDialog.dismiss();
+                            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                alertDialog.dismiss();
+                            }
+                        }
+                    }, 0, false);
         }
 
     }
@@ -483,19 +515,35 @@ public class CometChatDetails extends CometChatListBase {
     private void showTransferOwnerShipDialog() {
 
         if (getContext() != null) {
-            new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, getResources().getString(R.string.transfer_ownership), null, getContext().getString(R.string.transfer_ownership_text), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
-                @Override
-                public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        CometChatGroupActivity groupActivity = new CometChatGroupActivity();
-                        groupActivity.setGroup(group);
-                        groupActivity.launchComponent(context, CometChatTransferOwnership.class);
-                        alertDialog.dismiss();
-                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                        alertDialog.dismiss();
-                    }
-                }
-            }, 0, false);
+
+            new CometChatDialog(context,
+                    0,
+                    errorStateTextAppearance,
+                    typography.getText2(),
+                    palette.getAccent900(),
+                    0,
+                    errorMessageColor,
+                    getResources().getString(R.string.transfer_ownership),
+                    "",
+                    getContext().getString(R.string.try_again),
+                    getResources().getString(R.string.cancel),
+                    "",
+                    palette.getPrimary(),
+                    palette.getPrimary(),
+                    0,
+                    new OnDialogButtonClickListener() {
+                        @Override
+                        public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                CometChatGroupActivity groupActivity = new CometChatGroupActivity();
+                                groupActivity.setGroup(group);
+                                groupActivity.launchComponent(context, CometChatTransferOwnership.class);
+                                alertDialog.dismiss();
+                            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                alertDialog.dismiss();
+                            }
+                        }
+                    }, 0, false);
         }
 
 
@@ -507,7 +555,7 @@ public class CometChatDetails extends CometChatListBase {
             @Override
             public void onSuccess(String successMessage) {
                 Log.d(TAG, "Group deleted successfully: ");
-                ((Activity)context).onBackPressed();
+                ((Activity) context).onBackPressed();
                 for (CometChatGroupEvents e : CometChatGroupEvents.groupEvents.values()) {
                     e.onGroupDelete(group);
                 }
@@ -621,9 +669,24 @@ public class CometChatDetails extends CometChatListBase {
 
         if (!hideError) {
             if (getContext() != null) {
-                new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, null, getContext().getString(R.string.try_again), "", getResources().getString(R.string.cancel), new OnAlertDialogButtonClickListener() {
+
+                new CometChatDialog(context,
+                        0,
+                        errorStateTextAppearance,
+                        typography.getText2(),
+                        palette.getAccent900(),
+                        0,
+                        errorMessageColor,
+                        error_message,
+                        "",
+                        getContext().getString(R.string.try_again),
+                        getResources().getString(R.string.cancel),
+                        "",
+                        palette.getPrimary(),
+                        palette.getPrimary(),
+                        0, new OnDialogButtonClickListener() {
                     @Override
-                    public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                    public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                         if (which == DialogInterface.BUTTON_POSITIVE) {
                             if (user != null && action.equals(BLOCK))
                                 blockUser(user.getUid(), pos);
@@ -763,7 +826,7 @@ public class CometChatDetails extends CometChatListBase {
                 super.onGroupMemberBanned(action, bannedUser, bannedBy, group_);
                 if (bannedUser.getUid().equals(loggedInUser.getUid()) && group_.getGuid().equals(group.getGuid())) {
                     for (CometChatGroupEvents e : CometChatGroupEvents.groupEvents.values()) {
-                        e.onGroupMemberBan(bannedUser,bannedBy, group);
+                        e.onGroupMemberBan(bannedUser, bannedBy, group);
                     }
                     ((Activity) context).onBackPressed();
 

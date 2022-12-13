@@ -26,8 +26,8 @@ import com.cometchatworkspace.components.shared.primaryComponents.theme.Palette;
 import com.cometchatworkspace.components.shared.primaryComponents.theme.Typography;
 import com.cometchatworkspace.resources.utils.FontUtils;
 import com.cometchatworkspace.resources.utils.Utils;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.CustomAlertDialogHelper;
-import com.cometchatworkspace.resources.utils.custom_alertDialog.OnAlertDialogButtonClickListener;
+import com.cometchatworkspace.resources.utils.custom_dialog.CometChatDialog;
+import com.cometchatworkspace.resources.utils.custom_dialog.OnDialogButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -48,7 +48,7 @@ public class CometChatJoinProtectedGroup extends CometChatListBase {
     Typography typography;
     Group group;
     //for user to set error text,font and color according to his/her choice
-    private String errorMessageFont = null;
+    private int errorStateTextAppearance = 0;
     private int errorMessageColor = 0;
     private String errorText = null;
     private boolean hideError = false;
@@ -76,7 +76,8 @@ public class CometChatJoinProtectedGroup extends CometChatListBase {
         fontUtils = FontUtils.getInstance(context);
         palette = Palette.getInstance(context);
         typography = Typography.getInstance();
-
+        errorMessageColor=palette.getAccent700();
+        errorStateTextAppearance=typography.getText1();
         view = View.inflate(context, R.layout.cometchat_join_group, null);
         messageText = view.findViewById(R.id.label);
         passwordInputBox = view.findViewById(R.id.password_input_box);
@@ -281,8 +282,9 @@ public class CometChatJoinProtectedGroup extends CometChatListBase {
         }
     }
 
-    public void setErrorMessageFont(String errorMessageFont) {
-        this.errorMessageFont = errorMessageFont;
+    public void errorStateTextAppearance(int appearance) {
+        if (appearance != 0)
+            this.errorStateTextAppearance = appearance;
     }
 
     public void setErrorMessageColor(int errorMessageColor) {
@@ -298,21 +300,37 @@ public class CometChatJoinProtectedGroup extends CometChatListBase {
     }
 
     private void hideError(String error) {
-        String error_message;
-        String error_title = null;
+        String errorMessage;
+        String errorTitle = null;
         if (errorText != null)
-            error_message = errorText;
+            errorMessage = errorText;
         else if (getContext().getString(R.string.sdk_incorrect_password_error).equalsIgnoreCase(error)) {
-            error_message = getContext().getString(R.string.please_try_another_password);
-            error_title = getContext().getString(R.string.incorrect_password);
+            errorMessage = getContext().getString(R.string.please_try_another_password);
+            errorTitle = getContext().getString(R.string.incorrect_password);
         } else
-            error_message = getContext().getString(R.string.something_went_wrong);
+            errorMessage = getContext().getString(R.string.something_went_wrong);
 
         if (!hideError) {
             if (getContext() != null) {
-                new CustomAlertDialogHelper(context, errorMessageFont, errorMessageColor, error_message, error_title, null, getContext().getString(R.string.okay), "", "", palette.getPrimary(), 0, 0, new OnAlertDialogButtonClickListener() {
+
+                new CometChatDialog(context,
+                        typography.getHeading(),
+                        errorStateTextAppearance,
+                        typography.getText2(),
+                        palette.getBackground(),
+                        palette.getAccent(),
+                        errorMessageColor,
+                        errorMessage,
+                        errorTitle,
+                        getContext().getString(R.string.okay),
+                        "",
+                        "",
+                        palette.getPrimary(),
+                        palette.getPrimary(),
+                        0,
+                        new OnDialogButtonClickListener() {
                     @Override
-                    public void onButtonClick(AlertDialog alertDialog, View v, int which, int popupId) {
+                    public void onButtonClick(AlertDialog alertDialog, int which, int popupId) {
                         if (which == DialogInterface.BUTTON_POSITIVE) {
                             passwordInput.setText("");
                             alertDialog.dismiss();
