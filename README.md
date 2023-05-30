@@ -70,7 +70,7 @@ allprojects {
 
 ```groovy
 dependencies {
-   implementation 'com.cometchat:pro-android-java-chat-ui-kit:3.0.9-pluto.beta1'
+   implementation 'com.cometchat:pro-android-java-chat-ui-kit:3.0.15-pluto.beta2.1'
 }
 ```
 
@@ -85,7 +85,7 @@ You can refer to the below link for next instructions:<br/>
 ## Configure CometChat SDK
 
 ### i. Initialize CometChat 🌟
-The init() method initializes the settings required for CometChat. We suggest calling the init() method on app startup, preferably in the onCreate() method of the Application class.
+The init() method initializes the settings required for CometChat. We suggest calling the init() method on app startup, preferably in the onCreate() method of any activity before calling any CometChat.
 
 <table><td>
 
@@ -96,19 +96,19 @@ import com.cometchat.pro.exceptions.CometChatException;
 
 String appID = "APP_ID"; // Replace with your App ID
 String region = "REGION"; // Replace with your App Region ("eu" or "us")
+String authKey = "AUTH_KEY"; // Replace with your Auth key
+UIKitSettings uiKitSettings = new UIKitSettings.UIKitSettingsBuilder().setRegion(region).setAppId(appID).setAuthKey(authKey).subscribePresenceForAllUsers().build();
+        CometChatUIKit.init(this, uiKitSettings, new CometChat.CallbackListener<String>() {
+            @Override
+            public void onSuccess(String successMessage) {
+                Log.d(TAG, "Initialization completed successfully");
+            }
 
-AppSettings appSettings=new AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
-
-CometChat.init(this, appID,appSettings, new CometChat.CallbackListener<String>() {
-  @Override
-  public void onSuccess(String successMessage) {
-    Log.d(TAG, "Initialization completed successfully");
-  }
-  @Override
-  public void onError(CometChatException e) {
-    Log.d(TAG, "Initialization failed with exception: " + e.getMessage());
-  }
-});
+            @Override
+            public void onError(CometChatException e) {
+                Log.d(TAG, "Initialization failed with exception: " + e.getMessage());
+            }
+        });
 ```
 
 </td></table>
@@ -125,25 +125,18 @@ Once you have created the user successfully, you will need to log the user into 
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.exceptions.CometChatException;
 
-String UID = "user1"; // Replace with the UID of the user to login
-String authKey = "AUTH_KEY"; // Replace with your App Auth Key
+String uid = "user1"; // Replace with the UID of the user to login
+CometChatUIKit.login(uid, new CometChat.CallbackListener<User>() {
+            @Override
+            public void onSuccess(User user) {
+                Log.d(TAG, "Login Successful : " + user.toString());
+            }
 
- if (CometChat.getLoggedInUser() == null) {
-     CometChat.login(UID, authKey, new CometChat.CallbackListener<User>() {
-
-      @Override
-      public void onSuccess(User user) {
-        Log.d(TAG, "Login Successful : " + user.toString());
-  }
-
-   @Override
-    public void onError(CometChatException e) {
-        Log.d(TAG, "Login failed with exception: " + e.getMessage());
-   }
- });
- } else {
-   // User already logged in
- }
+            @Override
+            public void onError(CometChatException e) {
+                Log.d(TAG, "Login failed with exception: " + e.getMessage());
+            }
+        });
 ```
 
 </td></table>
@@ -165,7 +158,7 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
 
 2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://www.cometchat.com/docs/java-uikit-beta/integration) )
 
-3. If the Library is added successfully, it will look like mentioned in the below image.
+3. If the Library is added successfully, it will look like mentioned in the below image.<br>
    <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
 
 4. Next steps is to adding necessary dependencies inside your app to integrate UI Kit.
@@ -212,23 +205,6 @@ String authKey = "AUTH_KEY"; // Replace with your App Auth Key
        defaultConfig {
            manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"] 
            //add your application package.
-       }
-   }
-   ```
-
-   </td></table>
-
-   </li>
-   <li>
-   As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
-
-   <table><td>
-
-   ```groovy
-   android {
-       ...
-       dataBinding {
-       enabled = true
        }
    }
    ```

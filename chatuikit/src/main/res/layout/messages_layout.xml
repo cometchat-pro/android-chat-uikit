@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <LinearLayout
+            android:id="@+id/message_header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <com.cometchat.chatuikit.messageheader.CometChatMessageHeader
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="56dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/message_body_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/message_bottom_container"
+            android:layout_below="@id/message_header_view"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <com.cometchat.chatuikit.messagelist.CometChatMessageList
+                android:id="@+id/message_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/reactions_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/message_bottom_container"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="-30dp" />
+
+        <LinearLayout
+            android:id="@+id/message_bottom_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <com.cometchat.chatuikit.messagecomposer.CometChatMessageComposer
+                android:id="@+id/composer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

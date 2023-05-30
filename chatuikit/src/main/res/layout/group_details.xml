@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:nestedScrollingEnabled="false"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.chatuikit.components.shared.sdkDerivedComponents.cometchatGroups.CometChatGroupListItem
+            android:id="@+id/groupListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.chatuikit.components.shared.secondaryComponents.cometchatSectionList.CometChatSectionList
+            android:id="@+id/sectionList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

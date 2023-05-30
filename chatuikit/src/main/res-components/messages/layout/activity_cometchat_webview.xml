@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cometchat.chatuikit.extensions.collaborative.CometChatWebViewActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_margin="16dp"
+            android:id="@+id/back_icon"
+            android:src="@drawable/ic_back_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="@color/textColorWhite" />
+
+    </RelativeLayout>
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/webview"/>
+</LinearLayout>

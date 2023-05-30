@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cc_no_message"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/message_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/header_view"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_message_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer_view"
+            android:clipToPadding="false"
+            app:fastScrollEnabled="true"
+            app:fastScrollVerticalThumbDrawable="@drawable/scrolling"
+            app:fastScrollVerticalTrackDrawable="@drawable/scrolling"
+            app:fastScrollHorizontalThumbDrawable="@drawable/scrolling"
+            app:fastScrollHorizontalTrackDrawable="@drawable/scrolling"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <include
+            android:id="@+id/new_message_layout"
+            layout="@layout/new_message_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/footer_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/footer_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/customView_lay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" />
+</RelativeLayout>

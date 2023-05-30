@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_message_container"
+            android:layout_width="228dp"
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:id="@+id/cv_message_container_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_question"
+                    style="@style/Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:maxWidth="220dp"
+                    android:padding="5dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/primaryTextColor"
+                    tools:text="What color is rose ?" />
+
+                <ProgressBar
+                    android:id="@+id/loading_progressBar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="end"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/options_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp" />
+
+                <TextView
+                    android:id="@+id/total_votes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="5dp"
+                    tools:text="2 Votes" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+</LinearLayout>

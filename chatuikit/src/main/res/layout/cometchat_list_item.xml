@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_foreground"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:theme="@style/AppTheme">
+
+    <com.cometchat.chatuikit.shared.views.CometChatAvatar.CometChatAvatar
+        android:id="@+id/item_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        app:cardCornerRadius="100dp" />
+
+    <com.cometchat.chatuikit.shared.views.CometChatStatusIndicator.CometChatStatusIndicator
+        android:id="@+id/item_presence"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_below="@id/item_avatar"
+        android:layout_alignEnd="@+id/item_avatar"
+        android:layout_marginTop="-15dp"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_toEndOf="@id/item_avatar"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/name"
+                android:textStyle="bold"
+                tools:text="@tools:sample/full_names" />
+
+            <LinearLayout
+                android:id="@+id/subtitle_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tail_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:maxWidth="100dp"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_Separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@id/item_avatar"
+        android:background="@color/light_grey" />
+
+</RelativeLayout>
+
