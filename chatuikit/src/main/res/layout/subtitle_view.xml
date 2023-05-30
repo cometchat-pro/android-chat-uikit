@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/typing_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="@string/is_typing"
+        android:textSize="@dimen/fourteen"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/subtitle_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.cometchat.chatuikit.shared.views.CometChatReceipt.CometChatReceipt
+            android:id="@+id/receipt"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/helperText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/in_thread"
+                android:textSize="@dimen/eleven"
+                android:visibility="gone"
+                app:drawableEndCompat="@drawable/ic_baseline_in_thread_24"
+                app:drawableTint="@color/grey"
+                tools:visibility="gone" />
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textSize="@dimen/fourteen"
+                android:visibility="visible"
+                tools:text="@tools:sample/lorem/random" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

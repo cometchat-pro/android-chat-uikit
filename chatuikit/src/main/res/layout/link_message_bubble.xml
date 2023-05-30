@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_message_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp">
+
+        <RelativeLayout
+            android:layout_width="228dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/image_view"
+                android:layout_width="250dp"
+                android:layout_height="100dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/link_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/textColorWhite"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_default_image" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/play_btn_bg"
+                    android:layout_width="55dp"
+                    app:shapeAppearanceOverlay="@style/circleImageView"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_circle_grey_32dp"
+                    android:layout_height="55dp" />
+
+                <ImageView
+                    android:id="@+id/videoLink"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/play_fill_ic"
+                    tools:visibility="visible" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/link_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_view"
+                android:paddingStart="12dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/textColorWhite"
+                tools:text="SecondHand Shoes" />
+
+            <TextView
+                android:id="@+id/link_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/link_title"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/textColorWhite"
+                tools:text="Lorium Espium wet twe serew fae daq ruqa" />
+
+            <LinearLayout
+                android:id="@+id/place_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/link_subtitle"
+                android:orientation="vertical" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</RelativeLayout>

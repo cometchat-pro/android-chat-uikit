@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3399FF</color>
+    <color name="colorSecondary">#808080</color>
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="cc_transparent">#00000000</color>
+
+    <color name="textColorWhite">#FFFFFF</color>
+    <color name="bottom">#FAFAFA</color>
+    <color name="secondaryTextColor">#6b000000</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="message_bubble_grey">#e0e0e0</color>
+    <color name="menu_background_grey">#40bdbdbd</color>
+    <color name="online_green">#3BDF2F</color>
+    <color name="offline">#C8C4C4C4</color>
+    <color name="red">#eecc0000</color>
+    <color name="shimmer">#ECECEC</color>
+
+    <color name="orange">#FF9800</color>
+    <color name="purple">#8867C5</color>
+    <color name="dark_blue">#0020F5</color>
+    <color name="green_600">#43A047</color>
+    <color name="red_600">#E53935</color>
+    <color name="grey">#B96B6B6B</color>
+    <color name="grey_100">#C4C4C4</color>
+    <color name="grey_200">#9E9C9C</color>
+    <color name="darkModeBackground">#202124</color>
+    <color name="action_sheet_icon_bg">#6929CA</color>
+    <color name="divider_option">#32141414</color>
+    <color name="yellow">#FFC900</color>
+
+    <!--    default theme colors light-->
+    <color name="background">#FFFFFF</color>
+    <color name="primary">#3399FF</color>
+    <color name="secondary">#ebf8f8f8</color>
+    <color name="error">#FF3B30</color>
+    <color name="success">#00c86f</color>
+    <color name="accent">#141414</color>
+    <color name="accent50">#0a141414</color>
+    <color name="accent100">#1a141414</color>
+    <color name="accent200">#26141414</color>
+    <color name="accent300">#3d141414</color>
+    <color name="accent400">#66141414</color>
+    <color name="accent500">#75141414</color>
+    <color name="accent600">#94141414</color>
+    <color name="accent700">#b0141414</color>
+    <color name="accent800">#d1141414</color>
+    <color name="accent900">#FFFFFF</color>
+
+    <!--    default theme colors dark-->
+    <color name="background_dark">#141414</color>
+    <color name="primary_dark">#3399FF</color>
+    <color name="secondary_dark">#333333</color>
+    <color name="error_dark">#FF3B30</color>
+    <color name="success_dark">#00c86f</color>
+    <color name="accent_dark">#FFFFFF</color>
+    <color name="accent50_dark">#0affffff</color>
+    <color name="accent100_dark">#1affffff</color>
+    <color name="accent200_dark">#24ffffff</color>
+    <color name="accent300_dark">#3bffffff</color>
+    <color name="accent400_dark">#57ffffff</color>
+    <color name="accent500_dark">#75ffffff</color>
+    <color name="accent600_dark">#94ffffff</color>
+    <color name="accent700_dark">#b5ffffff</color>
+    <color name="accent800_dark">#d6ffffff</color>
+    <color name="accent900_dark">#141414</color>
+
+
+    <!--    default theme colors dark end-->
+
+
+
+    <!--    PersianTheme-->
+    <color name="persian_theme_base_bg">#008069</color>
+    <color name="persian_theme_base_title">#FFFFFF</color>
+    <color name="persian_theme_list_base_bg">#FFFFFF</color>
+    <color name="persian_theme_list_item_bg">#FFFFFF</color>
+    <color name="persian_theme_title_text">#000000</color>
+    <color name="persian_theme_subtitle_text">#747f86</color>
+    <color name="persian_theme_time">#747f86</color>
+    <color name="persian_theme_search_text">#000000</color>
+    <color name="persian_theme_search_bg">#FFFFFF</color>
+    <color name="persian_theme_badge_bg">#33cc6c</color>
+    <color name="persian_theme_badge_text">#FFFFFF</color>
+    <!--    PersianTheme end-->
+
+    <!--    PersianTheme Dark-->
+    <color name="persian_theme_base_bg_dark">#1f2c34</color>
+    <color name="persian_theme_base_title_dark">#7e8d97</color>
+    <color name="persian_theme_list_base_bg_dark">#000000</color>
+    <color name="persian_theme_list_item_bg_dark">#000000</color>
+    <color name="persian_theme_title_text_dark">#FFFFFF</color>
+    <color name="persian_theme_subtitle_text_dark">#7e8b94</color>
+    <color name="persian_theme_time_dark">#7e8b94</color>
+    <color name="persian_theme_search_text_dark">#7e8a98</color>
+    <color name="persian_theme_search_bg_dark">#1d2633</color>
+    <color name="persian_theme_badge_bg_dark">#00a884</color>
+    <color name="persian_theme_badge_text_dark">#000000</color>
+    <!--    PersianTheme end-->
+
+
+    <!--    Azure Radiance light-->
+    <color name="azure_radiance_base_bg">#517da2</color>
+    <color name="azure_radiance_base_title">#FFFFFF</color>
+    <color name="azure_radiance_list_base_bg">#FFFFFF</color>
+    <color name="azure_radiance_list_item_bg">#FFFFFF</color>
+    <color name="azure_radiance_title_text">#000000</color>
+    <color name="azure_radiance_subtitle_text">#c5c6c9</color>
+    <color name="azure_radiance_time">#c5c6c9</color>
+    <color name="azure_radiance_search_text">#cccccc</color>
+    <color name="azure_radiance_search_bg">#FFFFFF</color>
+    <color name="azure_radiance_badge_bg">#88cd99</color>
+    <color name="azure_radiance_badge_text">#FFFFFF</color>
+    <!--    Azure Radiance end-->
+
+    <!--    Azure Radiance light Dark-->
+    <color name="azure_radiance_base_bg_dark">#212d3b</color>
+    <color name="azure_radiance_base_title_dark">#FFFFFF</color>
+    <color name="azure_radiance_list_base_bg_dark">#1d2633</color>
+    <color name="azure_radiance_list_item_bg_dark">#1d2633</color>
+    <color name="azure_radiance_title_text_dark">#FFFFFF</color>
+    <color name="azure_radiance_subtitle_text_dark">#7d8a98</color>
+    <color name="azure_radiance_time_dark">#7d8a98</color>
+    <color name="azure_radiance_search_text_dark">#7e8a98</color>
+    <color name="azure_radiance_search_bg_dark">#1d2633</color>
+    <color name="azure_radiance_badge_bg_dark">#64b4ef</color>
+    <color name="azure_radiance_badge_text_dark">#FFFFFF</color>
+    <!--    Azure Radiance end-->
+
+    <!--    MountainMeadow  light-->
+    <color name="MountainMeadow_base_bg">#FFFFFF</color>
+    <color name="MountainMeadow_base_title">#000000</color>
+    <color name="MountainMeadow_list_base_bg">#FFFFFF</color>
+    <color name="MountainMeadow_list_item_bg">#FFFFFF</color>
+    <color name="MountainMeadow_title_text">#000000</color>
+    <color name="MountainMeadow_subtitle_text">#7b7b7b</color>
+    <color name="MountainMeadow_time">#7b7b7b</color>
+    <color name="MountainMeadow_search_text">#a0a0a0</color>
+    <color name="MountainMeadow_search_bg">#efefef</color>
+    <color name="MountainMeadow_badge_bg">#ed4957</color>
+    <color name="MountainMeadow_badge_text">#FFFFFF</color>
+    <!--    Azure Radiance end-->
+
+    <!--    MountainMeadow  light-->
+    <color name="MountainMeadow_base_bg_dark">#000000</color>
+    <color name="MountainMeadow_base_title_dark">#FFFFFF</color>
+    <color name="MountainMeadow_list_base_bg_dark">#000000</color>
+    <color name="MountainMeadow_list_item_bg_dark">#000000</color>
+    <color name="MountainMeadow_title_text_dark">#FFFFFF</color>
+    <color name="MountainMeadow_subtitle_text_dark">#7b7b7b</color>
+    <color name="MountainMeadow_time_dark">#7b7b7b</color>
+    <color name="MountainMeadow_search_text_dark">#6e6e6e</color>
+    <color name="MountainMeadow_search_bg_dark">#262626</color>
+    <color name="MountainMeadow_badge_bg_dark">#ed4957</color>
+    <color name="MountainMeadow_badge_text_dark">#FFFFFF</color>
+    <!--    Azure Radiance end-->
+
+
+</resources>

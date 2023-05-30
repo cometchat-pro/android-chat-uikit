@@ -1,226 +1,0 @@
-<resources>
-    <string name="chats">دردشات</string>
-    <string name="this_message_deleted">⚠️ تم حذف هذه الرسالة</string>
-    <string name="view_on_youtube">عرض على يوتيوب</string>
-    <string name="message_image">📷 صور</string>
-    <string name="message_video">📹 فيديو</string>
-    <string name="message_audio">🎵 الصوت</string>
-    <string name="message_file">📁 ملف</string>
-    <string name="custom_message">لديك رسالة</string>
-    <string name="missed_voice_call"> مكالمة صوتية غاب»</string>
-    <string name="missed_video_call"> مكالمة فيديو غاب</string>
-    <string name="custom_message_location">📍 الموقع</string>
-    <string name="custom_message_poll">📊 استطلاع للرأي</string>
-    <string name="custom_message_sticker">💟 ملصق</string>
-    <string name="custom_message_whiteboard">📝 السبورة</string>
-    <string name="custom_message_document">📃 وثيقة</string>
-    <string name="online">عبر الإنترنت</string>
-    <string name="you">أنت</string>
-    <string name="admin">مشرف</string>
-    <string name="moderator">مدير الجلسة</string>
-    <string name="participant">مشارك</string>
-
-    <string name="you_ve_blocked">لقد حظرت</string>
-    <string name="members">الأعضاء</string>
-    <string name="cancel">إلغاء</string>
-    <string name="text_copied">نص تم نسخه إلى الحافظة</string>
-    <string name="today">اليوم</string>
-    <string name="yesterday">البارحة</string>
-    <string name="is_typing">هو كتابة...</string>
-    <string name="unblock">إلغاء الحظر</string>
-    <string name="group">مجموعة؟</string>
-    <string name="unblocked_successfully">تم إلغاء حظره بنجاح</string>
-    <string name="forward_to_5_at_a_time">يمكنك إعادة توجيه الرسالة فقط إلى 5 مشاركين في كل مرة</string>
-    <string name="video_call">مكالمة فيديو</string>
-    <string name="audio_call">مكالمة صوتية</string>
-    <string name="launch">إطلاق</string>
-    <string name="join">انضم</string>
-    <string name="has_shared_whiteboard">وقد شارك خنزير أبيض تعاوني</string>
-    <string name="you_created_whiteboard">لقد قمت بإنشاء خنزير أبيض تعاوني جديد</string>
-    <string name="you_created_document">لقد قمت بإنشاء وثائقي تعاوني جديد</string>
-    <string name="photo_video_library">مكتبة الصور والفيديو</string>
-    <string name="take_a_photo">التقط صورة</string>
-    <string name="share_location">مشاركة الموقع</string>
-    <string name="edit_message">تحرير الرسالة</string>
-    <string name="delete_message">حذف الرسالة</string>
-    <string name="reply_message">رسالة الرد</string>
-    <string name="forward_message">رسالة إلى الأمام</string>
-    <string name="start_thread">بدء الموضوع</string>
-    <string name="share_message">مشاركة الرسالة</string>
-    <string name="message_information">معلومات الرسالة</string>
-    <string name="copy_message">نسخ الرسالة</string>
-    <string name="create_a_poll">إنشاء استطلاع للرأي</string>
-    <string name="send_sticker">إرسال ملصق</string>
-    <string name="search">البحث</string>
-    <string name="error">خطأ</string>
-    <string name="incoming_audio_call">مكالمة صوتية واردة</string>
-    <string name="incoming_video_call">مكالمة فيديو واردة</string>
-    <string name="rejected_call">مكالمة مرفوضة</string>
-    <string name="joined">انضم</string>
-    <string name="call_ended">انتهت المكالمة</string>
-    <string name="unban">نبان</string>
-    <string name="create_poll">إنشاء استطلاع للرأي</string>
-    <string name="question">سؤال</string>
-    <string name="enter_your_question">أدخل سؤالك</string>
-    <string name="enter_your_option">أدخل الخيار الخاص بك</string>
-    <string name="ban">بان</string>
-    <string name="visit">زيارة</string>
-
-    <string name="message">اكتب رسالة</string>
-    <string name="you_wont_be_able_send_or_receive_messages">لن تتمكن من إرسال الرسائل أو تلقيها</string>
-    <string name="not_a_member">أنت لست عضوًا في هذه المجموعة (%1$s)</string>
-    <string name="grant_camera_permission">يرجى منح إذن الكاميرا من إعداد التطبيق</string>
-    <string name="grant_storage_permission">يرجى منح إذن تخزين من إعداد التطبيق</string>
-    <string name="file_not_exist">الملف غير موجود</string>
-
-    <string name="outgoing">المنتهية ولايته</string>
-    <string name="incoming">واردة</string>
-    <string name="missed">غاب</string>
-    <string name="missed_call">غاب</string>
-    <string name="ongoing_call">المكالمة مستمرة</string>
-    <string name="ongoing_call_message">هناك بالفعل مكالمة مستمرة. هل ترغب في الانضمام؟</string>
-    <string name="tap_to_join_call">اضغط على للانضمام إلى المكالمة المستمرة</string>
-    <string name="no_media">لا تتوفر وسائل الإعلام</string>
-    <string name="images">الصور</string>
-    <string name="videos">فيديوهات</string>
-    <string name="files">ملفات</string>
-    <string name="no_conversations">ليس لديك أي محادثات</string>
-    <string name="yes">نعم</string>
-    <string name="fill_this_field">املأ هذا الحقل</string>
-    <string name="send">إرسال</string>
-    <string name="shared_a_image">مشاركة صورة</string>
-    <string name="shared_a_audio">مشاركة ملف صوتي %1$s</string>
-    <string name="shared_a_video">مشاركة فيديو</string>
-    <string name="shared_a_file">مشاركة ملف %1$s</string>
-    <string name="shared_a_sticker">مشاركة ملصق</string>
-    <string name="shared_a_polls">مشاركة استطلاع للرأي:\ n%1$s</string>
-    <string name="share">مشاركة</string>
-    <string name="sensitive_content">محتوى غير آمن.</string>
-    <string name="sentiment_content">تتضمن الرسالة التالية محتوى يحتمل أن يكون حساسًا.</string>
-    <string name="view">عرض</string>
-    <string name="sentiment_alert">تنبيه المشاعر</string>
-    <string name="sentiment_alert_message">هل ترغب في عرض هذه الرسالة التي قد تحتوي على محتوى حساس.</string>
-    <string name="connecting_to_call">الاتصال بالمكالمة</string>
-    <string name="grant_location_permission">يرجى السماح بإذن الموقع.</string>
-    <string name="send_audio_files">إرسال ملفات صوتية</string>
-    <string name="send_files">الملفات والمستندات</string>
-    <string name="shared_location">مشاركة موقع %1$s</string>
-    <string name="no">لا</string>
-    <string name="turn_on_gps">تشغيل نظام تحديد المواقع</string>
-    <string name="on">في</string>
-    <string name="option">خيارات</string>
-    <string name="add_a_new_option">إضافة خيار جديد</string>
-    <string name="unable_to_get_location">غير قادر على الحصول على موقعك</string>
-    <string name="ended">انتهى</string>
-    <string name="share_whiteboard">مشاركة السبورة البيضاء</string>
-    <string name="shared_a_whiteboard">مشاركة لوح معلومات</string>
-    <string name="share_writeboard">مشاركة لوح الكتابة</string>
-    <string name="shared_a_writeboard">مشاركة لوحة الكتابة</string>
-    <string name="you_received">تلقيت %1$s</string>
-    <string name="tap_to_start_conversation">انقر لبدء المحادثة</string>
-    <string name="has_shared_document">شارك مستندًا تعاونيًا.</string>
-    <string name="added">مضاف</string>
-    <string name="made">مصنوع</string>
-    <string name="translate_message">ترجمة الرسالة</string>
-    <string name="translation_error">لا يوجد ترجمة متوفرة</string>
-    <string name="has_shared_group_call">شارك في مكالمة جماعية.</string>
-    <string name="custom_message_meeting">مكالمة جماعية 📹</string>
-    <string name="you_created_group_call">لقد قمت بإنشاء مكالمة جماعية.</string>
-    <string name="voted_success">تم التصويت على النجاح</string>
-    <string name="uploading">تحميل</string>
-    <string name="retry">أعد المحاولة</string>
-    <string name="updating">التحديث</string>
-    <string name="conversation_title">المحادثات</string>
-    <string name = "user_left"> "مستخدم اليسار" </string>
-    <string name = "user_joined"> انضمام المستخدم </string>
-    <string name = "no_internet_available"> لا يتوفر إنترنت </string>
-    <string name = "you_have_blocked_by"> تم حظرك بواسطة </string>
-
-    <!--Error Messages-->
-    <string name = "server_error"> خطأ في الخادم </string>
-    <string name = "err_no_question"> \ "السؤال \" للاستطلاع مفقود </string>
-    <string name = "err_no_receiver"> \ "المتلقي \" (UID / GUID) مفقود </string>
-    <string name = "err_no_receiver_type"> \ "نوع جهاز الاستقبال \" مفقود </string>
-    <string name = "err_no_options"> \ "الخيارات \" للاستطلاع إما مفقودة أو غير صالحة </string>
-    <string name = "err_poll_not_found"> ​​الاستطلاع غير موجود </string>
-    <string name = "err_no_poll_id"> الاستطلاع \ "id \" مفقود </string>
-    <string name = "err_not_poll_creator"> أنت لست منشئ الاستطلاع </string>
-
-    <string name="err_password_missing_message">كلمة المرور إلزامية لمجموعة محمية</string>
-    <string name="err_invalid_guid_message">الرجاء تقديم GUID صالح</string>
-    <string name="err_invalid_uid_message">الرجاء تقديم UID صالح</string>
-    <string name="err_blank_uid_message">لا يمكن أن يكون المعرف الفريد فارغًا. يرجى تقديم UID صالح</string>
-    <string name="err_uid_with_space_message">لا يمكن أن يحتوي المعرف الفريد على مسافات. يرجى تقديم UID صالح</string>
-    <string name="err_default_message">هناك خطأ ما</string>
-    <string name="extension_is_not_enabled">التمديد معطل. يرجى تمكين الامتداد من CometChat Dashboard</string>
-    <string name="err_empty_group_name_message">لا يمكن أن يكون اسم المجموعة فارغًا أو فارغًا</string>
-    <string name="extension_not_found">تعذر العثور على الامتداد المقدم.</string>
-    <string name="kicked_by">ركل</string>
-    <string name="left">غادر</string>
-    <string name="downloading">جارى التحميل</string>
-    <string name="send_message_privately">إرسال الرسالة بشكل خاص</string>
-    <string name="delete_conversation_message">هل ترغب في حذف هذه المحادثة؟</string>
-    <string name="deleting_conversation">حذف المحادثة</string>
-    <string name="err_internet_unavailable">لا يوجد إنترنت متاح</string>
-    <string name="offline">غير متصل على الانترنت</string>
-    <string name="new_messages">رسائل جديدة</string>
-    <string name="new_message">رسالة جديدة</string>
-    <string name="delivered">تم التوصيل</string>
-    <string name="read">يقرأ</string>
-    <string name="vote">تصويت</string>
-    <string name="votes">الأصوات</string>
-    <string name="replies">الردود</string>
-    <string name="reply_message_privately">الرد بشكل خاص</string>
-    <string name="started">بدأت</string>
-    <string name="reply_in_thread">" reply_in_thread"</string>
-    <string name="background_location_permission_title">السماح بإذن موقع الخلفية</string>
-    <string name="add_to_chat">أضف إلى الدردشة</string>
-    <string name="no_user">لا مستخدمين</string>
-    <string name="no_groups">لا مجموعات</string>
-    <string name="channel_description">قناة صفا</string>
-    <string name="tags">العلامات</string>
-    <string name="in_thread">في موضوع</string>
-    <string name="member">عضو 成员</string>
-    <string name="error_cant_load_user">"لا يمكن تحميل المستخدمين. حاول مرة اخرى "</string>
-    <string name="try_again">حاول مجددا</string>
-    <string name="create_group">إنشاء مجموعة</string>
-    <string name="error_cant_load_conversation">لا يمكن تحميل المحادثة. حاول مرة اخرى</string>
-    <string name="error_cant_load_group">لا يمكن تحميل المجموعة. حاول مرة اخرى</string>
-    <string name="no_chats">ts الشاي</string>
-
-    <string name="error_cant_load_group_members">لا يمكن تحميل أعضاء المجموعة. يرجى المحاولة مرة أخرى</string>
-    <string name="users">المستخدمون</string>
-    <string name="groups">مجموعات</string>
-    <string name="details">التفاصيل</string>
-    <string name="something_went_wrong">حدث خطأ ما!</string>
-    <string name="more_option">أكثر</string>
-    <string name="shared_media">الوسائط المشتركة</string>
-    <string name="transfer_ownership">أنت مالك المجموعة، يرجى نقل الملكية إلى عضو قبل مغادرة المجموعة.</string>
-    <string name="transfer_ownership_text">نقل الملكية</string>
-    <string name="view_members">عرض الأعضاء</string>
-    <string name="banned_members">الأعضاء المحظورون</string>
-    <string name="add_members">إضافة أعضاء</string>
-    <string name="leave_group">اترك المجموعة</string>
-    <string name="leave_group_text">هل أنت متأكد أنك تريد مغادرة المجموعة؟</string>
-    <string name="delete_group_text">هل تريد بالتأكيد حذف المجموعة؟</string>
-    <string name="delete_and_exit">حذف وخروج</string>
-    <string name="unblock_user">إلغاء حظر المستخدم</string>
-    <string name="block_user">حظر المستخدم</string>
-    <string name="no_members">لا يوجد أعضاء</string>
-    <string name="extra_space"> </string>
-    <string name="owner">مالك</string>
-    <string name="selected">تم اختياره</string>
-    <string name="view_profile">عرض الملف الشخصي</string>
-    <string name="group_password">كلمة مرور المجموعة</string>
-    <string name="join_group_text">أدخل كلمة المرور للوصول إلى مجموعة %1$s. </string>
-    <string name="protected_group">مجموعة محمية</string>
-    <string name="type_public">عامة</string>
-    <string name="type_private">خاص</string>
-    <string name="type_protected">محمي</string>
-    <string name="name">حركة عدم الانحياز</string>
-    <string name="new_group">مجموعة جديدة</string>
-    <string name="please_try_another_password">يرجى تجربة كلمة مرور أخرى</string>
-    <string name="incorrect_password">كلمة مرور خاطئة</string>
-    <string name="sdk_incorrect_password_error">كلمة المرور الخاصة بالمجموعة غير صحيحة.</string>
-    <string name="okay">حسنا</string>
-</resources>

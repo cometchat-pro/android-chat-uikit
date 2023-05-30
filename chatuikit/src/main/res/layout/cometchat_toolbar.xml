@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/toolbar_elevation">
+
+        <RelativeLayout
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/back_action"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:focusable="true"
+                />
+
+            <com.cometchat.chatuikit.shared.views.CometChatListItem.CometChatListItem
+                android:id="@+id/headerDataItem"
+                app:rippleColor="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/back_action" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+</LinearLayout>

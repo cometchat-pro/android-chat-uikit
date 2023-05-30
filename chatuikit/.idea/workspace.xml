@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8dbb8e58-76d4-4e38-a285-80150e20c402" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/Readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/Screenshots/credentials.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/proguard-rules.pro" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/androidTest/java/com/cometchat/pro/javasampleapp/ExampleInstrumentedTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/AndroidManifest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/ic_launcher-playstore.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/AppConstants.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/Application.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/ComponentLaunchActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/ComponentListActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/CreateUserActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/HomeActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/LoginActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/activity/MainActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/constants/StringConstants.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/conversations/ConversationListFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/conversations/ConversationListItemFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/conversations/ConversationsFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/conversations/ConversationsWithMessagesFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/groups/GroupListDataItemFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/groups/GroupListFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/groups/GroupsFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/groups/GroupsWithMessagesFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/messages/MessageComposerFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/messages/MessageHeaderFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/messages/MessageListFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/primary/LocalizeFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/primary/SoundManagerFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/primary/ThemeFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/sdk_derived/DataItemFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/secondary/AvatarFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/secondary/BadgeCountFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/secondary/MessageReceiptFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/shared/secondary/StatusIndicatorFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/users/UserListDataItemFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/users/UserListFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/users/UsersFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/java/com/cometchat/pro/javasampleapp/fragments/users/UsersWithMessagesFragment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/avatar_ic.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/badge_count.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/captainamerica.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/cometchat_white.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/component1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/component2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/component3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/curved_blue_button.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/curved_white_button.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/ic_arrow_right.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/ic_logout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/ironman.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/list.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/logo.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/message_receipt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/pink_out_line.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/sound_manager.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/spiderman.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/status_indicator.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/theme.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/toggle_widget_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/drawable/wolverine.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/font/amarante.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/font/amethysta.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/font/arima_madurai_medium.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_component_launch.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_component_list.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_create_user.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_home.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_login.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/activity_main.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_avatar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_badge_count.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_conversation_list.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_conversation_list_item.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_conversation_with_messages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_conversations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_data_item.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_group_list.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_groups.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_groups_list_data_item.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_groups_with_messages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_localize.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_message_composer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_message_header.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_message_list.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_message_receipt.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_sound_manager.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_status_indicator.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_theme.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_user_list.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_user_list_data_item.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_users.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/layout/fragment_users_with_messages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values-night/themes.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/colors.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/font_certs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/ic_launcher_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/preloaded_fonts.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/strings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/values/themes.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/xml/backup_rules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/main/res/xml/data_extraction_rules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/app/src/test/java/com/cometchat/pro/javasampleapp/ExampleUnitTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/gradle.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../examples/cometchat-java-sample-app/settings.gradle" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2NdQ9DNmdcGRkBKP3hKVNfwcDuj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="cidr.known.project.marker" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8dbb8e58-76d4-4e38-a285-80150e20c402" name="Changes" comment="" />
+      <created>1679991326490</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679991326490</updated>
+    </task>
+    <servers />
+  </component>
+</project>

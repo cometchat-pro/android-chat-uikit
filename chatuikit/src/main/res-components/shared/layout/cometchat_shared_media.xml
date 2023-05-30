@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:visibility="gone"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="@string/shared_media"
+        android:textAppearance="@style/Text3"
+        android:textColor="@color/divider_option" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/tab_layout_background"
+        app:tabBackground="@drawable/tab_background_state"
+        app:tabGravity="fill"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorGravity="bottom"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/textColorWhite"
+        app:tabTextColor="@color/primaryTextColor"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

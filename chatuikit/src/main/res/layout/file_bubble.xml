@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/horizontal_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:maxLines="1"
+                android:textStyle="bold"
+                tools:text="File Name" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                style="@style/Subtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:ellipsize="end"
+                android:focusableInTouchMode="true"
+                android:maxLines="1"
+                tools:text="Shared a file" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_download_24"
+            app:tint="@color/colorPrimary"
+            android:layout_margin="5dp"
+            tools:tint="@color/colorPrimary" />
+    </LinearLayout>
+
+</LinearLayout>
