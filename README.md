@@ -158,7 +158,7 @@ CometChatUIKit.login(uid, new CometChat.CallbackListener<User>() {
 
 2. Import `uikit` Module from Module Settings.( To know how to import `uikit` as Module visit this [link](https://www.cometchat.com/docs/java-uikit-beta/integration) )
 
-3. If the Library is added successfully, it will look like mentioned in the below image.
+3. If the Library is added successfully, it will look like mentioned in the below image.<br>
    <img align="center" width="auto" height="auto" src="https://github.com/cometchat-pro/android-chat-uikit/blob/master/Screenshot/Screen%20Shot%202019-12-23%20at%207.37.37%20PM.png">
 
 4. Next steps is to adding necessary dependencies inside your app to integrate UI Kit.
@@ -205,23 +205,6 @@ CometChatUIKit.login(uid, new CometChat.CallbackListener<User>() {
        defaultConfig {
            manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"] 
            //add your application package.
-       }
-   }
-   ```
-
-   </td></table>
-
-   </li>
-   <li>
-   As the UI Kit uses dataBinding you must enable dataBinding to use UI Kit.To configure your app to use data binding, add the dataBinding element to your `build.gradle` file in the app module, as shown in the following example:
-
-   <table><td>
-
-   ```groovy
-   android {
-       ...
-       dataBinding {
-       enabled = true
        }
    }
    ```
