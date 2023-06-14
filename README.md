@@ -5,7 +5,10 @@
 		</p>	
 	</div>	
 </div>
-<br></br><br></br>
+
+<br/><br/>
+> We’ve introduced a major update to our UI kits. Version 4 features a modular architecture that give you enhanced flexibility to build and customize your web and mobile apps. Please switch to version 4 by visiting the [chat-uikit-android](https://cloudsmith.io/~cometchat/repos/cometchat/packages/), or [check out our documentation](https://www.cometchat.com/docs/java-uikit-beta/overview).
+<br/><br/>
 
 # Android Java Chat UI Kit
 
