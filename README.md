@@ -5,7 +5,14 @@
 		</p>	
 	</div>	
 </div>
-<br></br><br></br>
+
+<br/><br/>
+> **Note**
+
+Version 4 CometChat UI Kits 
+
+We’ve introduced a major update to our UI kits. Version 4 features a modular architecture that gives you enhanced flexibility to build and customize your web and mobile apps. [Visit our documentation](https://www.cometchat.com/docs/android-v4-uikit/overview) to read more about this.
+<br/><br/>
 
 # Android Java Chat UI Kit
 
