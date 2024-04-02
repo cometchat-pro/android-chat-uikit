@@ -1,4 +1,4 @@
-# CometChat Vue UI Kit
+# CometChat Android UI Kit
 
 The CometChat Android UI Kit provides a pre-built user interface kit that developers can use to quickly integrate a reliable & fully-featured chat experience into an existing or a new app.
 
