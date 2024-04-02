@@ -18,7 +18,7 @@ To set up CometChat Android UI Kit and utilize CometChat for your chat functiona
 
 3. **Check the [Key Concepts](https://www.cometchat.com/docs/android-uikit/key-concepts)** to understand the basic components of CometChat.
 
-4. **Refer to the [Integration Steps](https://www.cometchat.com/docs/android-uikit/integration)** in our documentation to integrate the UI Kit into your Vue app.
+4. **Refer to the [Integration Steps](https://www.cometchat.com/docs/android-uikit/integration)** in our documentation to integrate the UI Kit into your Android app.
 
 ## Help and Support
-For issues running the project or integrating with our UI Kits, consult our [documentation](https://www.cometchat.com/docs/react-uikit/integration) or create a [support ticket](https://help.cometchat.com/hc/en-us) or seek real-time support via the [CometChat Dashboard](https://app.cometchat.com/).
+For issues running the project or integrating with our UI Kits, consult our [documentation](https://www.cometchat.com/docs/android-uikit/integration) or create a [support ticket](https://help.cometchat.com/hc/en-us) or seek real-time support via the [CometChat Dashboard](https://app.cometchat.com/).
